@@ -1,38 +1,78 @@
-# EB Garamond 12
+# Procedência do EB Garamond
 
-EB Garamond is intended to be an excellent, classical, Garamond. It is a community project to create a revival of Claude Garamont’s famous humanist typefaces from the mid-16th century. This digital version reproduces the original design by Claude Garamont closely: The source for the letterforms is a scan of a specimen known as the “Berner specimen,” which was composed in 1592 by Conrad Berner, the son-in-law of Christian Egenolff and his successor at the Egenolff print office. This specimen shows Garamont’s roman and Granjon’s italic types at different sizes. Hence the name of this project: Egenolff-Berner Garamond.
+Mesma disciplina que o corpus aplica a um texto — qual edição, de quem,
+verificada como — aplicada ao arquivo da fonte.
 
-Why another Garamond? That typeface is a key moment in the history of typography, and European type designers have been reacting to this work ever since. It is probably the most revived typeface in the world and many are excellent. In the world of free/libre culture, however, only a few Garamond-inspired types exist, and none share the scope of this project.
+## O que está nesta pasta
 
-## EB Garamond RCS
+**EB Garamond 12, versão 1.002, de Georg Duffner e Octavio Pardo.** Original,
+sem modificação de terceiro.
 
-This is a fork of EB Garamond 12 by Octavio Pardo, modified by Deborah Khodanovich to include custom citation glyphs for academic use and citation.
+Verificado em 2026-08-09 por três caminhos independentes:
 
-## What's Different?
-Added custom citation notation glyphs for the Relational Citation System that treats oral transmission and collaborative knowledge production as legitimate.
+**1. A tabela `name` do próprio binário.** É a única declaração que viaja
+dentro do arquivo e não pode ser trocada por engano de pasta:
 
-More info on the project here: [https://dvorit.ca/relational-citation-system]
+```
+copyright   Copyright 2017 The EB Garamond Project Authors
+            (https://github.com/octaviopardo/EBGaramond12)
+família     EB Garamond
+versão      Version 1.002
+fabricante  Georg Duffner
+designer    Georg Duffner and Octavio Pardo
+```
 
-Original EB Garamond: [https://github.com/octaviopardo/EBGaramond12]
+**2. Identidade byte a byte com o clone.** O `.otf` desta pasta e o
+`fonts/otf/EBGaramond-Regular.otf` do clone de
+`github.com/octaviopardo/EBGaramond12` têm o mesmo MD5
+(`4932018ee4630991c73a04d76c05a09c`).
 
-## Building
+**3. Ausência de glifo de fork.** Nenhum glifo com nome contendo `rcs` ou
+`citation`. Quatro pontos de código em área de uso privado, coerente com a
+fonte original — não com um acréscimo de notação.
 
-Fonts are built automatically by GitHub Actions - take a look in the "Actions" tab for the latest build.
+## O tropeço que vale registrar
 
-If you particularly want to build fonts manually on your own computer, you will need to install the [`yq` utility](https://github.com/mikefarah/yq). On OS X with Homebrew, type `brew install yq`; on Linux, try `snap install yq`; if all else fails, try the instructions on the linked page.
+O repositório `octaviopardo/EBGaramond12` passou, em 2026, por um período em
+que um fork conviveu com o original dentro dele:
 
-Then:
+| Data | Autor | O que fez |
+| --- | --- | --- |
+| 2026-01-19 | Deborah Khodanovich | acrescentou `Copyright 2025 … (RCS citation glyphs)` ao `OFL.txt` |
+| 2026-01-19 | Deborah Khodanovich | reescreveu o `README.md` descrevendo o "EB Garamond RCS" |
+| 2026-02-21 | dvorit-ai | **apagou** os binários do fork (`fonts/RCS Garamond OTF/`) |
 
-* `make build` will produce font files.
-* `make test` will run [FontBakery](https://github.com/googlefonts/fontbakery)'s quality assurance tests.
-* `make proof` will generate HTML proof files.
+Os binários do fork saíram; **a linha na licença e o texto do README ficaram.**
+Quem clonar hoje recebe um `OFL.txt` e um `README.md` que falam de glifos que
+não estão em nenhum arquivo do repositório.
 
-## License
+Por isso o `EBGaramond-OFL.txt` desta pasta é a versão **anterior** a
+2026-01-19 — a que corresponde exatamente a estes binários e à declaração de
+copyright que eles carregam por dentro. Não é edição de licença: é escolher,
+entre duas versões que o próprio projeto publicou, a que descreve o arquivo
+que está aqui.
 
-This Font Software is licensed under the SIL Open Font License, Version 1.1.
-This license is copied below, and is also available with a FAQ at
-http://scripts.sil.org/OFL
+## A lição, para a próxima família
 
-## Repository Layout
+**A tabela `name` do binário manda; arquivo de texto ao lado, não.** `OFL.txt`
+e `README.md` são soltos: viajam entre pastas, sobrevivem a forks, ficam para
+trás quando o binário sai. A declaração que viaja dentro do arquivo é a que
+vale.
 
-This font repository structure is inspired by [Unified Font Repository v0.3](https://github.com/unified-font-repository/Unified-Font-Repository), modified for the Google Fonts workflow.
+Foi exatamente esse o erro cometido aqui na primeira leitura: concluir que a
+fonte era um fork porque o texto ao lado dizia isso. Ler a fonte teria
+resolvido em um comando:
+
+```bash
+python -c "
+from fontTools.ttLib import TTFont
+f = TTFont('EBGaramond-Regular.otf', lazy=True)
+for nid in (0,1,5,8,9): print(nid, f['name'].getDebugName(nid))
+"
+```
+
+## Cardo
+
+`Cardo-*.ttf` versão 1.0451, de David J. Perry (`scholarsfonts.net`), baixado
+de `cardo104.zip`. Tabela `name` limpa, sem terceiros. Licença em
+`Cardo-OFL.txt`.

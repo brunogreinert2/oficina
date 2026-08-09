@@ -43,23 +43,22 @@ print([hex(o) for o in (0x5D0, 0x1F00, 0xE7) if o not in cmap] or 'cobre tudo')
 "
 ```
 
-## Procedência do EB Garamond — atenção
+## Procedência
 
-O pacote baixado **não é o EB Garamond original**. É o **EB Garamond RCS**, um
-fork de Deborah Khodanovich (2025) sobre o EB Garamond 12 de Octavio Pardo,
-com glifos extras de notação para um sistema de citação. Está tudo em
-`EBGaramond-PROVENIENCIA.md` e as duas titularidades constam do
-`EBGaramond-OFL.txt`:
+**EB Garamond 12 v1.002, de Georg Duffner e Octavio Pardo — original, sem
+modificação de terceiro.** Verificado pela tabela `name` do binário, por
+identidade byte a byte com o clone de `github.com/octaviopardo/EBGaramond12`,
+e pela ausência de glifos de fork.
 
-```
-Copyright 2017 The EB Garamond Project Authors
-Copyright 2025 Deborah Khodanovich (RCS citation glyphs)
-```
+Há uma armadilha nesse repositório, documentada em
+`EBGaramond-PROVENIENCIA.md`: o `OFL.txt` e o `README.md` que se baixa hoje
+descrevem um fork ("EB Garamond RCS") cujos binários já foram removidos do
+próprio repositório. Por isso o `EBGaramond-OFL.txt` desta pasta é a versão
+anterior a essa alteração — a que corresponde a estes arquivos.
 
-Funciona e é OFL, então pode ficar. Mas num projeto que declara tradutor e
-edição de cada obra, a fonte também tem procedência — e esta tem duas mãos,
-não uma. Se quiser o original limpo:
-`github.com/octaviopardo/EBGaramond12`.
+**Regra que ficou:** a tabela `name` do binário manda; `OFL.txt` e `README.md`
+ao lado, não. Texto solto viaja entre pastas e sobrevive a forks; a declaração
+que viaja dentro do arquivo é a que vale.
 
 ## De onde vieram e como reconverter
 
