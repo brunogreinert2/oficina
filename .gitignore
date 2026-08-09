@@ -1,0 +1,11 @@
+# Sistema operacional
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+
+# A Oficina nao tem build: nao ha dist/ nem node_modules/.
+# As fontes em fontes/ SAO parte do projeto (LEI 3, zero rede) e vao commitadas.

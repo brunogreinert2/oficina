@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="noite">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oficina · Pedra Angular</title>
+<meta name="description" content="Montagem de volume: escolha texto, tipografia, formato, encadernação e acabamento, e receba a ficha técnica do livro físico. Oficina do Pedra Angular.">
+
+<!-- Zero rede em runtime (NORMAS.md, LEI 3): a fonte vem do arquivo ao lado,
+     nunca de CDN. Grego e hebraico caem no fallback serifado do sistema —
+     a Atkinson clássica não traz politônico. Licença em fontes/Atkinson-OFL.txt. -->
+<style>
+@font-face{font-family:'Atkinson Hyperlegible';font-weight:400;font-style:normal;font-display:swap;
+  src:url(fontes/Atkinson-Regular.woff2) format('woff2');}
+@font-face{font-family:'Atkinson Hyperlegible';font-weight:700;font-style:normal;font-display:swap;
+  src:url(fontes/Atkinson-Bold.woff2) format('woff2');}
+
+/* EB Garamond e Cardo são as tipografias que os VOLUMES usam de verdade —
+   a prévia da capa só é fiel se elas estiverem aqui. Os arquivos não vêm no
+   repositório (ver fontes/LEIAME.md para de onde baixar); enquanto não
+   estiverem, o navegador cai em Georgia sozinho e nada quebra. Basta soltar
+   os .woff2 na pasta `fontes/` com estes nomes exatos para acenderem. */
+@font-face{font-family:'EB Garamond';font-weight:400;font-style:normal;font-display:swap;
+  src:url(fontes/EBGaramond-Regular.woff2) format('woff2');}
+@font-face{font-family:'EB Garamond';font-weight:400;font-style:italic;font-display:swap;
+  src:url(fontes/EBGaramond-Italic.woff2) format('woff2');}
+@font-face{font-family:'EB Garamond';font-weight:600;font-style:normal;font-display:swap;
+  src:url(fontes/EBGaramond-SemiBold.woff2) format('woff2');}
+@font-face{font-family:'Cardo';font-weight:400;font-style:normal;font-display:swap;
+  src:url(fontes/Cardo-Regular.woff2) format('woff2');}
+@font-face{font-family:'Cardo';font-weight:400;font-style:italic;font-display:swap;
+  src:url(fontes/Cardo-Italic.woff2) format('woff2');}
+@font-face{font-family:'Cardo';font-weight:700;font-style:normal;font-display:swap;
+  src:url(fontes/Cardo-Bold.woff2) format('woff2');}
+
+/* ============================================================
+   TOKENS — nomes de FUNÇÃO, nunca de aparência (NORMAS.md N14).
+   Valores medidos em 2026-08-09 contra os pisos do ecossistema:
+   texto e texto-suave >= 7:1, acento e alerta >= 4.5:1 sobre
+   fundo, superfície E superfície-alta. --ui-linha é decorativa e
+   não tem piso.
+   ============================================================ */
+:root{
+  --ui-fundo:#0A1421; --ui-superficie:#101E30; --ui-superficie-alta:#14243A;
+  --ui-linha:#24384F; --ui-texto:#EDE7DA; --ui-texto-suave:#9DB0C3;
+  --ui-acento:#C9A227; --ui-acento-fraco:#8A7220; --ui-alerta:#C87361;
+  --ui-foco:var(--ui-acento);
+  --ui-escala:1;
+  --ui-serif:Georgia,'Times New Roman',serif;
+  --ui-texto-fonte:'Atkinson Hyperlegible',Verdana,system-ui,sans-serif;
+  --ui-mono:ui-monospace,Consolas,'SF Mono',monospace;
+}
+[data-theme=pergaminho]{
+  --ui-fundo:#EAE3D3; --ui-superficie:#F2ECE0; --ui-superficie-alta:#DCD3C0;
+  --ui-linha:#C3B79E; --ui-texto:#241E14; --ui-texto-suave:#473E31;
+  --ui-acento:#5C4710; --ui-acento-fraco:#8A7220; --ui-alerta:#9E3C2A;
+}
+[data-theme=petroleo]{
+  --ui-fundo:#0E2E33; --ui-superficie:#143A40; --ui-superficie-alta:#173F45;
+  --ui-linha:#2A6B74; --ui-texto:#DCEEEF; --ui-texto-suave:#C5D8E0;
+  --ui-acento:#C9A227; --ui-acento-fraco:#8A7220; --ui-alerta:#CCA199;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ui-fundo); color:var(--ui-texto);
+  font-family:var(--ui-texto-fonte);
+  /* Multiplicador sobre rem, nunca pixel fixo (N21): quem já aumentou a
+     letra no aparelho não é ignorado, e o A+/A− multiplica em cima disso. */
+  font-size:calc(1rem*var(--ui-escala));
+  line-height:1.55;
+}
+a{color:var(--ui-acento)}
+
+/* ---------- Barra Angular: Φ · A− · A+ · … · Ξ (LEI 8) ---------- */
+.barra-angular{position:sticky;top:0;z-index:30;background:var(--ui-fundo);
+  border-bottom:1px solid var(--ui-linha)}
+.barra-angular>div{max-width:1400px;margin:0 auto;display:flex;align-items:center;
+  gap:.4rem;flex-wrap:wrap;padding:.5rem 1rem}
+.ui-botao-barra{flex:0 0 auto;min-width:2.75rem;min-height:2.75rem;padding:.4rem .6rem;
+  border:2px solid currentColor;border-radius:.5rem;background:none;color:var(--ui-acento);
+  font-family:var(--ui-serif);font-size:calc(1.25rem*var(--ui-escala));font-weight:700;
+  line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  text-decoration:none;-webkit-tap-highlight-color:transparent}
+.ui-botao-barra--tema{font-family:var(--ui-mono);font-weight:400;text-transform:uppercase;
+  letter-spacing:.08em;font-size:calc(.7rem*var(--ui-escala))}
+.ui-botao-barra[aria-pressed=true]{background:var(--ui-superficie-alta)}
+.barra-espaco{flex:1 1 0}
+
+:focus-visible{outline:2px solid var(--ui-foco);outline-offset:2px}
+.pular{position:absolute;left:-9999px}
+.pular:focus{left:0;top:0;z-index:50;padding:.6rem 1rem;background:var(--ui-acento);
+  color:var(--ui-fundo);border-radius:0 0 .5rem 0}
+
+.sumario{max-width:1400px;margin:.6rem auto 0;padding:.6rem 1rem;
+  background:var(--ui-superficie);border:1px solid var(--ui-linha);border-radius:.5rem}
+.sumario[hidden]{display:none}
+.sumario ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.3rem}
+.sumario a{display:inline-flex;align-items:center;min-height:2.75rem;padding:.4rem .8rem;
+  border:1px solid var(--ui-linha);border-radius:.4rem;text-decoration:none;color:var(--ui-texto)}
+.sumario a:hover{border-color:var(--ui-acento)}
+
+/* ---------- cabeçalho ---------- */
+header.topo{border-bottom:1px solid var(--ui-linha);padding:1.4rem 1rem 1.1rem;
+  display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;max-width:1400px;margin:0 auto}
+.marca{font-family:var(--ui-serif);font-size:calc(1.9rem*var(--ui-escala));line-height:1}
+.marca .phi{color:var(--ui-acento);font-style:italic}
+.subtitulo{font-family:var(--ui-mono);font-size:calc(.7rem*var(--ui-escala));
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ui-texto-suave)}
+.topo-acoes{margin-left:auto;display:flex;gap:.6rem;flex-wrap:wrap}
+
+/* ---------- botões comuns ---------- */
+button{font-family:var(--ui-mono);font-size:calc(.7rem*var(--ui-escala));letter-spacing:.1em;
+  text-transform:uppercase;background:transparent;color:var(--ui-texto);
+  border:1px solid var(--ui-linha);padding:.5rem .9rem;min-height:2.75rem;cursor:pointer;
+  border-radius:.4rem;transition:border-color .15s,color .15s,background .15s}
+button:hover{border-color:var(--ui-acento);color:var(--ui-texto)}
+button.destaque{border-color:var(--ui-acento);color:var(--ui-acento)}
+
+/* ---------- estrutura ---------- */
+.palco{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+  max-width:1400px;margin:0 auto}
+@media (max-width:900px){.palco{grid-template-columns:1fr}}
+
+.vitrine{position:sticky;top:4.2rem;padding:1.6rem 1rem 2rem;
+  border-right:1px solid var(--ui-linha);align-self:start}
+@media (max-width:900px){
+  .vitrine{position:static;border-right:none;border-bottom:1px solid var(--ui-linha)}
+}
+.abas{display:flex;margin-bottom:1.2rem;border:1px solid var(--ui-linha);
+  width:fit-content;border-radius:.4rem;overflow:hidden}
+.abas button{border:none;border-right:1px solid var(--ui-linha);border-radius:0}
+.abas button:last-child{border-right:none}
+.abas button[aria-pressed=true]{background:var(--ui-superficie-alta);color:var(--ui-acento)}
+
+.moldura{display:flex;align-items:center;justify-content:center;min-height:22rem}
+.moldura svg{max-width:100%;max-height:min(62vh,34rem);height:auto;
+  filter:drop-shadow(0 .8rem 1.6rem rgba(0,0,0,.45))}
+
+.medidas{margin-top:1.4rem;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(8rem,1fr));gap:1px;
+  background:var(--ui-linha);border:1px solid var(--ui-linha)}
+.medida{background:var(--ui-fundo);padding:.7rem .8rem;margin:0}
+.medida dt{font-family:var(--ui-mono);font-size:calc(.62rem*var(--ui-escala));
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ui-texto-suave);margin:0 0 .25rem}
+.medida dd{margin:0;font-family:var(--ui-serif);font-size:calc(1.2rem*var(--ui-escala));line-height:1.2}
+.medida dd small{font-size:calc(.7rem*var(--ui-escala));color:var(--ui-texto-suave);
+  font-family:var(--ui-mono)}
+
+.aviso{margin-top:1rem;border-left:3px solid var(--ui-alerta);padding:.55rem 0 .55rem .8rem;
+  font-size:calc(.9rem*var(--ui-escala));color:var(--ui-texto-suave)}
+.aviso.ok{border-left-color:var(--ui-acento)}
+.aviso strong{color:var(--ui-texto);font-weight:400}
+/* Nunca só por cor (N29): o aviso diz em palavra o que é. */
+.aviso .marca-aviso{font-family:var(--ui-mono);font-size:calc(.62rem*var(--ui-escala));
+  letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:.2rem;
+  color:var(--ui-alerta)}
+.aviso.ok .marca-aviso{color:var(--ui-acento)}
+
+/* ---------- painel de escolhas ---------- */
+.atelie{padding:1.6rem 1rem 3.5rem}
+fieldset{border:none;border-top:1px solid var(--ui-linha);margin:0;padding:1.2rem 0 1.4rem}
+fieldset:first-of-type{border-top:none;padding-top:.3rem}
+legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-bottom:.8rem}
+.rotulo{font-family:var(--ui-mono);font-size:calc(.68rem*var(--ui-escala));
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ui-acento)}
+.dica{font-size:calc(.8rem*var(--ui-escala));color:var(--ui-texto-suave)}
+.fileira{display:flex;flex-wrap:wrap;gap:.45rem}
+
+.ficha{background:var(--ui-superficie);border:1px solid var(--ui-linha);color:var(--ui-texto-suave);
+  padding:.55rem .8rem;min-height:2.75rem;cursor:pointer;font-family:inherit;
+  font-size:calc(.87rem*var(--ui-escala));letter-spacing:0;text-transform:none;
+  line-height:1.35;text-align:left;border-radius:.4rem}
+.ficha b{display:block;font-weight:400;color:var(--ui-texto)}
+.ficha span{font-family:var(--ui-mono);font-size:calc(.65rem*var(--ui-escala));
+  color:var(--ui-texto-suave);letter-spacing:.06em}
+.ficha:hover{border-color:var(--ui-acento)}
+/* Selecionado NÃO se distingue só por cor (N29): entra a marca ✓ e a borda. */
+.ficha[aria-pressed=true]{border-color:var(--ui-acento);border-width:2px;
+  background:var(--ui-superficie-alta);color:var(--ui-texto)}
+.ficha[aria-pressed=true] span{color:var(--ui-acento)}
+.ficha[aria-pressed=true] b::after{content:" ✓";color:var(--ui-acento)}
+
+.fio-cor{width:.95rem;height:.95rem;border-radius:50%;display:inline-block;
+  vertical-align:-.12rem;margin-right:.45rem;border:1px solid var(--ui-texto-suave)}
+
+/* ---------- ficha técnica ---------- */
+.ficha-tecnica{margin-top:.6rem;border:1px solid var(--ui-linha);background:var(--ui-superficie);
+  border-radius:.4rem}
+.ficha-tecnica header{display:flex;align-items:center;gap:.7rem;padding:.7rem .9rem;
+  border-bottom:1px solid var(--ui-linha);flex-wrap:wrap}
+.ficha-tecnica header .rotulo{margin-right:auto}
+.ficha-tecnica pre{margin:0;padding:1rem .9rem 1.2rem;font-family:var(--ui-mono);
+  font-size:calc(.75rem*var(--ui-escala));line-height:1.7;color:var(--ui-texto-suave);
+  white-space:pre-wrap;word-break:break-word;max-height:26rem;overflow:auto}
+
+/* ---------- acervo: a camada legível por máquina (LEI 1 e 2) ---------- */
+.acervo{max-width:1400px;margin:0 auto;padding:1.6rem 1rem 2.5rem;
+  border-top:1px solid var(--ui-linha)}
+.acervo h2{font-family:var(--ui-serif);font-size:calc(1.3rem*var(--ui-escala));
+  margin:1.6rem 0 .5rem;scroll-margin-top:5rem}
+.acervo h2:first-of-type{margin-top:.5rem}
+.acervo ul{list-style:none;padding:0;margin:0}
+.acervo li{padding:.4rem 0;border-bottom:1px dotted var(--ui-linha);
+  font-size:calc(.9rem*var(--ui-escala))}
+.acervo li b{font-weight:400;color:var(--ui-texto)}
+.acervo li{color:var(--ui-texto-suave)}
+.acervo .mono{font-family:var(--ui-mono);font-size:calc(.7rem*var(--ui-escala))}
+
+.rodape{max-width:1400px;margin:0 auto;padding:1.4rem 1rem 2.5rem;
+  border-top:1px solid var(--ui-linha);color:var(--ui-texto-suave);
+  font-family:var(--ui-serif);font-size:calc(.95rem*var(--ui-escala))}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+@media print{
+  .barra-angular,.sumario,.topo-acoes,.abas,.ficha-tecnica header button{display:none!important}
+  body{background:#fff;color:#000}
+  .palco{display:block}
+  .vitrine{border:none;position:static}
+}
+</style>
+
+<script>
+/* Tema e corpo aplicados ANTES do primeiro desenho: sem piscar.
+   Mesmas chaves do rolo e do app (`pa:tema`, `pa:fonte`) — a mesma mão. */
+(function(){
+  var R=document.documentElement;
+  try{
+    var t=localStorage.getItem('pa:tema');
+    if(t==='noite'||t==='pergaminho'||t==='petroleo') R.setAttribute('data-theme',t);
+    var f=parseFloat(localStorage.getItem('pa:fonte'));
+    if(f>=.8&&f<=2.6) R.style.setProperty('--ui-escala',f);
+  }catch(e){}
+  R.classList.add('js');
+})();
+</script>
+</head>
+<body>
+
+<a class="pular" href="#escolhas">Pular para as escolhas</a>
+
+<nav class="barra-angular" aria-label="Controles de leitura"><div>
+  <button class="ui-botao-barra" type="button" id="ui-phi"
+          aria-label="Abrir o acervo — tudo o que a Oficina oferece"
+          aria-expanded="false" aria-controls="acervo">Φ</button>
+  <button class="ui-botao-barra" type="button" id="ui-menos" aria-label="Diminuir letra">A−</button>
+  <button class="ui-botao-barra" type="button" id="ui-mais" aria-label="Aumentar letra">A+</button>
+  <span class="barra-espaco"></span>
+  <button class="ui-botao-barra ui-botao-barra--tema" type="button" data-tema="noite" aria-pressed="true">Noite</button>
+  <button class="ui-botao-barra ui-botao-barra--tema" type="button" data-tema="pergaminho" aria-pressed="false">Pergaminho</button>
+  <button class="ui-botao-barra ui-botao-barra--tema" type="button" data-tema="petroleo" aria-pressed="false">Petróleo</button>
+  <button class="ui-botao-barra" type="button" id="ui-xi" aria-label="Abrir sumário"
+          aria-expanded="false" aria-controls="ui-sumario">Ξ</button>
+</div></nav>
+
+<nav id="ui-sumario" class="sumario" hidden aria-label="Sumário desta página"></nav>
+
+<header class="topo">
+  <div class="marca">Oficina <span class="phi" aria-hidden="true">Φ</span></div>
+  <div class="subtitulo">Pedra Angular · montagem de volume</div>
+  <div class="topo-acoes">
+    <button id="btn-sortear" type="button">Sortear volume</button>
+    <button id="btn-reset" type="button">Recomeçar</button>
+  </div>
+</header>
+
+<main class="palco">
+  <section class="vitrine" aria-label="Visualização do volume">
+    <div class="abas" role="group" aria-label="Modo de visualização">
+      <button id="aba-capa" type="button" aria-pressed="true">Capa</button>
+      <button id="aba-pagina" type="button" aria-pressed="false">Página</button>
+      <button id="aba-lombada" type="button" aria-pressed="false">Lombada</button>
+    </div>
+    <div class="moldura" id="moldura"></div>
+    <dl class="medidas" id="medidas"></dl>
+    <div id="avisos"></div>
+  </section>
+
+  <section class="atelie" id="escolhas" aria-label="Escolhas do volume">
+    <div id="secoes"></div>
+    <div class="ficha-tecnica">
+      <header>
+        <span class="rotulo">Ficha técnica</span>
+        <button id="btn-link" type="button">Copiar link</button>
+        <button id="btn-copiar" type="button" class="destaque">Copiar ficha</button>
+      </header>
+      <pre id="saida"></pre>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================
+     ACERVO — a camada legível por máquina (NORMAS.md LEI 1 e 2).
+     Estas listas NÃO são duplicata da interface: são a FONTE dela.
+     O script lê estes elementos e monta o configurador a partir
+     daqui, do mesmo jeito que o motor do rolo lê o texto do <body>.
+     Sem JavaScript, o catálogo inteiro continua legível — e é isto
+     que uma IA ou um buscador recebe ao abrir a URL.
+     Com JavaScript, Φ mostra e esconde esta seção.
+     ============================================================ -->
+<section class="acervo" id="acervo">
+  <h2 id="ac-textos">Textos disponíveis</h2>
+  <ul id="dados-textos">
+    <li data-id="encheiridion" data-autor="Epicteto" data-sub="Ἐγχειρίδιον" data-lang="grc" data-extensao="53 capítulos" data-palavras="9000"><b>Encheirídion</b> — Epicteto, <i lang="grc">Ἐγχειρίδιον</i> <span class="mono">· 53 capítulos · ~9 000 palavras</span></li>
+    <li data-id="meditacoes" data-autor="Marco Aurélio" data-sub="Τὰ εἰς ἑαυτόν" data-lang="grc" data-extensao="12 livros" data-palavras="45000"><b>Meditações</b> — Marco Aurélio, <i lang="grc">Τὰ εἰς ἑαυτόν</i> <span class="mono">· 12 livros · ~45 000 palavras</span></li>
+    <li data-id="diatribes" data-autor="Epicteto" data-sub="Διατριβαί" data-lang="grc" data-extensao="30 capítulos" data-palavras="32000"><b>Diatribes I</b> — Epicteto, <i lang="grc">Διατριβαί</i> <span class="mono">· 30 capítulos · ~32 000 palavras</span></li>
+    <li data-id="apologia" data-autor="Platão" data-sub="Ἀπολογία Σωκράτους" data-lang="grc" data-extensao="peça única" data-palavras="12000"><b>Apologia de Sócrates</b> — Platão, <i lang="grc">Ἀπολογία Σωκράτους</i> <span class="mono">· peça única · ~12 000 palavras</span></li>
+    <li data-id="eclesiastes" data-autor="Qohélet" data-sub="קֹהֶלֶת" data-lang="he" data-dir="rtl" data-extensao="12 capítulos" data-palavras="6500"><b>Eclesiastes</b> — Qohélet, <i lang="he" dir="rtl">קֹהֶלֶת</i> <span class="mono">· 12 capítulos · ~6 500 palavras</span></li>
+    <li data-id="fragmentos" data-autor="Estoicos antigos" data-sub="SVF" data-lang="la" data-extensao="seleção" data-palavras="15000"><b>Fragmentos</b> — Estoicos antigos, <i lang="la">SVF</i> <span class="mono">· seleção · ~15 000 palavras</span></li>
+    <li data-id="ttp" data-autor="Espinosa" data-sub="Tractatus Theologico-Politicus" data-lang="la" data-extensao="20 capítulos" data-palavras="110000"><b>Tratado Teológico-Político</b> — Espinosa, <i lang="la">Tractatus Theologico-Politicus</i> <span class="mono">· 20 capítulos · ~110 000 palavras</span></li>
+    <li data-id="leviathan" data-autor="Hobbes" data-sub="Elementa Philosophica" data-lang="la" data-extensao="4 partes" data-palavras="190000"><b>Leviathan</b> — Hobbes, <i lang="la">Elementa Philosophica</i> <span class="mono">· 4 partes · ~190 000 palavras</span></li>
+  </ul>
+
+  <h2 id="ac-fontes">Tipografias</h2>
+  <ul id="dados-fontes">
+    <li data-id="garamond" data-classe="serif" data-css='"EB Garamond", Georgia, serif' data-larg="0.39"><b>EB Garamond</b> <span class="mono">· serifada · politônico · largura média 0,39 em</span></li>
+    <li data-id="cardo" data-classe="serif" data-css='"Cardo", Georgia, serif' data-larg="0.40"><b>Cardo</b> <span class="mono">· serifada · grego e hebraico · 0,40 em</span></li>
+    <li data-id="atkinson" data-classe="hyper" data-css='"Atkinson Hyperlegible", Verdana, sans-serif' data-larg="0.466"><b>Atkinson Hyperlegible</b> <span class="mono">· acessível · larga · 0,466 em</span></li>
+  </ul>
+
+  <h2 id="ac-corpos">Corpos</h2>
+  <ul id="dados-corpos">
+    <li data-id="10.5" data-nota="compacto"><b>10,5 pt</b> <span class="mono">· compacto</span></li>
+    <li data-id="11" data-nota="leitura"><b>11 pt</b> <span class="mono">· leitura</span></li>
+    <li data-id="12" data-nota="leitura"><b>12 pt</b> <span class="mono">· leitura</span></li>
+    <li data-id="14" data-nota="acessível"><b>14 pt</b> <span class="mono">· acessível</span></li>
+    <li data-id="16" data-nota="acessível"><b>16 pt</b> <span class="mono">· acessível</span></li>
+  </ul>
+
+  <h2 id="ac-formatos">Formatos</h2>
+  <ul id="dados-formatos">
+    <li data-id="folio-phi" data-l="183.5" data-a="297" data-prop="Φ 1,618" data-origem="A4 · refile 26,5 mm" data-fibra="1"><b>Fólio Φ</b> <span class="mono">· 183,5 × 297 mm · Φ 1,618 · A4 com refile de 26,5 mm · fibra paralela à lombada</span></li>
+    <li data-id="folio-a4" data-l="210" data-a="297" data-prop="√2 1,414" data-origem="A4 · refile zero" data-fibra="1"><b>Fólio A4</b> <span class="mono">· 210 × 297 mm · √2 1,414 · sem refile · fibra paralela à lombada</span></li>
+    <li data-id="padrao-br" data-l="140" data-a="210" data-prop="3:2 1,500" data-origem="A5 · refile 8 mm" data-fibra="0"><b>Padrão BR</b> <span class="mono">· 140 × 210 mm · 3:2 · A5 com refile de 8 mm</span></li>
+    <li data-id="oitavo-phi" data-l="130" data-a="210" data-prop="Φ 1,618" data-origem="A5 · refile 18 mm" data-fibra="0"><b>Oitavo Φ</b> <span class="mono">· 130 × 210 mm · Φ 1,618 · A5 com refile de 18 mm</span></li>
+    <li data-id="quarto" data-l="148" data-a="197" data-prop="4:3 1,333" data-origem="A5 · refile 13 mm" data-fibra="0"><b>Quarto curto</b> <span class="mono">· 148 × 197 mm · 4:3</span></li>
+    <li data-id="bolso-phi" data-l="91.5" data-a="148" data-prop="Φ 1,618" data-origem="A6 · refile 13,5 mm" data-fibra="0"><b>Bolso Φ</b> <span class="mono">· 91,5 × 148 mm · Φ 1,618</span></li>
+    <li data-id="paisagem" data-l="297" data-a="210" data-prop="√2 deitado" data-origem="A4 girado" data-fibra="0"><b>Bilíngue</b> <span class="mono">· 297 × 210 mm · A4 deitado · para texto e tradução lado a lado</span></li>
+    <li data-id="quadrado" data-l="210" data-a="210" data-prop="1:1" data-origem="A4 · refile 87 mm" data-fibra="0"><b>Quadrado</b> <span class="mono">· 210 × 210 mm · 1:1</span></li>
+    <li data-id="tira" data-l="105" data-a="297" data-prop="1:2,83" data-origem="A4 ao meio no comprimento" data-fibra="1"><b>Tira</b> <span class="mono">· 105 × 297 mm · 1:2,83 · fibra paralela à lombada</span></li>
+  </ul>
+
+  <h2 id="ac-capa-tema">Temas de capa</h2>
+  <ul id="dados-temas">
+    <li data-id="azul" data-fundo="#0F2038" data-texto="#EDE7DA" data-acento="#C9A227"><b>Azul-noite</b> <span class="mono">· fundo #0F2038 · tipografia #EDE7DA · filete #C9A227 · tema principal</span></li>
+    <li data-id="preto" data-fundo="#08080A" data-texto="#FFFFFF" data-acento="#FFFFFF"><b>Preto</b> <span class="mono">· fundo #08080A · tipografia #FFFFFF · contraste máximo</span></li>
+    <li data-id="invertido" data-fundo="#EDE7DA" data-texto="#0F2038" data-acento="#0F2038"><b>Invertido</b> <span class="mono">· fundo #EDE7DA · tipografia #0F2038 · azul sobre pergaminho</span></li>
+  </ul>
+
+  <h2 id="ac-encad">Encadernações</h2>
+  <ul id="dados-encad">
+    <li data-id="yotsume" data-fam="jap" data-dif="1"><b>Yotsume-toji</b> <span class="mono">· costura japonesa · quatro olhos · a base</span></li>
+    <li data-id="koki" data-fam="jap" data-dif="2"><b>Kōki-toji</b> <span class="mono">· costura japonesa · cantos reforçados</span></li>
+    <li data-id="asanoha" data-fam="jap" data-dif="3"><b>Asa-no-ha</b> <span class="mono">· costura japonesa · folha de cânhamo</span></li>
+    <li data-id="kikko" data-fam="jap" data-dif="4"><b>Kikkō-toji</b> <span class="mono">· costura japonesa · casco de tartaruga</span></li>
+    <li data-id="fukuro" data-fam="jap" data-dif="2"><b>Fukuro-toji</b> <span class="mono">· costura japonesa · vinco na borda externa · só frente</span></li>
+    <li data-id="caderno" data-fam="cad" data-dif="1"><b>Caderno único</b> <span class="mono">· fascículo · abre plano</span></li>
+    <li data-id="copta" data-fam="cad" data-dif="3"><b>Copta</b> <span class="mono">· abre 360° · lombada exposta</span></li>
+    <li data-id="long" data-fam="cad" data-dif="3"><b>Long stitch</b> <span class="mono">· costura através da capa</span></li>
+    <li data-id="dura" data-fam="dura" data-dif="5"><b>Case binding</b> <span class="mono">· capa dura tradicional</span></li>
+  </ul>
+
+  <h2 id="ac-fios">Fios</h2>
+  <ul id="dados-fios">
+    <li data-id="branco" data-cor="#F2EDE2"><b>Branco</b> <span class="mono">· #F2EDE2</span></li>
+    <li data-id="ouro" data-cor="#C9A227"><b>Ouro</b> <span class="mono">· #C9A227</span></li>
+    <li data-id="azul" data-cor="#2C4A72"><b>Azul-noite</b> <span class="mono">· #2C4A72</span></li>
+    <li data-id="cinabrio" data-cor="#B9432F"><b>Vermelho cinábrio</b> <span class="mono">· #B9432F</span></li>
+    <li data-id="natural" data-cor="#C4B79A"><b>Linho natural</b> <span class="mono">· #C4B79A</span></li>
+  </ul>
+
+  <h2 id="ac-capas">Capas</h2>
+  <ul id="dados-capas">
+    <li data-id="mole" data-dif="0"><b>Papel de capa</b> <span class="mono">· Color Plus 180 g</span></li>
+    <li data-id="carton" data-dif="1"><b>Cartonagem</b> <span class="mono">· papelão revestido</span></li>
+    <li data-id="rigida" data-dif="2"><b>Capa dura</b> <span class="mono">· tecido ou couro</span></li>
+  </ul>
+
+  <h2 id="ac-acab">Acabamentos</h2>
+  <ul id="dados-acabamentos">
+    <li data-id="phi" data-dif="1"><b>Φ gravado</b> <span class="mono">· prata ou ouro a quente</span></li>
+    <li data-id="cantos" data-dif="1"><b>Cantos reforçados</b> <span class="mono">·</span></li>
+    <li data-id="guardas" data-dif="1"><b>Guardas impressas</b> <span class="mono">· cadeia de proveniência</span></li>
+    <li data-id="cabeceado" data-dif="1"><b>Cabeceado</b> <span class="mono">·</span></li>
+    <li data-id="estojo" data-dif="2"><b>Caixa-estojo</b> <span class="mono">·</span></li>
+    <li data-id="tiragem" data-dif="0"><b>Numeração</b> <span class="mono">· manuscrita no colofão</span></li>
+    <li data-id="fita" data-dif="0"><b>Marcador de fita</b> <span class="mono">·</span></li>
+    <li data-id="corte" data-dif="2"><b>Corte pintado</b> <span class="mono">· aresta tingida</span></li>
+  </ul>
+
+  <h2 id="ac-materiais">Materiais de revestimento</h2>
+  <ul id="dados-materiais">
+    <li data-id="colorplus" data-fam="papel" data-gram="180" data-suporte="1" data-cola="pva"><b>Color Plus 180 g/m²</b> <span class="mono">· papel colorido na massa · a cor atravessa a folha, então o vinco não mostra branco · cortar com a fibra paralela à lombada</span></li>
+    <li data-id="kraft" data-fam="papel" data-gram="200" data-suporte="1" data-cola="pva"><b>Kraft 180–240 g/m²</b> <span class="mono">· barato, resistente, escurece com a luz · bom para tiragem de prova</span></li>
+    <li data-id="percalux" data-fam="tecido" data-gram="0" data-suporte="1" data-cola="pva"><b>Percalux</b> <span class="mono">· tecido de encadernação com verso de papel · aceita PVA sem manchar · a escolha padrão para capa dura</span></li>
+    <li data-id="buckram" data-fam="tecido" data-gram="0" data-suporte="1" data-cola="pva"><b>Buckram</b> <span class="mono">· algodão pesado com apresto · o mais resistente · padrão de biblioteca</span></li>
+    <li data-id="linho" data-fam="tecido" data-gram="0" data-suporte="0" data-cola="amido"><b>Linho cru sem suporte</b> <span class="mono">· textura viva · SEM verso de papel: PVA atravessa e mancha · usar cola de amido ou entretela térmica antes</span></li>
+    <li data-id="couro" data-fam="couro" data-gram="0" data-suporte="0" data-cola="amido"><b>Couro (cabra ou vitela)</b> <span class="mono">· exige rebaixamento nas bordas e nos cantos · só faz sentido em capa dura</span></li>
+  </ul>
+
+  <h2 id="ac-insumos">Insumos e miolo</h2>
+  <ul id="dados-insumos">
+    <li data-id="papelao" data-fam="papelao"><b>Papelão paraná (cinza)</b> <span class="mono">· 1,5 mm até A6 · 1,9 mm até A5 · 2,5 mm de A4 para cima · sempre com a fibra paralela à lombada, senão a tapa arqueia</span></li>
+    <li data-id="miolo" data-fam="papel"><b>Papel do miolo 90–120 g/m²</b> <span class="mono">· abaixo de 90 o verso transparece · acima de 120 o vinco resiste e o livro não abre plano</span></li>
+    <li data-id="guarda" data-fam="papel"><b>Guardas 120–180 g/m²</b> <span class="mono">· uma folha dobrada por ponta · é ela que segura a tapa no miolo</span></li>
+    <li data-id="fio-poli" data-fam="fio"><b>Fio de poliéster encerado</b> <span class="mono">· costura japonesa · a cera segura o nó e não corta o papel</span></li>
+    <li data-id="fio-linho" data-fam="fio"><b>Linho encerado 18/3</b> <span class="mono">· copta e long stitch · aguenta a tração da lombada exposta</span></li>
+    <li data-id="pva" data-fam="cola"><b>PVA neutro (pH neutro)</b> <span class="mono">· padrão de conservação · seca flexível · não usar cola escolar comum, que amarela e endurece</span></li>
+    <li data-id="amido" data-fam="cola"><b>Metilcelulose ou cola de amido</b> <span class="mono">· reversível com água · obrigatória em tecido sem suporte e em couro</span></li>
+  </ul>
+
+  <h2 id="ac-cor">Sobre escolher cor de material</h2>
+  <ul>
+    <li><b>A cor não se decide na tela</b> <span class="mono">· a amostra da tela é lembrete, não decisão: papel e tecido têm textura e absorvem luz, e nenhum monitor reproduz isso · fechar a cor no mostruário físico do fornecedor, sob luz de dia</span></li>
+    <li><b>Anote o código do fornecedor, não o nome</b> <span class="mono">· nome comercial de cor muda de catálogo para catálogo · o código não · a ficha técnica tem campo para ele</span></li>
+    <li><b>Compre a mais</b> <span class="mono">· tecido e papel saem em lotes com pequena variação de tom · refazer uma tapa seis meses depois com outro lote aparece</span></li>
+  </ul>
+
+  <h2 id="ac-canone">Como as medidas são calculadas</h2>
+  <ul>
+    <li><b>Cânone dos nonos</b> <span class="mono">· margem interna = largura ÷ 9 · externa = 2 × largura ÷ 9 · superior = altura ÷ 9 · inferior = 2 × altura ÷ 9</span></li>
+    <li><b>Costura japonesa</b> <span class="mono">· soma 20 mm à margem interna, porque a costura come essa faixa</span></li>
+    <li><b>Medida de linha</b> <span class="mono">· largura da mancha ÷ (0,3528 × corpo em pt × largura média do caractere) · faixa boa entre 52 e 74 caracteres</span></li>
+    <li><b>Produção</b> <span class="mono">· Markdown do corpus Pedra Angular → LuaTeX (fontspec, unicode-math) → PDF</span></li>
+  </ul>
+</section>
+
+<p class="rodape">Ὁ ΔιαΦορεύς παρῆν</p>
+
+<script>
+/* =========================================================
+   DADOS — lidos do <body>, não declarados aqui.
+   O catálogo existe UMA vez só no arquivo: como HTML visível.
+   Isto é a LEI 2 aplicada a uma ferramenta em vez de a uma obra.
+   ========================================================= */
+const lerLista = (id, mapa) =>
+  [...document.querySelectorAll('#'+id+' li')].map(li => mapa(li.dataset, li));
+
+const nomeDe = li => li.querySelector('b').textContent.trim();
+const notaDe = li => {
+  const s = li.querySelector('.mono');
+  return s ? s.textContent.replace(/^·\s*/,'').trim() : '';
+};
+
+const TEXTOS = lerLista('dados-textos', (d,li) => ({
+  id:d.id, nome:nomeDe(li), autor:d.autor, sub:d.sub, lang:d.lang, dir:d.dir||'ltr',
+  extensao:d.extensao, palavras:+d.palavras
+}));
+const FONTES = lerLista('dados-fontes', (d,li) => ({
+  id:d.id, nome:nomeDe(li), classe:d.classe, css:d.css, larg:+d.larg, nota:notaDe(li)
+}));
+const CORPOS = lerLista('dados-corpos', d => +d.id);
+const CORPO_NOTA = Object.fromEntries(lerLista('dados-corpos', d => [+d.id, d.nota]));
+const FORMATOS = lerLista('dados-formatos', (d,li) => ({
+  id:d.id, nome:nomeDe(li), l:+d.l, a:+d.a, prop:d.prop, origem:d.origem, fibra:d.fibra==='1'
+}));
+const TEMAS = lerLista('dados-temas', (d,li) => ({
+  id:d.id, nome:nomeDe(li), fundo:d.fundo, texto:d.texto, acento:d.acento, nota:notaDe(li)
+}));
+const ENCADERNACOES = lerLista('dados-encad', (d,li) => ({
+  id:d.id, nome:nomeDe(li), fam:d.fam, dif:+d.dif, nota:notaDe(li)
+}));
+const FIOS = lerLista('dados-fios', (d,li) => ({id:d.id, nome:nomeDe(li), cor:d.cor}));
+const CAPAS = lerLista('dados-capas', (d,li) => ({id:d.id, nome:nomeDe(li), dif:+d.dif, nota:notaDe(li)}));
+const ACABAMENTOS = lerLista('dados-acabamentos', (d,li) => ({
+  id:d.id, nome:nomeDe(li), dif:+d.dif, nota:notaDe(li)
+}));
+
+const acha = (lista,id) => lista.find(x=>x.id===id);
+
+/* =========================================================
+   ESTADO — e o permalink, para o cliente devolver a escolha
+   ========================================================= */
+const PADRAO = {
+  texto:"encheiridion", fonte:"garamond", corpo:11, formato:"folio-phi",
+  tema:"azul", encad:"yotsume", fio:"branco", capa:"mole", acabamentos:["phi"]
+};
+let estado = {...PADRAO, acabamentos:[...PADRAO.acabamentos]};
+
+/* O volume inteiro cabe na URL. O cliente monta, copia o link e manda —
+   sem servidor, sem cadastro, sem banco. A configuração É o endereço. */
+function paraHash(){
+  const e = estado;
+  return '#' + [e.texto,e.fonte,e.corpo,e.formato,e.tema,e.encad,e.fio,e.capa,
+                e.acabamentos.join('.')].join('/');
+}
+function doHash(){
+  const p = decodeURIComponent(location.hash.slice(1)).split('/');
+  if(p.length < 9) return;
+  const val = (lista,v,atual) => acha(lista,v) ? v : atual;
+  estado.texto   = val(TEXTOS,p[0],estado.texto);
+  estado.fonte   = val(FONTES,p[1],estado.fonte);
+  estado.corpo   = CORPOS.includes(+p[2]) ? +p[2] : estado.corpo;
+  estado.formato = val(FORMATOS,p[3],estado.formato);
+  estado.tema    = val(TEMAS,p[4],estado.tema);
+  estado.encad   = val(ENCADERNACOES,p[5],estado.encad);
+  estado.fio     = val(FIOS,p[6],estado.fio);
+  estado.capa    = val(CAPAS,p[7],estado.capa);
+  estado.acabamentos = (p[8]||'').split('.').filter(a=>acha(ACABAMENTOS,a));
+}
+
+/* =========================================================
+   CÁLCULO — cânone dos nonos + medida de linha
+   ========================================================= */
+function calcular(){
+  const f  = acha(FORMATOS, estado.formato);
+  const fn = acha(FONTES,   estado.fonte);
+  const en = acha(ENCADERNACOES, estado.encad);
+  const tx = acha(TEXTOS,   estado.texto);
+  const cp = acha(CAPAS,    estado.capa);
+  const costuraJaponesa = en.fam === "jap";
+
+  let interna = f.l/9;
+  if(costuraJaponesa) interna += 20;
+  const externa  = 2*f.l/9;
+  const superior = f.a/9;
+  const inferior = 2*f.a/9;
+  const manchaL = f.l - interna - externa;
+  const manchaA = f.a - superior - inferior;
+
+  const mmPorChar = 0.3528 * estado.corpo * fn.larg;
+  const chars = manchaL > 0 ? Math.round(manchaL / mmPorChar) : 0;
+
+  const entrelinha = fn.classe === "hyper" ? 1.45 : 1.35;
+  const alturaLinha = 0.3528 * estado.corpo * entrelinha;
+  const linhasPagina = Math.max(1, Math.floor(manchaA / alturaLinha));
+  const palavrasPagina = Math.max(1, (chars/6) * linhasPagina * 0.92);
+  const paginas = Math.max(4, Math.ceil(tx.palavras / palavrasPagina / 2) * 2);
+  const folhas = costuraJaponesa && en.id !== "fukuro"
+      ? Math.ceil(paginas/2)
+      : (en.id === "fukuro" ? paginas : Math.ceil(paginas/4));
+
+  let dif = en.dif + cp.dif;
+  estado.acabamentos.forEach(a => dif += (acha(ACABAMENTOS,a)?.dif || 0));
+  dif = Math.max(1, Math.min(5, Math.round(dif/1.6)));
+
+  let linha = "Econômica";
+  if(fn.classe === "hyper" && estado.corpo >= 14) linha = "Acessível";
+  else if(en.id === "caderno") linha = "Fascículo";
+  else if(en.id === "dura" || estado.capa === "rigida") linha = "Luxo";
+  else if(f.id === "paisagem" || f.id === "quadrado") linha = "Bilíngue";
+  else if(en.fam === "cad") linha = "Padrão";
+
+  /* Espessura do miolo. Vive aqui e não mais dentro do desenho, porque a
+     lista de corte precisa do mesmo número que a lombada desenhada — dois
+     cálculos separados divergem no dia em que alguém mexe num só. */
+  const espessura = Math.max(6, Math.min(48, folhas * (en.id==="fukuro" ? 0.22 : 0.13) + 4));
+
+  return {f,fn,en,tx,cp,costuraJaponesa,interna,externa,superior,inferior,
+          manchaL,manchaA,chars,linhasPagina,paginas,folhas,dif,linha,espessura};
+}
+
+/* =========================================================
+   LISTA DE CORTE — o que se leva para a bancada
+
+   Constantes da casa. Estão nomeadas e reunidas aqui de propósito:
+   quem quiser outro padrão muda em um lugar só e a ficha inteira
+   acompanha.
+   ========================================================= */
+const CERCETA = 3;       // quanto o papelão sobra além do miolo, por borda
+const VIRADA  = 15;      // dobra do revestimento para dentro da tapa
+const CAVA    = 7;       // folga da dobradiça, entre tapa e lombada
+const FURO_X  = 15;      // distância do furo à dobra, na costura japonesa
+const FUROS_Y = [0.11, 0.36, 0.64, 0.89];   // os mesmos que o desenho usa
+
+function espessuraPapelao(alturaMm){
+  return alturaMm <= 160 ? 1.5 : alturaMm <= 230 ? 1.9 : 2.5;
+}
+
+/* Comprimento do fio, derivado do CAMINHO da costura — não de regra de bolso.
+   É a soma dos trechos que a agulha realmente percorre: a volta pela lombada
+   em cada furo, as corridas verticais nas duas faces, e o arremate de cabeça
+   e pé. Mais 30% para nós, sobra na agulha e erro honesto. */
+function fioJapones(altura, espessura){
+  const ys = FUROS_Y.map(p => altura * p);
+  const volta = 2 * (FURO_X + espessura);
+  let c = ys.length * volta;                                  // uma volta por furo
+  for (let i = 0; i < ys.length - 1; i++) c += 2 * (ys[i+1] - ys[i]);  // duas faces
+  c += 2 * volta + 2 * (ys[0] + (altura - ys[ys.length-1]));   // cabeça e pé
+  return Math.ceil(c * 1.3 / 10) * 10;                        // +30%, arredondado a 10 mm
+}
+
+function listaDeCorte(c){
+  const mm = n => n.toFixed(1).replace(".", ",");
+  const {f, en, cp, espessura} = c;
+  const L = [];
+
+  if (en.fam === "jap") {
+    const ys = FUROS_Y.map(p => f.a * p);
+    L.push(`- Miolo: ${c.folhas} folhas de ${mm(f.l)} × ${mm(f.a)} mm`);
+    L.push(`- Capa: 2 folhas de ${mm(f.l)} × ${mm(f.a)} mm (mesma medida do miolo)`);
+    L.push(`- Furação: 4 furos a ${FURO_X} mm da dobra, nas alturas ` +
+           ys.map(y => mm(y)).join(" / ") + " mm a partir da cabeça");
+    L.push(`- Fio: ${fioJapones(f.a, espessura)} mm (caminho da costura + 30%)`);
+    L.push(`- Sem papelão: a costura japonesa dispensa tapa rígida`);
+  } else if (en.fam === "cad") {
+    const porCaderno = en.id === "caderno" ? c.folhas : Math.min(6, Math.max(4, Math.round(c.folhas / 8)));
+    const cadernos = Math.max(1, Math.ceil(c.folhas / porCaderno));
+    L.push(`- Miolo: ${c.folhas} folhas de ${mm(f.l * 2)} × ${mm(f.a)} mm, dobradas ao meio`);
+    L.push(`- Cadernos: ${cadernos} de ${porCaderno} folhas`);
+    L.push(`- Furação: 3 furos por caderno, na dobra, a ${mm(f.a * 0.18)} / ${mm(f.a * 0.5)} / ${mm(f.a * 0.82)} mm da cabeça`);
+    L.push(`- Fio: ${Math.ceil((cadernos * (f.a * 1.6 + 40)) / 10) * 10} mm`);
+    if (cp.id !== "mole") L.push(`- Papelão: 2 tapas de ${mm(f.a + 2*CERCETA)} × ${mm(f.l + CERCETA)} mm`);
+  } else {
+    const espPap = espessuraPapelao(f.a);
+    const tapaA = f.a + 2 * CERCETA;
+    const tapaL = f.l + CERCETA - CAVA;
+    L.push(`- Miolo: ${c.folhas} folhas de ${mm(f.l * 2)} × ${mm(f.a)} mm, dobradas ao meio`);
+    L.push(`- Papelão ${mm(espPap)} mm: 2 tapas de ${mm(tapaA)} × ${mm(tapaL)} mm`);
+    L.push(`- Papelão ${mm(espPap)} mm: 1 lombada de ${mm(tapaA)} × ${mm(espessura)} mm`);
+    L.push(`- Revestimento: 1 peça de ` +
+           `${mm(2*tapaL + espessura + 2*CAVA + 2*VIRADA)} × ${mm(tapaA + 2*VIRADA)} mm ` +
+           `(inclui ${VIRADA} mm de virada por borda e ${CAVA} mm de cava por dobradiça)`);
+    L.push(`- Guardas: 2 folhas de ${mm(f.l * 2)} × ${mm(f.a)} mm, dobradas ao meio`);
+  }
+
+  if (estado.acabamentos.includes('fita')) L.push(`- Fita de marcador: ${mm(f.a + 60)} mm`);
+  if (estado.acabamentos.includes('cabeceado')) L.push(`- Cabeceado: 2 peças de ${mm(espessura + 4)} mm`);
+  if (estado.acabamentos.includes('estojo')) {
+    const eA = f.a + 4, eL = f.l + 4, eE = espessura + 4;
+    L.push(`- Caixa-estojo: interno ${mm(eL)} × ${mm(eA)} × ${mm(eE)} mm ` +
+           `(2 mm de folga por face; somar a espessura do papelão às medidas externas)`);
+  }
+  return L.join("\n");
+}
+
+/* =========================================================
+   DESENHO
+   ========================================================= */
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, txt){
+  const n = document.createElementNS(NS, tag);
+  for(const k in attrs) n.setAttribute(k, attrs[k]);
+  if(txt != null) n.textContent = txt;
+  return n;
+}
+
+function desenharCapa(c){
+  const {f,fn,tx,en} = c;
+  const tema = acha(TEMAS, estado.tema);
+  const fio  = acha(FIOS,  estado.fio);
+  const pad = 14;
+  const svg = el("svg",{viewBox:`${-pad} ${-pad} ${f.l+pad*2} ${f.a+pad*2}`, width:f.l*2.1, role:"img"});
+  svg.setAttribute("aria-label", `Capa de ${tx.nome}, de ${tx.autor}, no formato ${f.nome}`);
+  svg.appendChild(el("rect",{x:0,y:0,width:f.l,height:f.a,fill:tema.fundo}));
+
+  const gutter = en.fam === "jap" ? 26 : 14;
+  const centroTexto = gutter + (f.l - gutter - 14)/2;
+
+  svg.appendChild(el("text",{
+    x:centroTexto, y:f.a*0.30, "text-anchor":"middle", fill:tema.texto,
+    "font-family":fn.css, "font-size":Math.max(4.2, f.a*0.019),
+    "letter-spacing":f.l*0.008, opacity:.85
+  }, tx.autor.toUpperCase()));
+
+  const tam = Math.max(7, Math.min(f.a*0.048, f.l*0.11));
+  const palavras = tx.nome.split(" ");
+  const linhas = tx.nome.length > 16 && palavras.length > 1
+      ? [palavras.slice(0,Math.ceil(palavras.length/2)).join(" "),
+         palavras.slice(Math.ceil(palavras.length/2)).join(" ")]
+      : [tx.nome];
+  linhas.forEach((ln,i)=>{
+    svg.appendChild(el("text",{
+      x:centroTexto, y:f.a*0.40 + i*tam*1.22, "text-anchor":"middle",
+      fill:tema.texto, "font-family":fn.css, "font-size":tam
+    }, ln));
+  });
+
+  /* O subtítulo é grego, hebraico ou latim: o `lang` (e o `dir`, no
+     hebraico) vão no elemento. Sem eles, um leitor de tela lê a Bíblia
+     hebraica com fonética portuguesa — NORMAS.md N38. */
+  const sub = el("text",{
+    x:centroTexto, y:f.a*0.40 + linhas.length*tam*1.22 + tam*0.55,
+    "text-anchor":"middle", fill:tema.texto, opacity:.72,
+    "font-family":fn.css, "font-size":tam*0.42, "font-style":"italic",
+    "xml:lang":tx.lang, lang:tx.lang
+  }, tx.sub);
+  if(tx.dir === "rtl") sub.setAttribute("direction","rtl");
+  svg.appendChild(sub);
+
+  svg.appendChild(el("line",{
+    x1:centroTexto - f.l*0.16, x2:centroTexto + f.l*0.16,
+    y1:f.a*0.50 + linhas.length*tam*0.6, y2:f.a*0.50 + linhas.length*tam*0.6,
+    stroke:tema.acento, "stroke-width":.5, opacity:.85
+  }));
+
+  if(estado.acabamentos.includes("phi")){
+    svg.appendChild(el("text",{
+      x:f.l-13, y:f.a-13, "text-anchor":"end", fill:tema.acento,
+      "font-family":fn.css, "font-size":f.a*0.032, "font-style":"italic", opacity:.95
+    }, "Φ"));
+  }
+
+  desenharCostura(svg, c, fio, tema);
+
+  if(estado.acabamentos.includes("corte")){
+    svg.appendChild(el("rect",{x:f.l-2.2,y:0,width:2.2,height:f.a,fill:tema.acento,opacity:.55}));
+  }
+  svg.appendChild(el("rect",{x:0,y:0,width:f.l,height:f.a,fill:"none",
+    stroke:"rgba(255,255,255,.14)","stroke-width":.4}));
+  return svg;
+}
+
+function desenharCostura(svg, c, fio, tema){
+  const {f,en} = c;
+  const g = el("g",{stroke:fio.cor,"stroke-width":.85,fill:"none","stroke-linecap":"round"});
+  const pf = el("g",{fill:tema.fundo === "#EDE7DA" ? "#3A3A3A" : "#000", opacity:.55});
+
+  if(en.fam === "jap"){
+    const x = 15;
+    const ys = [0.11,0.36,0.64,0.89].map(p=>f.a*p);
+    if(en.id === "fukuro"){
+      svg.appendChild(el("line",{x1:f.l-3,x2:f.l-3,y1:0,y2:f.a,
+        stroke:tema.texto,"stroke-width":.4,opacity:.3}));
+    }
+    ys.forEach(y=>{
+      pf.appendChild(el("circle",{cx:x,cy:y,r:1.1}));
+      g.appendChild(el("path",{d:`M ${x} ${y} L 2 ${y}`}));
+    });
+    for(let i=0;i<ys.length-1;i++)
+      g.appendChild(el("path",{d:`M ${x} ${ys[i]} L ${x} ${ys[i+1]}`}));
+    g.appendChild(el("path",{d:`M ${x} ${ys[0]} L ${x} 2 L 2 2`}));
+    g.appendChild(el("path",{d:`M ${x} ${ys[3]} L ${x} ${f.a-2} L 2 ${f.a-2}`}));
+    if(en.id === "koki"){
+      g.appendChild(el("path",{d:`M 2 ${ys[0]} L ${x+7} 2`}));
+      g.appendChild(el("path",{d:`M 2 ${ys[3]} L ${x+7} ${f.a-2}`}));
+    }
+    if(en.id === "asanoha" || en.id === "kikko"){
+      ys.forEach((y,i)=>{
+        if(i<ys.length-1){
+          g.appendChild(el("path",{d:`M 2 ${y} L ${x} ${ys[i+1]}`}));
+          g.appendChild(el("path",{d:`M ${x} ${y} L 2 ${ys[i+1]}`}));
+        }
+      });
+      if(en.id === "kikko"){
+        ys.forEach(y=>{
+          g.appendChild(el("path",{d:`M ${x} ${y} l 7 -5`}));
+          g.appendChild(el("path",{d:`M ${x} ${y} l 7 5`}));
+          g.appendChild(el("path",{d:`M ${x+7} ${y-5} L ${x+7} ${y+5}`}));
+        });
+      }
+    }
+  }
+  else if(en.id === "caderno"){
+    const x = 4;
+    [0.5,0.18,0.82].forEach(p=>pf.appendChild(el("circle",{cx:x,cy:f.a*p,r:1.1})));
+    g.appendChild(el("path",{d:`M ${x} ${f.a*0.18} L ${x} ${f.a*0.82}`}));
+    svg.appendChild(el("line",{x1:1.5,x2:1.5,y1:0,y2:f.a,stroke:tema.texto,"stroke-width":.4,opacity:.3}));
+  }
+  else if(en.id === "copta"){
+    for(let y=8;y<f.a-6;y+=11) g.appendChild(el("path",{d:`M 3 ${y} q 4 3 0 6 q -4 3 0 6`}));
+  }
+  else if(en.id === "long"){
+    for(let y=12;y<f.a-8;y+=14){
+      g.appendChild(el("path",{d:`M 3 ${y} L 3 ${y+8}`}));
+      g.appendChild(el("path",{d:`M 8 ${y+2} L 8 ${y+6}`}));
+    }
+  }
+  else if(en.id === "dura"){
+    svg.appendChild(el("path",{d:`M 0 0 q -5 ${f.a/2} 0 ${f.a}`,
+      fill:tema.fundo, stroke:"rgba(255,255,255,.12)","stroke-width":.4}));
+  }
+  svg.appendChild(pf); svg.appendChild(g);
+}
+
+function desenharPagina(c){
+  const {f,fn,interna,externa,superior,inferior,manchaL,manchaA,linhasPagina} = c;
+  const pad = 16;
+  const svg = el("svg",{viewBox:`${-pad} ${-pad} ${f.l+pad*2} ${f.a+pad*2}`, width:f.l*2.1, role:"img"});
+  svg.setAttribute("aria-label",
+    `Mancha gráfica pelo cânone dos nonos: ${manchaL.toFixed(0)} por ${manchaA.toFixed(0)} milímetros`);
+  svg.appendChild(el("rect",{x:0,y:0,width:f.l,height:f.a,fill:"#F4F0E6"}));
+  svg.appendChild(el("rect",{x:interna,y:superior,width:manchaL,height:manchaA,
+    fill:"none",stroke:"#8A7220","stroke-width":.5,"stroke-dasharray":"2 1.6"}));
+
+  const alt = manchaA / Math.max(linhasPagina,1);
+  const g = el("g",{fill:"#2A2E36",opacity:.5});
+  for(let i=0;i<linhasPagina;i++){
+    const y = superior + alt*i + alt*0.28;
+    const larg = i === linhasPagina-1 ? manchaL*0.45 : manchaL * (0.9 + (i%4)*0.025);
+    g.appendChild(el("rect",{x:interna,y:y,width:Math.min(larg,manchaL),
+      height:Math.max(0.5, alt*0.30), rx:0.2}));
+  }
+  svg.appendChild(g);
+
+  const gm = el("g",{fill:"#6B5312","font-family":fn.css,"font-size":Math.max(2.4,manchaA*0.016)});
+  for(let i=0;i<Math.min(6,linhasPagina);i++){
+    gm.appendChild(el("text",{x:interna+manchaL+2.5,
+      y:superior + alt*(i*Math.floor(linhasPagina/6)+1)}, `${i+1}.1`));
+  }
+  svg.appendChild(gm);
+
+  const cota = (x1,y1,x2,y2,t,ax,ay,anchor) => {
+    svg.appendChild(el("line",{x1,y1,x2,y2,stroke:"#8E2E1E","stroke-width":.35}));
+    svg.appendChild(el("text",{x:ax,y:ay,"text-anchor":anchor||"middle",
+      fill:"#8E2E1E","font-family":"monospace","font-size":Math.max(3,f.a*0.017)},t));
+  };
+  cota(0,superior/2,interna,superior/2, interna.toFixed(0), interna/2, superior/2-1.5);
+  cota(interna+manchaL,f.a-inferior/2,f.l,f.a-inferior/2, externa.toFixed(0),
+       interna+manchaL+externa/2, f.a-inferior/2-1.5);
+  svg.appendChild(el("text",{x:f.l/2,y:f.a-inferior/2+f.a*0.02,"text-anchor":"middle",
+    fill:"#8E2E1E","font-family":"monospace","font-size":Math.max(3,f.a*0.017)},
+    `${inferior.toFixed(0)} mm`));
+  svg.appendChild(el("rect",{x:0,y:0,width:f.l,height:f.a,fill:"none",
+    stroke:"rgba(0,0,0,.25)","stroke-width":.4}));
+  return svg;
+}
+
+function desenharLombada(c){
+  const {f,fn,tx,en,espessura} = c;
+  const tema = acha(TEMAS, estado.tema);
+  const pad = 20;
+  const svg = el("svg",{viewBox:`${-pad} ${-pad} ${espessura+pad*2} ${f.a+pad*2}`,
+    width:(espessura+pad*2)*3.2, role:"img"});
+  svg.setAttribute("aria-label",`Lombada de aproximadamente ${espessura.toFixed(0)} milímetros`);
+  svg.appendChild(el("rect",{x:0,y:0,width:espessura,height:f.a,fill:tema.fundo}));
+  svg.appendChild(el("text",{
+    x:espessura/2, y:f.a/2, fill:tema.texto, "text-anchor":"middle",
+    "font-family":fn.css, "font-size":Math.min(espessura*0.42, 8),
+    transform:`rotate(90 ${espessura/2} ${f.a/2})`
+  }, `${tx.autor}  ·  ${tx.nome}`));
+  if(estado.acabamentos.includes("phi")){
+    svg.appendChild(el("text",{x:espessura/2,y:f.a-9,"text-anchor":"middle",
+      fill:tema.acento,"font-family":fn.css,"font-size":espessura*0.4,"font-style":"italic"},"Φ"));
+  }
+  if(estado.acabamentos.includes("cabeceado")){
+    const fio = acha(FIOS, estado.fio);
+    [2.5, f.a-2.5].forEach(y=>
+      svg.appendChild(el("rect",{x:0,y:y-1.6,width:espessura,height:3.2,fill:fio.cor,opacity:.85})));
+  }
+  svg.appendChild(el("rect",{x:0,y:0,width:espessura,height:f.a,fill:"none",
+    stroke:"rgba(255,255,255,.16)","stroke-width":.4}));
+  svg.appendChild(el("text",{x:espessura/2,y:f.a+12,"text-anchor":"middle",
+    fill:"#8A8A8A","font-family":"monospace","font-size":7}, `≈ ${espessura.toFixed(0)} mm`));
+  return svg;
+}
+
+/* =========================================================
+   FICHA TÉCNICA
+   ========================================================= */
+function fichaTecnica(c){
+  const tema = acha(TEMAS, estado.tema);
+  const fio  = acha(FIOS,  estado.fio);
+  const acab = estado.acabamentos.length
+      ? estado.acabamentos.map(a=>acha(ACABAMENTOS,a).nome).join(", ") : "nenhum";
+  const mm = n => n.toFixed(1).replace(".",",");
+
+  return `# ${c.tx.nome} — ${c.linha}
+
+**${c.tx.autor}** · ${c.tx.sub}
+
+## Corpo do livro
+
+- Formato: ${c.f.nome} — ${mm(c.f.l)} × ${mm(c.f.a)} mm (${c.f.prop})
+- Origem da folha: ${c.f.origem}
+- Fibra paralela à lombada: ${c.f.fibra ? "sim" : "não — usar papel grão curto"}
+- Extensão estimada: ${c.paginas} páginas · ${c.folhas} folhas
+- Tipografia: ${c.fn.nome}, corpo ${String(estado.corpo).replace(".",",")} pt
+- Mancha gráfica: ${mm(c.manchaL)} × ${mm(c.manchaA)} mm
+- Medida de linha: ${c.chars} caracteres${c.chars<52?" — estreita":c.chars>74?" — longa":" — dentro da faixa"}
+- Margens (int/ext/sup/inf): ${mm(c.interna)} / ${mm(c.externa)} / ${mm(c.superior)} / ${mm(c.inferior)} mm
+- Cânone: nonos${c.costuraJaponesa ? " + 20 mm de folga para a costura" : ""}
+
+## Encadernação
+
+- Técnica: ${c.en.nome} — ${c.en.nota}
+- Capa: ${c.cp.nome} (${c.cp.nota})
+- Tema da capa: ${tema.nome} — fundo ${tema.fundo}, tipografia ${tema.texto}
+- Fio: ${fio.nome} (${fio.cor})
+- Acabamentos: ${acab}
+- Dificuldade: ${c.dif} de 5 ${"◆".repeat(c.dif)}${"◇".repeat(5-c.dif)}
+
+## Lista de corte
+
+${listaDeCorte(c)}
+- Espessura estimada do miolo: ${mm(c.espessura)} mm
+- Constantes usadas: cerceta ${CERCETA} mm · virada ${VIRADA} mm · cava ${CAVA} mm
+
+## Materiais
+
+- Revestimento: ______________________  código do fornecedor: __________
+- Papel do miolo: ____________________  gramatura: ______ g/m²
+- Guardas: ___________________________  código: __________
+- Fio: _______________________________  cor: __________
+- Cola: ${c.cp.id === "mole" ? "PVA neutro" : "PVA neutro (tecido com suporte) ou metilcelulose (tecido sem suporte, couro)"}
+- Papelão: ${c.en.fam === "jap" ? "não usa" : mm(espessuraPapelao(c.f.a)) + " mm, fibra paralela à lombada"}
+
+Cor de material se fecha no mostruário físico, sob luz de dia — nunca na tela.
+Anotar o CÓDIGO do fornecedor, não o nome comercial.
+
+## Produção
+
+- Fonte digital: corpus Pedra Angular
+- Pipeline: Markdown → LuaTeX (fontspec, unicode-math) → PDF${c.en.fam==="cad"?" → imposição (pdfbook2)":""}
+- Impressão: ${c.costuraJaponesa && c.en.id!=="fukuro" ? "frente e verso, folha solta" : c.en.id==="fukuro" ? "somente frente, dobra na borda externa" : "imposto em cadernos"}
+- Link desta configuração: ${location.origin + location.pathname + paraHash()}
+- Status: rascunho
+
+Ὁ ΔιαΦορεύς παρῆν`;
+}
+
+/* =========================================================
+   INTERFACE
+   ========================================================= */
+let aba = "capa";
+
+function fichaBotao({titulo, sub, ativo, onClick, extra}){
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "ficha";
+  b.setAttribute("aria-pressed", ativo ? "true" : "false");
+  b.innerHTML = `${extra||""}<b>${titulo}</b>${sub?`<span>${sub}</span>`:""}`;
+  b.addEventListener("click", onClick);
+  return b;
+}
+
+function secao(id, rotulo, dica, itens){
+  const fs = document.createElement("fieldset");
+  fs.id = id;
+  const lg = document.createElement("legend");
+  lg.innerHTML = `<span class="rotulo">${rotulo}</span><span class="dica">${dica}</span>`;
+  fs.appendChild(lg);
+  const fil = document.createElement("div");
+  fil.className = "fileira";
+  itens.forEach(i=>fil.appendChild(i));
+  fs.appendChild(fil);
+  return fs;
+}
+
+function montarSecoes(){
+  const alvo = document.getElementById("secoes");
+  alvo.innerHTML = "";
+
+  alvo.appendChild(secao("s-texto","Texto","o que vai dentro", TEXTOS.map(t=>
+    fichaBotao({titulo:t.nome, sub:`${t.autor} · ${t.extensao}`, ativo:estado.texto===t.id,
+      onClick:()=>{estado.texto=t.id; render();}}))));
+
+  alvo.appendChild(secao("s-tipografia","Tipografia","o desenho da letra", FONTES.map(f=>{
+    const b = fichaBotao({titulo:f.nome, sub:f.nota, ativo:estado.fonte===f.id,
+      onClick:()=>{estado.fonte=f.id; render();}});
+    b.querySelector("b").style.fontFamily = f.css;
+    return b;
+  })));
+
+  alvo.appendChild(secao("s-corpo","Corpo","tamanho em pontos", CORPOS.map(c=>
+    fichaBotao({titulo:`${String(c).replace(".",",")} pt`, sub:CORPO_NOTA[c],
+      ativo:estado.corpo===c, onClick:()=>{estado.corpo=c; render();}}))));
+
+  alvo.appendChild(secao("s-formato","Formato","proporção e refile", FORMATOS.map(f=>
+    fichaBotao({titulo:`${f.nome} · ${f.l}×${f.a}`, sub:`${f.prop}${f.fibra?" · fibra ok":""}`,
+      ativo:estado.formato===f.id, onClick:()=>{estado.formato=f.id; render();}}))));
+
+  alvo.appendChild(secao("s-capa-tema","Tema da capa","cores do volume, não da tela", TEMAS.map(t=>{
+    const sw = `<span class="fio-cor" style="background:${t.fundo};border-color:${t.texto}"></span>`;
+    return fichaBotao({titulo:t.nome, sub:t.nota, ativo:estado.tema===t.id, extra:sw,
+      onClick:()=>{estado.tema=t.id; render();}});
+  })));
+
+  alvo.appendChild(secao("s-encad","Encadernação","como as folhas se prendem", ENCADERNACOES.map(e=>
+    fichaBotao({titulo:e.nome, sub:e.nota, ativo:estado.encad===e.id,
+      onClick:()=>{estado.encad=e.id; render();}}))));
+
+  alvo.appendChild(secao("s-fio","Fio","a costura como ornamento", FIOS.map(f=>{
+    const sw = `<span class="fio-cor" style="background:${f.cor}"></span>`;
+    return fichaBotao({titulo:f.nome, sub:f.cor, ativo:estado.fio===f.id, extra:sw,
+      onClick:()=>{estado.fio=f.id; render();}});
+  })));
+
+  alvo.appendChild(secao("s-capa","Capa","material da cobertura", CAPAS.map(c=>
+    fichaBotao({titulo:c.nome, sub:c.nota, ativo:estado.capa===c.id,
+      onClick:()=>{estado.capa=c.id; render();}}))));
+
+  alvo.appendChild(secao("s-acabamentos","Acabamentos","escolha quantos quiser", ACABAMENTOS.map(a=>
+    fichaBotao({titulo:a.nome, sub:a.nota, ativo:estado.acabamentos.includes(a.id),
+      onClick:()=>{
+        const i = estado.acabamentos.indexOf(a.id);
+        if(i>=0) estado.acabamentos.splice(i,1); else estado.acabamentos.push(a.id);
+        render();
+      }}))));
+}
+
+function render(){
+  const c = calcular();
+
+  const m = document.getElementById("moldura");
+  m.innerHTML = "";
+  m.appendChild(aba==="capa" ? desenharCapa(c)
+             : aba==="pagina" ? desenharPagina(c)
+             : desenharLombada(c));
+
+  const md = document.getElementById("medidas");
+  const dados = [
+    ["Formato", `${c.f.l}×${c.f.a}`, "mm"],
+    ["Mancha", `${c.manchaL.toFixed(0)}×${c.manchaA.toFixed(0)}`, "mm"],
+    ["Linha", c.chars, "caracteres"],
+    ["Extensão", c.paginas, `pág · ${c.folhas} folhas`],
+    ["Dificuldade", `${c.dif}/5 ` + "◆".repeat(c.dif)+"◇".repeat(5-c.dif), ""],
+    ["Linha editorial", c.linha, ""],
+  ];
+  md.innerHTML = dados.map(([t,v,u])=>
+    `<div class="medida"><dt>${t}</dt><dd>${v}${u?` <small>${u}</small>`:""}</dd></div>`).join("");
+
+  const av = document.getElementById("avisos");
+  const msgs = [];
+  if(!c.f.fibra) msgs.push({tipo:"alerta", txt:`<strong>${c.f.nome}</strong> corta o A4 contra a fibra. Funciona, mas a dobra resiste e o miolo tende a arquear. Use papel grão curto.`});
+  else msgs.push({tipo:"ok", txt:`<strong>${c.f.nome}</strong> mantém a fibra paralela à lombada com sulfite A4 comum.`});
+  if(c.chars < 52) msgs.push({tipo:"alerta", txt:`Medida de <strong>${c.chars} caracteres</strong> — estreita demais. Aumente o formato ou reduza o corpo.`});
+  if(c.chars > 74) msgs.push({tipo:"alerta", txt:`Medida de <strong>${c.chars} caracteres</strong> — linha longa. Considere duas colunas ou corpo maior.`});
+  if(c.fn.classe==="hyper" && c.chars < 55) msgs.push({tipo:"alerta", txt:`Atkinson Hyperlegible é larga: ela pede formato maior que o escolhido.`});
+  if(c.en.fam==="dura" && c.paginas < 40) msgs.push({tipo:"alerta", txt:`Só <strong>${c.paginas} páginas</strong> para capa dura — a lombada fica frágil. Considere caderno único.`});
+  if(c.en.fam==="jap" && c.folhas > 110) msgs.push({tipo:"alerta", txt:`<strong>${c.folhas} folhas</strong> excedem o limite prático da costura japonesa (~15 mm). Divida em volumes.`});
+  av.innerHTML = msgs.map(x=>
+    `<div class="aviso ${x.tipo==="ok"?"ok":""}"><span class="marca-aviso">${x.tipo==="ok"?"Tudo certo":"Atenção"}</span>${x.txt}</div>`).join("");
+
+  document.getElementById("saida").textContent = fichaTecnica(c);
+  montarSecoes();
+  history.replaceState(null, "", paraHash());
+}
+
+/* ---------- Barra Angular ---------- */
+const R = document.documentElement;
+const guardar = (k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
+
+function aplicarTema(nome){
+  R.setAttribute('data-theme',nome); guardar('pa:tema',nome);
+  document.querySelectorAll('[data-tema]').forEach(b=>
+    b.setAttribute('aria-pressed', b.dataset.tema===nome?'true':'false'));
+}
+document.querySelectorAll('[data-tema]').forEach(b=>
+  b.addEventListener('click',()=>aplicarTema(b.dataset.tema)));
+aplicarTema(R.getAttribute('data-theme')||'noite');
+
+function ajustarEscala(d){
+  const a = parseFloat(getComputedStyle(R).getPropertyValue('--ui-escala'))||1;
+  const n = Math.min(2.6, Math.max(.8, +(a+d).toFixed(2)));
+  R.style.setProperty('--ui-escala', n); guardar('pa:fonte', n);
+}
+document.getElementById('ui-menos').addEventListener('click',()=>ajustarEscala(-.1));
+document.getElementById('ui-mais').addEventListener('click',()=>ajustarEscala(.1));
+
+/* Φ — a coleção: mostra e esconde o acervo, que sem JavaScript já está aberto */
+const acervo = document.getElementById('acervo');
+const btnPhi = document.getElementById('ui-phi');
+btnPhi.addEventListener('click',()=>{
+  const abrir = acervo.hidden;
+  acervo.hidden = !abrir;
+  btnPhi.setAttribute('aria-expanded', abrir?'true':'false');
+  if(abrir) acervo.scrollIntoView({block:'start'});
+});
+
+/* Ξ — a estrutura desta página */
+(function(){
+  const painel = document.getElementById('ui-sumario'), botao = document.getElementById('ui-xi');
+  const alvos = [
+    ['#s-texto','Texto'],['#s-tipografia','Tipografia'],['#s-corpo','Corpo'],
+    ['#s-formato','Formato'],['#s-capa-tema','Tema da capa'],['#s-encad','Encadernação'],
+    ['#s-fio','Fio'],['#s-capa','Capa'],['#s-acabamentos','Acabamentos'],
+    ['#acervo','Acervo completo']
+  ];
+  const ul = document.createElement('ul');
+  alvos.forEach(([href,rotulo])=>{
+    const li = document.createElement('li'), a = document.createElement('a');
+    a.href = href; a.textContent = rotulo;
+    a.addEventListener('click',()=>{
+      if(href === '#acervo' && acervo.hidden){ acervo.hidden = false;
+        btnPhi.setAttribute('aria-expanded','true'); }
+      painel.hidden = true; botao.setAttribute('aria-expanded','false');
+    });
+    li.appendChild(a); ul.appendChild(li);
+  });
+  painel.appendChild(ul);
+  botao.addEventListener('click',()=>{
+    const abrir = painel.hidden;
+    painel.hidden = !abrir;
+    botao.setAttribute('aria-expanded', abrir?'true':'false');
+  });
+})();
+
+/* ---------- abas e ações ---------- */
+["capa","pagina","lombada"].forEach(a=>{
+  document.getElementById("aba-"+a).addEventListener("click",()=>{
+    aba = a;
+    ["capa","pagina","lombada"].forEach(x=>
+      document.getElementById("aba-"+x).setAttribute("aria-pressed", x===a ? "true":"false"));
+    render();
+  });
+});
+
+const sorteia = arr => arr[Math.floor(Math.random()*arr.length)];
+document.getElementById("btn-sortear").addEventListener("click",()=>{
+  estado = {
+    texto: sorteia(TEXTOS).id, fonte: sorteia(FONTES).id, corpo: sorteia(CORPOS),
+    formato: sorteia(FORMATOS).id, tema: sorteia(TEMAS).id, encad: sorteia(ENCADERNACOES).id,
+    fio: sorteia(FIOS).id, capa: sorteia(CAPAS).id,
+    acabamentos: ACABAMENTOS.filter(()=>Math.random()<0.3).map(a=>a.id),
+  };
+  render();
+});
+document.getElementById("btn-reset").addEventListener("click",()=>{
+  estado = {...PADRAO, acabamentos:[...PADRAO.acabamentos]};
+  render();
+});
+
+async function copiar(texto, botao, ok){
+  const original = botao.textContent;
+  try{ await navigator.clipboard.writeText(texto); botao.textContent = ok; }
+  catch{ botao.textContent = "Selecione e copie"; }
+  setTimeout(()=>{botao.textContent = original;}, 1800);
+}
+document.getElementById("btn-copiar").addEventListener("click", e=>
+  copiar(document.getElementById("saida").textContent, e.currentTarget, "Ficha copiada"));
+document.getElementById("btn-link").addEventListener("click", e=>
+  copiar(location.origin + location.pathname + paraHash(), e.currentTarget, "Link copiado"));
+
+/* ---------- partida ---------- */
+/* Com JavaScript, o acervo começa recolhido (o Φ o abre). Sem JavaScript,
+   ele nunca foi escondido: o atributo `hidden` só é posto aqui. */
+acervo.hidden = true;
+doHash();
+window.addEventListener('hashchange', ()=>{ doHash(); render(); });
+render();
+</script>
+</body>
+</html>
