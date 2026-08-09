@@ -58,15 +58,17 @@ oficina/
 ├── fontes/
 │   ├── Atkinson-*.woff2    interface (vendorizado do app-leitura)
 │   ├── Atkinson-OFL.txt
-│   └── LEIAME.md           EB Garamond e Cardo: onde baixar e como instalar
+│   ├── EBGaramond-*.woff2  · Cardo-*.woff2   tipografia dos volumes
+│   ├── *-OFL.txt           licença de cada família (N23)
+│   └── LEIAME.md           cobertura de escrita medida e procedência
 ├── CLAUDE.md           instruções de projeto
 └── README.md
 ```
 
 ## Limites conhecidos
 
-- **EB Garamond e Cardo não estão no repositório.** Enquanto não estiverem,
-  a prévia da capa cai em Georgia e o console loga 404. Ver `fontes/LEIAME.md`.
+- **EB Garamond não tem hebraico.** A Oficina avisa quando o texto escolhido
+  precisa de uma escrita que a fonte não cobre. Cobertura medida em `fontes/LEIAME.md`.
 - A extensão em páginas é **estimativa**, não composição real. O número
   definitivo sai do LuaTeX.
 - Não há cor de material com código: cor de papel e de tecido se fecha no

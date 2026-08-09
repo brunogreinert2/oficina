@@ -9,3 +9,9 @@ desktop.ini
 
 # A Oficina nao tem build: nao ha dist/ nem node_modules/.
 # As fontes em fontes/ SAO parte do projeto (LEI 3, zero rede) e vao commitadas.
+
+# Fontes: o .woff2 e que e servido e vai commitado (LEI 3, zero rede).
+# Os .otf/.ttf de origem ficam no disco para reconverter, mas nao no repositorio:
+# sao 2 MB que ninguem baixa e que se recupera do pacote original.
+*.otf
+*.ttf

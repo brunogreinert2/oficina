@@ -317,9 +317,9 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
 
   <h2 id="ac-fontes">Tipografias</h2>
   <ul id="dados-fontes">
-    <li data-id="garamond" data-classe="serif" data-css='"EB Garamond", Georgia, serif' data-larg="0.39"><b>EB Garamond</b> <span class="mono">· serifada · politônico · largura média 0,39 em</span></li>
-    <li data-id="cardo" data-classe="serif" data-css='"Cardo", Georgia, serif' data-larg="0.40"><b>Cardo</b> <span class="mono">· serifada · grego e hebraico · 0,40 em</span></li>
-    <li data-id="atkinson" data-classe="hyper" data-css='"Atkinson Hyperlegible", Verdana, sans-serif' data-larg="0.466"><b>Atkinson Hyperlegible</b> <span class="mono">· acessível · larga · 0,466 em</span></li>
+    <li data-id="garamond" data-classe="serif" data-css='"EB Garamond", Georgia, serif' data-larg="0.39" data-escritas="latim grego"><b>EB Garamond</b> <span class="mono">· serifada · latim e grego politônico · SEM hebraico · largura média 0,39 em</span></li>
+    <li data-id="cardo" data-classe="serif" data-css='"Cardo", Georgia, serif' data-larg="0.40" data-escritas="latim grego hebraico"><b>Cardo</b> <span class="mono">· serifada · latim, grego politônico e hebraico com niqud · a única que compõe as três · 0,40 em</span></li>
+    <li data-id="atkinson" data-classe="hyper" data-css='"Atkinson Hyperlegible", Verdana, sans-serif' data-larg="0.466" data-escritas="latim"><b>Atkinson Hyperlegible</b> <span class="mono">· acessível · SÓ latim · larga · 0,466 em</span></li>
   </ul>
 
   <h2 id="ac-corpos">Corpos</h2>
@@ -451,7 +451,8 @@ const TEXTOS = lerLista('dados-textos', (d,li) => ({
   extensao:d.extensao, palavras:+d.palavras
 }));
 const FONTES = lerLista('dados-fontes', (d,li) => ({
-  id:d.id, nome:nomeDe(li), classe:d.classe, css:d.css, larg:+d.larg, nota:notaDe(li)
+  id:d.id, nome:nomeDe(li), classe:d.classe, css:d.css, larg:+d.larg, nota:notaDe(li),
+  escritas:(d.escritas||'latim').split(' ')
 }));
 const CORPOS = lerLista('dados-corpos', d => +d.id);
 const CORPO_NOTA = Object.fromEntries(lerLista('dados-corpos', d => [+d.id, d.nota]));
@@ -1011,6 +1012,21 @@ function render(){
   if(c.chars < 52) msgs.push({tipo:"alerta", txt:`Medida de <strong>${c.chars} caracteres</strong> — estreita demais. Aumente o formato ou reduza o corpo.`});
   if(c.chars > 74) msgs.push({tipo:"alerta", txt:`Medida de <strong>${c.chars} caracteres</strong> — linha longa. Considere duas colunas ou corpo maior.`});
   if(c.fn.classe==="hyper" && c.chars < 55) msgs.push({tipo:"alerta", txt:`Atkinson Hyperlegible é larga: ela pede formato maior que o escolhido.`});
+
+  /* A fonte tem os caracteres do texto?
+     Medido nos arquivos com fontTools, não suposto: EB Garamond traz latim e
+     grego politônico e NENHUM hebraico; Cardo traz as três; Atkinson só latim.
+     Compor o Eclesiastes em Garamond faz o hebraico cair num fallback do
+     sistema no meio da página — dois desenhos de letra no mesmo livro. */
+  const ESCRITA_DA_LINGUA = {he:"hebraico", grc:"grego", el:"grego", la:"latim", "pt-BR":"latim"};
+  const precisa = ESCRITA_DA_LINGUA[c.tx.lang] || "latim";
+  if(!c.fn.escritas.includes(precisa)){
+    msgs.push({tipo:"alerta", txt:
+      `<strong>${c.fn.nome}</strong> não tem ${precisa}. O subtítulo de ` +
+      `<strong>${c.tx.nome}</strong> (${c.tx.sub}) cairia numa fonte de sistema, ` +
+      `com outro desenho de letra. Para esta obra, use ` +
+      FONTES.filter(f=>f.escritas.includes(precisa)).map(f=>f.nome).join(" ou ") + `.`});
+  }
   if(c.en.fam==="dura" && c.paginas < 40) msgs.push({tipo:"alerta", txt:`Só <strong>${c.paginas} páginas</strong> para capa dura — a lombada fica frágil. Considere caderno único.`});
   if(c.en.fam==="jap" && c.folhas > 110) msgs.push({tipo:"alerta", txt:`<strong>${c.folhas} folhas</strong> excedem o limite prático da costura japonesa (~15 mm). Divida em volumes.`});
   av.innerHTML = msgs.map(x=>
