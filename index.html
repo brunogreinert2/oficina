@@ -7,19 +7,22 @@
 <meta name="description" content="Montagem de volume: escolha texto, tipografia, formato, encadernação e acabamento, e receba a ficha técnica do livro físico. Oficina do Pedra Angular.">
 
 <!-- Zero rede em runtime (NORMAS.md, LEI 3): a fonte vem do arquivo ao lado,
-     nunca de CDN. Grego e hebraico caem no fallback serifado do sistema —
-     a Atkinson clássica não traz politônico. Licença em fontes/Atkinson-OFL.txt. -->
+     nunca de CDN. Licenças em fontes/*-OFL.txt e fontes/DejaVu-LICENSE.txt. -->
 <style>
+/* Pilha do ecossistema (N72, N73): a escolha → Cardo (piso, cobre grego
+   politônico e hebraico com niqud) → DejaVu Sans (guarnição) → genérica.
+   Nenhuma fonte do sistema entra — nem na interface, nem no data-css do
+   catálogo, que desenha a capa: Φ e Ξ também são letras gregas.
+   O que ainda cai na genérica, declarado: árabe e o cirílico que a DejaVu
+   não tiver. */
 @font-face{font-family:'Atkinson Hyperlegible';font-weight:400;font-style:normal;font-display:swap;
   src:url(fontes/Atkinson-Regular.woff2) format('woff2');}
 @font-face{font-family:'Atkinson Hyperlegible';font-weight:700;font-style:normal;font-display:swap;
   src:url(fontes/Atkinson-Bold.woff2) format('woff2');}
 
 /* EB Garamond e Cardo são as tipografias que os VOLUMES usam de verdade —
-   a prévia da capa só é fiel se elas estiverem aqui. Os arquivos não vêm no
-   repositório (ver fontes/LEIAME.md para de onde baixar); enquanto não
-   estiverem, o navegador cai em Georgia sozinho e nada quebra. Basta soltar
-   os .woff2 na pasta `fontes/` com estes nomes exatos para acenderem. */
+   a prévia da capa só é fiel se elas estiverem aqui. Os nomes de arquivo são
+   os de fontes/LEIAME.md; não renomear. */
 @font-face{font-family:'EB Garamond';font-weight:400;font-style:normal;font-display:swap;
   src:url(fontes/EBGaramond-Regular.woff2) format('woff2');}
 @font-face{font-family:'EB Garamond';font-weight:400;font-style:italic;font-display:swap;
@@ -32,6 +35,10 @@
   src:url(fontes/Cardo-Italic.woff2) format('woff2');}
 @font-face{font-family:'Cardo';font-weight:700;font-style:normal;font-display:swap;
   src:url(fontes/Cardo-Bold.woff2) format('woff2');}
+@font-face{font-family:'DejaVu Guarnicao';font-weight:400;font-style:normal;font-display:swap;
+  src:url(fontes/DejaVuSans.woff2) format('woff2');}
+@font-face{font-family:'DejaVu Guarnicao';font-weight:700;font-style:normal;font-display:swap;
+  src:url(fontes/DejaVuSans-Bold.woff2) format('woff2');}
 
 /* ============================================================
    TOKENS — nomes de FUNÇÃO, nunca de aparência (NORMAS.md N14).
@@ -46,8 +53,8 @@
   --ui-acento:#C9A227; --ui-acento-fraco:#8A7220; --ui-alerta:#C87361;
   --ui-foco:var(--ui-acento);
   --ui-escala:1;
-  --ui-serif:'Cardo',serif;
-  --ui-texto-fonte:'Atkinson Hyperlegible',Verdana,system-ui,sans-serif;
+  --ui-serif:'Cardo','DejaVu Guarnicao',serif;
+  --ui-texto-fonte:'Atkinson Hyperlegible','Cardo','DejaVu Guarnicao',sans-serif;
   --ui-mono:ui-monospace,Consolas,'SF Mono',monospace;
 }
 [data-theme=pergaminho]{
@@ -185,6 +192,21 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
 .fio-cor{width:.95rem;height:.95rem;border-radius:50%;display:inline-block;
   vertical-align:-.12rem;margin-right:.45rem;border:1px solid var(--ui-texto-suave)}
 
+/* ---------- a zona de arrastar: a porta de todas as bancadas ---------- */
+/* Mesmo desenho do Gerador, do Corretor e do Conversor: tracejado, alto,
+   centrado. Quem já usou uma sabe usar esta. */
+.zona{display:block;width:100%;border:2px dashed var(--ui-linha);
+  border-radius:.5rem;padding:1.6rem 1.2rem;text-align:center;
+  color:var(--ui-texto-suave);background:var(--ui-superficie);
+  font:inherit;cursor:pointer;margin-bottom:.9rem}
+.zona:hover,.zona:focus-visible{border-color:var(--ui-acento)}
+.zona.pronta{border-color:var(--ui-acento);border-style:solid}
+.zona.sobre{border-color:var(--ui-acento);background:var(--ui-superficie-alta)}
+.zona .grande{font-family:var(--ui-serif);
+  font-size:calc(1.25rem*var(--ui-escala));color:var(--ui-texto);margin:0 0 .3rem}
+.zona p{margin:.15rem 0;font-size:calc(.85rem*var(--ui-escala))}
+.zona .mono{font-family:var(--ui-mono);font-size:calc(.72rem*var(--ui-escala))}
+
 /* ---------- ficha técnica ---------- */
 .ficha-tecnica{margin-top:.6rem;border:1px solid var(--ui-linha);background:var(--ui-superficie);
   border-radius:.4rem}
@@ -268,11 +290,17 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
   </div>
 </header>
 
+<input type="file" id="arquivo-md" accept=".md,.markdown,.json,text/markdown,application/json"
+       hidden aria-label="Escolher o .md do corpus, ou o retorno .json do Gerador">
 <main class="palco">
   <section class="vitrine" aria-label="Visualização do volume">
     <div class="abas" role="group" aria-label="Modo de visualização">
       <button id="aba-capa" type="button" aria-pressed="true">Capa</button>
-      <button id="aba-pagina" type="button" aria-pressed="false">Página</button>
+      <!-- GRADE, não «Página»: o que se desenha aqui é a página VAZIA nos
+           milímetros do papel, com a mancha e as linhas onde o texto vai
+           cair. Página composta, com o texto dentro, é do Gerador — e chamar
+           as duas de «Página» foi metade da confusão sobre quem faz o quê. -->
+      <button id="aba-pagina" type="button" aria-pressed="false">Grade</button>
       <button id="aba-lombada" type="button" aria-pressed="false">Lombada</button>
     </div>
     <div class="moldura" id="moldura"></div>
@@ -286,9 +314,21 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
       <header>
         <span class="rotulo">Ficha técnica</span>
         <button id="btn-link" type="button">Copiar link</button>
+        <button id="btn-gerador" type="button">Exportar para o Gerador</button>
         <button id="btn-copiar" type="button" class="destaque">Copiar ficha</button>
       </header>
       <pre id="saida"></pre>
+      <!-- A FRONTEIRA, dita onde ela e cruzada. Esta bancada projeta o OBJETO
+           (formato, encadernacao, material, lista de corte); a pagina composta
+           — parser, tipografia, notas, PDF — e do Gerador. As duas trocam dois
+           arquivos, e so estes dois. -->
+      <p class="dica" id="ponte">A Oficina projeta o <strong>objeto</strong>:
+        formato, margens, encadernação, material e lista de corte. A
+        <strong>página composta</strong> — tipografia, notas, PDF — é do
+        Gerador. <em>Exportar para o Gerador</em> leva esta geometria para lá,
+        e o <code>retorno.json</code> que ele devolve depois de compor traz a
+        contagem real de páginas de volta para cá: é ela que corrige folhas,
+        espessura do miolo e a lista de corte.</p>
     </div>
   </section>
 </main>
@@ -317,9 +357,10 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
 
   <h2 id="ac-fontes">Tipografias</h2>
   <ul id="dados-fontes">
-    <li data-id="garamond" data-classe="serif" data-css='"EB Garamond", Georgia, serif' data-larg="0.39" data-escritas="latim grego"><b>EB Garamond</b> <span class="mono">· serifada · latim e grego politônico · SEM hebraico · largura média 0,39 em</span></li>
-    <li data-id="cardo" data-classe="serif" data-css='"Cardo", Georgia, serif' data-larg="0.40" data-escritas="latim grego hebraico"><b>Cardo</b> <span class="mono">· serifada · latim, grego politônico e hebraico com niqud · a única que compõe as três · 0,40 em</span></li>
-    <li data-id="atkinson" data-classe="hyper" data-css='"Atkinson Hyperlegible", Verdana, sans-serif' data-larg="0.466" data-escritas="latim"><b>Atkinson Hyperlegible</b> <span class="mono">· acessível · SÓ latim · larga · 0,466 em</span></li>
+    <li data-id="garamond" data-vendorizada="0" data-classe="serif" data-css='"EB Garamond", "Cardo", "DejaVu Guarnicao", serif' data-larg="0.39" data-escritas="latim grego"><b>EB Garamond</b> <span class="mono">· serifada · latim e grego politônico · SEM hebraico · largura média 0,39 em</span></li>
+    <li data-id="cardo" data-classe="serif" data-css='"Cardo", "DejaVu Guarnicao", serif' data-larg="0.40" data-escritas="latim grego hebraico"><b>Cardo</b> <span class="mono">· serifada · latim, grego politônico e hebraico com niqud · a única que compõe as três · 0,40 em</span></li>
+    <li data-id="liberation" data-classe="serif" data-css='"Liberation Serif", "Cardo", "DejaVu Guarnicao", serif' data-larg="0.411" data-escritas="latim grego hebraico"><b>Liberation Serif</b> <span class="mono">· serifada · métricas da Times New Roman · latim, grego politônico e hebraico · livre (OFL) · é a fonte do perfil ABNT, porque fonte do sistema não entra na composição · largura média medida 0,411 em</span></li>
+    <li data-id="atkinson" data-classe="hyper" data-css='"Atkinson Hyperlegible", "Cardo", "DejaVu Guarnicao", sans-serif' data-larg="0.466" data-escritas="latim"><b>Atkinson Hyperlegible</b> <span class="mono">· acessível · SÓ latim · larga · 0,466 em</span></li>
   </ul>
 
   <h2 id="ac-corpos">Corpos</h2>
@@ -353,14 +394,14 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
 
   <h2 id="ac-encad">Encadernações</h2>
   <ul id="dados-encad">
-    <li data-id="yotsume" data-fam="jap" data-dif="1"><b>Yotsume-toji</b> <span class="mono">· costura japonesa · quatro olhos · a base</span></li>
-    <li data-id="koki" data-fam="jap" data-dif="2"><b>Kōki-toji</b> <span class="mono">· costura japonesa · cantos reforçados</span></li>
-    <li data-id="asanoha" data-fam="jap" data-dif="3"><b>Asa-no-ha</b> <span class="mono">· costura japonesa · folha de cânhamo</span></li>
-    <li data-id="kikko" data-fam="jap" data-dif="4"><b>Kikkō-toji</b> <span class="mono">· costura japonesa · casco de tartaruga</span></li>
-    <li data-id="fukuro" data-fam="jap" data-dif="2"><b>Fukuro-toji</b> <span class="mono">· costura japonesa · vinco na borda externa · só frente</span></li>
-    <li data-id="caderno" data-fam="cad" data-dif="1"><b>Caderno único</b> <span class="mono">· fascículo · abre plano</span></li>
-    <li data-id="copta" data-fam="cad" data-dif="3"><b>Copta</b> <span class="mono">· abre 360° · lombada exposta</span></li>
-    <li data-id="long" data-fam="cad" data-dif="3"><b>Long stitch</b> <span class="mono">· costura através da capa</span></li>
+    <li data-id="yotsume" data-fam="jap" data-dif="1" data-furos="4"><b>Yotsume-toji</b> <span class="mono">· costura japonesa · quatro olhos · a base</span></li>
+    <li data-id="koki" data-fam="jap" data-dif="2" data-furos="4"><b>Kōki-toji</b> <span class="mono">· costura japonesa · cantos reforçados</span></li>
+    <li data-id="asanoha" data-fam="jap" data-dif="3" data-furos="8"><b>Asa-no-ha</b> <span class="mono">· costura japonesa · folha de cânhamo</span></li>
+    <li data-id="kikko" data-fam="jap" data-dif="4" data-furos="8"><b>Kikkō-toji</b> <span class="mono">· costura japonesa · casco de tartaruga</span></li>
+    <li data-id="fukuro" data-fam="jap" data-dif="2" data-furos="4"><b>Fukuro-toji</b> <span class="mono">· costura japonesa · vinco na borda externa · só frente</span></li>
+    <li data-id="caderno" data-fam="cad" data-dif="1" data-estacoes="3"><b>Caderno único</b> <span class="mono">· fascículo · abre plano</span></li>
+    <li data-id="copta" data-fam="cad" data-dif="3" data-estacoes="4"><b>Copta</b> <span class="mono">· abre 360° · lombada exposta</span></li>
+    <li data-id="long" data-fam="cad" data-dif="3" data-estacoes="3"><b>Long stitch</b> <span class="mono">· costura através da capa</span></li>
     <li data-id="dura" data-fam="dura" data-dif="5"><b>Case binding</b> <span class="mono">· capa dura tradicional</span></li>
   </ul>
 
@@ -420,12 +461,81 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
     <li><b>Compre a mais</b> <span class="mono">· tecido e papel saem em lotes com pequena variação de tom · refazer uma tapa seis meses depois com outro lote aparece</span></li>
   </ul>
 
+  <h2 id="ac-arquivo">Carregar um texto do acervo</h2>
+  <p>O catálogo abaixo é <b>vitrine</b>: oito obras escolhidas para mostrar a
+     bancada. O acervo de verdade tem dezenas de arquivos, e é deles que sai um
+     volume real — por isso a Oficina lê um <code>.md</code> do corpus: arraste
+     o arquivo sobre a página, ou use o botão na seção <em>Texto</em>. Ela
+     conta as palavras e lê o cabeçalho (título, autor, licença) para a
+     estimativa e para a exportação.</p>
+  <p><b>PDF não entra aqui.</b> PDF vira <code>.md</code> no Conversor, que é a
+     bancada anterior no fluxo; a Oficina projeta o objeto físico a partir do
+     texto já convertido.</p>
+
+  <h2 id="ac-canones">Regras de margem</h2>
+  <p>A <b>regra das margens</b> decide a mancha. O cânone dos nonos é o do
+     livro; a ABNT é norma de trabalho acadêmico e vem em centímetros fixos; a
+     compacta é a tradição das bíblias e das apostilas, que economizam papel.
+     <b>Nenhuma é mais certa que a outra</b> — são objetos diferentes.</p>
+  <ul id="dados-canones">
+    <li data-id="nonos" data-tipo="fracao" data-int="0.111111" data-ext="0.222222"
+        data-sup="0.111111" data-inf="0.222222"
+        data-frase="Mancha pelo cânone dos nonos."><b>Cânone dos nonos</b>
+      <span class="mono">· interna = largura ÷ 9 · externa = 2 × largura ÷ 9 · superior = altura ÷ 9 · inferior = 2 × altura ÷ 9 · o livro tradicional, muito respiro</span></li>
+    <li data-id="compacta" data-tipo="fracao" data-int="0.083333" data-ext="0.111111"
+        data-sup="0.083333" data-inf="0.111111"
+        data-frase="Mancha pelo cânone compacto (doze avos)."><b>Compacta</b>
+      <span class="mono">· interna = largura ÷ 12 · externa = largura ÷ 9 · superior = altura ÷ 12 · inferior = altura ÷ 9 · a mesma família, um degrau abaixo · bíblia, apostila, manual</span></li>
+    <li data-id="abnt" data-tipo="mm" data-int="30" data-ext="20" data-sup="30" data-inf="20"
+        data-frase="Margens da ABNT NBR 14724."><b>ABNT NBR 14724</b>
+      <span class="mono">· esquerda e superior 3 cm · direita e inferior 2 cm · trabalho acadêmico · a norma pressupõe A4</span></li>
+    <li data-id="personalizada" data-tipo="mm" data-int="25" data-ext="20" data-sup="25" data-inf="25"
+        data-frase="Margens personalizadas."><b>Personalizada</b>
+      <span class="mono">· os quatro valores em milímetros, escolhidos à mão</span></li>
+  </ul>
+
+  <h2 id="ac-colunas">Colunas</h2>
+  <p>A mancha pode ser lida em uma ou duas colunas. Duas colunas <b>não mudam
+     a mancha</b>: dividem-na. Servem para linha longa — bíblia, apostila,
+     dicionário, trabalho em A4 —, porque o que cansa o olho é o percurso da
+     linha, não o tamanho da página. O vão entre elas chama-se <b>medianiz</b>.</p>
+  <ul id="dados-colunas">
+    <li data-id="1" data-n="1" data-medianiz="0"><b>Uma coluna</b>
+      <span class="mono">· o livro corrente</span></li>
+    <li data-id="2" data-n="2" data-medianiz="6"><b>Duas colunas</b>
+      <span class="mono">· medianiz de 6 mm · bíblia, apostila, dicionário, A4 acadêmico</span></li>
+  </ul>
+
+  <h2 id="ac-impressao">Impressão</h2>
+  <ul id="dados-impressao">
+    <li data-id="frente-verso" data-espelha="1"><b>Frente e verso</b>
+      <span class="mono">· as margens ESPELHAM: a interna é a da costura e troca de lado a cada página · é o livro</span></li>
+    <li data-id="so-frente" data-espelha="0"><b>Somente frente</b>
+      <span class="mono">· margens iguais em toda página · trabalho acadêmico entregue em papel, fukuro-toji, prova de leitura</span></li>
+  </ul>
+
+  <h2 id="ac-perfis">Perfis tipográficos do Gerador</h2>
+  <p>Quem compõe a página é o Gerador, e o perfil é dele. Esta lista é
+     <b>gerada</b> de <code>oficina/pandoc/perfis.yaml</code> por
+     <code>conferir_perfis.py --propagar</code> — a mesma fonte que abastece a
+     bancada. Não editar à mão (N2, N57).</p>
+  <!-- PERFIS-OFICINA:INICIO — gerado, não editar -->
+  <ul id="dados-perfis-oficina">
+  <li data-id="padrao" data-nome="Padrão" data-para="leitura adulta sem necessidade declarada" data-fonte="cardo" data-corpo="11" data-entrelinha="14.85"><b>Padrão</b> <span class="mono">· leitura adulta sem necessidade declarada · cardo 11 pt</span></li>
+  <li data-id="letra-grande" data-nome="Letra Grande" data-para="baixa visão; e o présbita de balcão, que compra pelo conforto" data-fonte="atkinson" data-corpo="16" data-entrelinha="23.2"><b>Letra Grande</b> <span class="mono">· baixa visão; e o présbita de balcão, que compra pelo conforto · atkinson 16 pt</span></li>
+  <li data-id="presbiopia" data-nome="Vista cansada" data-para="quem passou dos quarenta e afasta o texto para focar" data-fonte="cardo" data-corpo="12" data-entrelinha="19.4"><b>Vista cansada</b> <span class="mono">· quem passou dos quarenta e afasta o texto para focar · cardo 12 pt</span></li>
+  <li data-id="astigmatismo" data-nome="Astigmatismo" data-para="borrão com direção; as letras parecem colar umas nas outras" data-fonte="atkinson" data-corpo="12" data-entrelinha="19.4"><b>Astigmatismo</b> <span class="mono">· borrão com direção; as letras parecem colar umas nas outras · atkinson 12 pt</span></li>
+  <li data-id="dislexia" data-nome="Dislexia" data-para="troca de b/d e p/q; crowding" data-fonte="opendyslexic" data-corpo="12" data-entrelinha="23.0"><b>Dislexia</b> <span class="mono">· troca de b/d e p/q; crowding · opendyslexic 12 pt</span></li>
+  <li data-id="abnt" data-nome="ABNT" data-para="trabalho de faculdade entregue em norma NBR 14724" data-fonte="liberation" data-corpo="12" data-entrelinha="20.7"><b>ABNT</b> <span class="mono">· trabalho de faculdade entregue em norma NBR 14724 · liberation 12 pt</span></li>
+  </ul>
+  <!-- PERFIS-OFICINA:FIM -->
+
   <h2 id="ac-canone">Como as medidas são calculadas</h2>
   <ul>
-    <li><b>Cânone dos nonos</b> <span class="mono">· margem interna = largura ÷ 9 · externa = 2 × largura ÷ 9 · superior = altura ÷ 9 · inferior = 2 × altura ÷ 9</span></li>
+    <li><b>Cânone dos nonos</b> <span class="mono">· margem interna = largura ÷ 9 · externa = 2 × largura ÷ 9 · superior = altura ÷ 9 · inferior = 2 × altura ÷ 9 · é o padrão, e há outras regras acima</span></li>
     <li><b>Costura japonesa</b> <span class="mono">· soma 20 mm à margem interna, porque a costura come essa faixa</span></li>
     <li><b>Medida de linha</b> <span class="mono">· largura da mancha ÷ (0,3528 × corpo em pt × largura média do caractere) · faixa boa entre 52 e 74 caracteres</span></li>
-    <li><b>Produção</b> <span class="mono">· Markdown do corpus Pedra Angular → LuaTeX (fontspec, unicode-math) → PDF</span></li>
+    <li><b>Produção</b> <span class="mono">· Markdown (do corpus ou seu) → Oficina (esta bancada: formato, mancha, margens, colunas) → Gerador (Paged.js, compõe no navegador) → prensa.py (Chromium headless, PDF conferido) → impor.py (imposição para dobrar e costurar)</span></li>
   </ul>
 </section>
 
@@ -452,7 +562,12 @@ const TEXTOS = lerLista('dados-textos', (d,li) => ({
 }));
 const FONTES = lerLista('dados-fontes', (d,li) => ({
   id:d.id, nome:nomeDe(li), classe:d.classe, css:d.css, larg:+d.larg, nota:notaDe(li),
-  escritas:(d.escritas||'latim').split(' ')
+  escritas:(d.escritas||'latim').split(' '),
+  /* Vendorizada = existe arquivo dela em `gerador/fontes/`. A EB Garamond está
+     declarada no perfis.yaml e NÃO tem arquivo: o Gerador recusa compor com
+     ela, em vez de compor com a métrica errada. A Oficina precisa dizer isso
+     ANTES de alguém projetar um volume inteiro em cima. */
+  vendorizada: d.vendorizada !== '0'
 }));
 const CORPOS = lerLista('dados-corpos', d => +d.id);
 const CORPO_NOTA = Object.fromEntries(lerLista('dados-corpos', d => [+d.id, d.nota]));
@@ -463,7 +578,19 @@ const TEMAS = lerLista('dados-temas', (d,li) => ({
   id:d.id, nome:nomeDe(li), fundo:d.fundo, texto:d.texto, acento:d.acento, nota:notaDe(li)
 }));
 const ENCADERNACOES = lerLista('dados-encad', (d,li) => ({
-  id:d.id, nome:nomeDe(li), fam:d.fam, dif:+d.dif, nota:notaDe(li)
+  id:d.id, nome:nomeDe(li), fam:d.fam, dif:+d.dif, nota:notaDe(li),
+  /* Furos da costura japonesa. Yotsume e kōki são de quatro; asa-no-ha e
+     kikkō pedem furos intermediários para o desenho fechar. Furar é
+     irreversível: o número que a lista de corte publica tem de ser o do
+     padrão escolhido, não o do padrão mais simples. */
+  furos: +d.furos || 0,
+  /* ESTAÇÕES são os pontos de costura na dobra do caderno — o equivalente
+     dos furos, do outro lado da família. Caderno único cose em três (a
+     costura de panfleto); a copta trabalha em quatro para a corrente ficar
+     regular; o long stitch em três, porque cada trecho vira um ponto longo
+     visível na lombada. Dado, não constante: é a lista de corte que vai para
+     a bancada, e furar não tem conserto. */
+  estacoes: +d.estacoes || 0
 }));
 const FIOS = lerLista('dados-fios', (d,li) => ({id:d.id, nome:nomeDe(li), cor:d.cor}));
 const CAPAS = lerLista('dados-capas', (d,li) => ({id:d.id, nome:nomeDe(li), dif:+d.dif, nota:notaDe(li)}));
@@ -471,29 +598,294 @@ const ACABAMENTOS = lerLista('dados-acabamentos', (d,li) => ({
   id:d.id, nome:nomeDe(li), dif:+d.dif, nota:notaDe(li)
 }));
 
+const CANONES = lerLista('dados-canones', (d,li) => ({
+  id:d.id, nome:nomeDe(li), tipo:d.tipo, frase:d.frase, nota:notaDe(li),
+  int:+d.int, ext:+d.ext, sup:+d.sup, inf:+d.inf
+}));
+const COLUNAS_MANCHA = lerLista('dados-colunas', (d,li) => ({
+  id:d.id, nome:nomeDe(li), n:+d.n, medianiz:+d.medianiz, nota:notaDe(li)
+}));
+const IMPRESSOES = lerLista('dados-impressao', (d,li) => ({
+  id:d.id, nome:nomeDe(li), espelha:d.espelha==='1', nota:notaDe(li)
+}));
+/* A lista de perfis é GERADA do perfis.yaml (conferir_perfis.py --propagar).
+   Se ainda não foi propagada, a bancada segue funcionando com o perfil
+   `padrao` — uma lista vazia não pode derrubar a Oficina. */
+const PERFIS = [...document.querySelectorAll('#dados-perfis-oficina li')].map(li => ({
+  id: li.dataset.id, nome: li.dataset.nome || li.dataset.id,
+  fonte: li.dataset.fonte || '', corpo: +li.dataset.corpo || 0,
+  entrelinha: +li.dataset.entrelinha || 0,
+  para: li.dataset.para || ''
+}));
+
 const acha = (lista,id) => lista.find(x=>x.id===id);
+
+/* =========================================================
+   O TEXTO CARREGADO — a Oficina lê um `.md` do corpus.
+
+   Até 2026-09-11 ela só conhecia oito obras escritas no catálogo, e a
+   contagem de palavras delas movia TUDO: páginas, folhas, espessura do miolo,
+   lista de corte e a especificação exportada. Projetar um volume real a
+   partir de um número de vitrine é projetar no escuro.
+
+   Lê por FileReader, nunca por fetch: a bancada abre por duplo clique
+   (`file://`), onde fetch de arquivo ao lado é bloqueado — a mesma lição do
+   Gerador e do Corretor.
+
+   As PALAVRAS se contam como o Gerador conta (`split(/\s+/)` no arquivo
+   inteiro). Não é a contagem mais fina que existe; é a MESMA dos dois lados,
+   que é o que evita a bancada dizer um número e a outra dizer outro. Os
+   CAPÍTULOS passaram a se contar assim também — ver `contarCapitulos()`.
+   ========================================================= */
+let obraDoArquivo = null;
+
+function separarFrontMatter(texto){
+  /* Front matter só no COMEÇO do arquivo — a lição do Corretor, onde um `---`
+     no meio do texto pôs metade do Fédon na zona errada.
+
+     Devolve o `corpo` além da `frente`, e com o MESMO recorte do
+     `separarFrontMatter()` do Gerador: é sobre esse corpo que os dois lados
+     contam capítulo, e recortar diferente já seria divergir. */
+  const frente = {};
+  if (texto.slice(0, 4) !== '---\n' && texto.slice(0, 5) !== '---\r\n')
+    return { frente, corpo: texto };
+  const fim = texto.indexOf('\n---', 3);
+  if (fim < 0) return { frente, corpo: texto };
+  texto.slice(4, fim).split('\n').forEach(l => {
+    const m = l.match(/^([a-zA-Z_][\w-]*):\s*(.*)$/);
+    if (!m) return;
+    let v = m[2].trim();
+    if (v.length > 1 && v[0] === v[v.length - 1] && (v[0] === '"' || v[0] === "'")) v = v.slice(1, -1);
+    if (v && v !== 'null' && v !== '~') frente[m[1]] = v;
+  });
+  return { frente, corpo: texto.slice(texto.indexOf('\n', fim + 1) + 1) };
+}
+
+/* Comentário HTML é bilhete do extrator, não texto da obra: o `pa:pagina 08`
+   que o Conversor escreve não abre capítulo nem conta como conteúdo. O
+   Gerador já o descarta no parser dele; aqui se descarta antes de contar.
+
+   `\x3C!--` e `--\x3E`, nunca os caracteres literais: a abertura de comentário
+   HTML escrita dentro de um <script> muda o jeito como o navegador procura o
+   fim do script, e a bancada inteira para de rodar sem um erro no console.
+   O `conferir.py` vigia isso nas duas bancadas. */
+function semComentarios(corpo){
+  return corpo.replace(/\x3C!--[\s\S]*?--\x3E/g, '')
+              .replace(/\x3C!--[\s\S]*$/, '');
+}
+
+/* =========================================================
+   O CAPÍTULO SE CONTA COMO O GERADOR CONTA — a mesma lição das palavras.
+
+   Até 2026-09-12 esta bancada contava `^## ` no arquivo cru e o Gerador
+   contava as seções do `seccionar()` dele: «1 capítulos» aqui e «2 de 2
+   capítulos» lá, sobre o mesmo Encheirídion. Dois números na tela para a
+   mesma coisa é o que o N56 proíbe.
+
+   E as DUAS estavam erradas, o que só apareceu quando pararam de discordar:
+   o Encheirídion tem 53 capítulos, não 1 nem 2. Eles estão em `###`, porque
+   o `## Texto` do corpus é invólucro, não capítulo. MEDIDO no acervo: 840
+   arquivos com o capítulo em `##`, 228 em `###`, 26 em `####`, 6 sem divisão
+   nenhuma. Uma regra que conhece um nível só erra em 234 obras.
+
+   A REGRA, universal e numa frase: o capítulo é o nível de cabeçalho que a
+   obra MAIS REPETE. Título aparece uma vez, `## Texto` aparece uma vez,
+   parte aparece poucas, capítulo aparece muitas. Empate, vence o mais fundo
+   (`# Filemom` + `## Capítulo 1`: o fundo é o capítulo, o raso é o título).
+   E uma parte só não divide nada — nível com um cabeçalho apenas é ZERO
+   capítulos, a peça única.
+
+   Ela não conhece nível nenhum de cor: capítulo em `###`, em `####` ou em
+   dezessete cerquilhas entra pela mesma porta (N10, profundidade sem teto).
+
+   A prova de que é a regra certa não é argumento, é coincidência medida: ela
+   devolve 53 para o Encheirídion e peça única para a Apologia — exatamente o
+   que o catálogo desta bancada já dizia à mão, escrito antes de existir esta
+   conta.
+
+   O que ela NÃO conta é seção: a folha de rosto e o `## Texto` também viram
+   `<section>` na composição do Gerador (Salmos: 150 capítulos, 151 seções).
+   Seção é do Gerador, que corta papel por ela; capítulo é da obra, e é o
+   número que as duas bancadas mostram.
+
+   Isto é a mesma regra escrita em dois arquivos, que é o que o N56 vigia. A
+   defesa é MEDIDA, não prometida: `python C:/Claude/conferir_capitulos.py`
+   roda o `nivelDeCapitulo()`/`contarCapitulos()` do Gerador e estes daqui
+   sobre o mesmo corpus e exige o mesmo par (nível, capítulos) em todo
+   arquivo. Os dois `conferir.py` o chamam.
+   ========================================================= */
+
+/* Os cabeçalhos do arquivo, com o nível de cada um. O reconhecimento é o
+   mesmo do `analisar()` do Gerador — `^(#+)` seguido de espaço —, inclusive
+   no caso da linha `## ` sem texto, que lá é cabeçalho de título vazio e
+   aqui também precisa ser, senão as contas divergem num arquivo que ninguém
+   pensaria em conferir. */
+function niveisDeCabecalho(texto){
+  const corpo = semComentarios(separarFrontMatter(texto).corpo);
+  const niveis = [];
+  corpo.split(/\r?\n/).forEach(l => {
+    const m = l.match(/^(#+)\s/);
+    if (m) niveis.push(m[1].length);
+  });
+  return niveis;
+}
+
+function nivelDeCapitulo(texto){
+  const conta = new Map();
+  niveisDeCabecalho(texto).forEach(n => conta.set(n, (conta.get(n) || 0) + 1));
+  let nivel = 0, maior = 0;
+  conta.forEach((quantos, n) => {
+    if (quantos > maior || (quantos === maior && n > nivel)) { maior = quantos; nivel = n; }
+  });
+  return nivel;                      /* 0 = documento sem cabeçalho nenhum */
+}
+
+function contarCapitulos(texto){
+  const nivel = nivelDeCapitulo(texto);
+  if (!nivel) return 0;
+  const quantos = niveisDeCabecalho(texto).filter(n => n === nivel).length;
+  return quantos > 1 ? quantos : 0;  /* uma parte só não divide nada */
+}
+
+/* «1 capítulos» era a outra metade do mesmo defeito: número certo dito errado
+   é número de que quem lê desconfia. O Gerador tem esta mesma função — as
+   duas bancadas dizem o mesmo número de capítulos, e diriam com palavras
+   diferentes. */
+const plural = (n, um, muitos) => n + ' ' + (n === 1 ? um : muitos);
+
+/* A EXTENSÃO DA OBRA, e as duas bancadas dizem a MESMA frase — o Gerador tem
+   esta função com o mesmo nome e o mesmo corpo, e o `conferir_capitulos.py`
+   compara as duas STRINGS sobre o corpus inteiro. Número igual dito com
+   palavra diferente ainda faz quem lê achar que são coisas diferentes.
+
+   «53 capítulos em ###», ou «peça única» quando a obra não está dividida.
+   Acima de seis níveis a fileira de cerquilhas deixa de se ler de relance e
+   vira o número — mas o nível continua dito, porque não tem teto (N10). */
+function extensaoDaObra(capitulos, nivel){
+  if (!capitulos) return 'peça única';
+  const onde = nivel <= 6 ? '#'.repeat(nivel) : 'nível ' + nivel;
+  return plural(capitulos, 'capítulo', 'capítulos') + ' em ' + onde;
+}
+
+function receberMd(nomeArquivo, texto){
+  const fm = separarFrontMatter(texto).frente;
+  const palavras = texto.split(/\s+/).filter(Boolean).length;
+  const nivel = nivelDeCapitulo(texto);
+  const capitulos = contarCapitulos(texto);
+  const titulo = fm.title || nomeArquivo.replace(/\.md$/i, '').replace(/[-_]+/g, ' ');
+  obraDoArquivo = {
+    id: fm.id || ('arquivo-' + nomeArquivo.replace(/\.md$/i, '').slice(0, 40)),
+    nome: titulo,
+    autor: fm.author || fm.translator || '—',
+    sub: fm.original_title || '',
+    lang: fm.language === 'por' ? 'pt-BR' : (fm.language || 'pt-BR'),
+    dir: 'ltr',
+    /* O NÚMERO e ONDE ele foi achado. O nível vai junto porque a regra o
+       INFERE: quem olha a tela tem de poder conferir contra o arquivo sem
+       abrir o código — «53 capítulos em ###» se confere em dois segundos, e
+       um nível inferido errado em silêncio seria pior que nenhum. */
+    extensao: extensaoDaObra(capitulos, nivel),
+    palavras: palavras,
+    licenca: fm.license || '',
+    fonte: fm.source || '',
+    arquivo: nomeArquivo,
+    doArquivo: true
+  };
+  estado.texto = 'arquivo';
+  render();
+}
+
+/* =========================================================
+   A VOLTA DO GERADOR — a contagem que a estimativa não sabe fazer.
+
+   Tudo o que esta bancada compra e corta sai do número de páginas, e o número
+   dela é ESTIMADO: palavras ÷ (caracteres por linha × linhas por página). A
+   estimativa não conhece título que come meia página, fim de parágrafo que
+   perde meia linha, nota de rodapé, capítulo que abre em página nova. Nos
+   Salmos ela deu 23 por cento a mais.
+
+   Contar de verdade exige compor de verdade — e quem compõe é o Gerador. Ele
+   devolve um `retorno.*.json`, que se arrasta aqui como qualquer arquivo.
+
+   O retorno tem VALIDADE: ele foi contado numa configuração, e trocar o
+   formato depois de compor invalida o número. A assinatura é a mesma dos dois
+   lados (obra · formato · cânone · impressão · perfil · colunas); divergiu, a
+   Oficina volta à estimativa e DIZ que voltou. Número de material aplicado em
+   silêncio é o pior defeito possível numa lista de corte.
+   ========================================================= */
+let retornoDoGerador = null;
+
+function assinaturaDaqui(tx, f, cn, imp, col){
+  return [tx.id, f.id, cn.id, imp.id, estado.perfil, col.n].join('·');
+}
+
+function receberRetorno(nomeArquivo, texto){
+  let j;
+  try { j = JSON.parse(texto); }
+  catch (e) { alert('Este .json não abriu: ' + e.message); return; }
+  if (!j || !j.paginas || !j.paginas.compostas) {
+    /* Especificação exportada por esta bancada não é retorno: dizer isso, em
+       vez de um «formato inválido» que não ensina nada. */
+    alert(j && j.composicao
+      ? 'Este é o arquivo que a Oficina EXPORTA para o Gerador, não o que ele '
+        + 'devolve. O de volta sai no botão «Devolver a contagem à Oficina», '
+        + 'depois de compor a obra inteira.'
+      : 'Não achei a contagem de páginas neste .json.');
+    return;
+  }
+  retornoDoGerador = {
+    arquivo: nomeArquivo,
+    assinatura: j.assinatura || '',
+    obra: (j.obra && j.obra.titulo) || '',
+    obraId: (j.obra && j.obra.id) || '',
+    data: j.composto_em || '',
+    paginas: j.paginas.compostas,
+    estimadasEntao: j.paginas.estimadas_pela_oficina || 0,
+    capitulos: j.paginas.capitulos || 0
+  };
+  render();
+}
+
+/* A obra que vale agora: a do arquivo, se houver; senão a do catálogo. */
+function obraAtual(){
+  if (estado.texto === 'arquivo' && obraDoArquivo) return obraDoArquivo;
+  return acha(TEXTOS, estado.texto) || TEXTOS[0];
+}
 
 /* =========================================================
    ESTADO — e o permalink, para o cliente devolver a escolha
    ========================================================= */
 const PADRAO = {
   texto:"encheiridion", fonte:"garamond", corpo:11, formato:"folio-phi",
-  tema:"azul", encad:"yotsume", fio:"branco", capa:"mole", acabamentos:["phi"]
+  tema:"azul", encad:"yotsume", fio:"branco", capa:"mole", acabamentos:["phi"],
+  /* Campos novos (2026-09-11, a ponte com o Gerador). Entram no FIM do hash:
+     link que um cliente já salvou continua abrindo, sem estes campos, nos
+     valores de sempre — que são exatamente os de antes. */
+  canone:"nonos", impressao:"frente-verso", perfil:"padrao", colunas:"1",
+  margens:{int:25, ext:20, sup:25, inf:25}
 };
-let estado = {...PADRAO, acabamentos:[...PADRAO.acabamentos]};
+let estado = {...PADRAO, acabamentos:[...PADRAO.acabamentos],
+              margens:{...PADRAO.margens}};
 
 /* O volume inteiro cabe na URL. O cliente monta, copia o link e manda —
    sem servidor, sem cadastro, sem banco. A configuração É o endereço. */
 function paraHash(){
   const e = estado;
   return '#' + [e.texto,e.fonte,e.corpo,e.formato,e.tema,e.encad,e.fio,e.capa,
-                e.acabamentos.join('.')].join('/');
+                e.acabamentos.join('.'),
+                e.canone,e.impressao,e.perfil,
+                [e.margens.int,e.margens.ext,e.margens.sup,e.margens.inf].join('.'),
+                e.colunas
+               ].join('/');
 }
 function doHash(){
   const p = decodeURIComponent(location.hash.slice(1)).split('/');
   if(p.length < 9) return;
   const val = (lista,v,atual) => acha(lista,v) ? v : atual;
-  estado.texto   = val(TEXTOS,p[0],estado.texto);
+  /* `arquivo` no endereço não se restaura: o arquivo está na máquina de quem
+     montou, não no link. Volta ao padrão, e a pessoa carrega de novo. */
+  estado.texto   = (p[0] === 'arquivo' && obraDoArquivo) ? 'arquivo'
+                 : val(TEXTOS,p[0],PADRAO.texto);
   estado.fonte   = val(FONTES,p[1],estado.fonte);
   estado.corpo   = CORPOS.includes(+p[2]) ? +p[2] : estado.corpo;
   estado.formato = val(FORMATOS,p[3],estado.formato);
@@ -502,6 +894,18 @@ function doHash(){
   estado.fio     = val(FIOS,p[6],estado.fio);
   estado.capa    = val(CAPAS,p[7],estado.capa);
   estado.acabamentos = (p[8]||'').split('.').filter(a=>acha(ACABAMENTOS,a));
+  /* Daqui para baixo é o que o hash antigo não tem. Ausente = o de sempre. */
+  /* Campo ausente volta ao PADRAO, nunca ao que estava na tela. Aqui o
+     endereco E o estado: colar um link antigo numa Oficina ja aberta deixava
+     o canone da montagem anterior valendo, e a pessoa veria margens que o
+     link nao pede. Medido em 2026-09-11. */
+  estado.canone    = val(CANONES,p[9],PADRAO.canone);
+  estado.impressao = val(IMPRESSOES,p[10],PADRAO.impressao);
+  estado.perfil    = (p[11] && PERFIS.some(x=>x.id===p[11])) ? p[11] : PADRAO.perfil;
+  const m = (p[12]||'').split('.').map(Number);
+  if (m.length === 4 && m.every(x=>x > 0 && x < 200))
+    estado.margens = {int:m[0], ext:m[1], sup:m[2], inf:m[3]};
+  estado.colunas = val(COLUNAS_MANCHA,p[13],PADRAO.colunas);
 }
 
 /* =========================================================
@@ -511,26 +915,64 @@ function calcular(){
   const f  = acha(FORMATOS, estado.formato);
   const fn = acha(FONTES,   estado.fonte);
   const en = acha(ENCADERNACOES, estado.encad);
-  const tx = acha(TEXTOS,   estado.texto);
+  const tx = obraAtual();
   const cp = acha(CAPAS,    estado.capa);
   const costuraJaponesa = en.fam === "jap";
 
-  let interna = f.l/9;
+  /* A REGRA DAS MARGENS é escolha, não constante. O cânone dos nonos continua
+     o padrão — é o do livro —, mas trabalho em ABNT tem centímetro fixo por
+     norma, e bíblia e apostila pedem mancha compacta. A conta continua UMA:
+     é aqui, e o Gerador não recalcula nada (proposta, seção 8). */
+  const cn = acha(CANONES, estado.canone) || CANONES[0];
+  const mm4 = cn.id === 'personalizada'
+    ? {int:estado.margens.int, ext:estado.margens.ext,
+       sup:estado.margens.sup, inf:estado.margens.inf}
+    : cn.tipo === 'mm'
+      ? {int:cn.int, ext:cn.ext, sup:cn.sup, inf:cn.inf}
+      : {int:f.l*cn.int, ext:f.l*cn.ext, sup:f.a*cn.sup, inf:f.a*cn.inf};
+  const imp = acha(IMPRESSOES, estado.impressao) || IMPRESSOES[0];
+
+  let interna = mm4.int;
   if(costuraJaponesa) interna += 20;
-  const externa  = 2*f.l/9;
-  const superior = f.a/9;
-  const inferior = 2*f.a/9;
+  const externa  = mm4.ext;
+  const superior = mm4.sup;
+  const inferior = mm4.inf;
   const manchaL = f.l - interna - externa;
   const manchaA = f.a - superior - inferior;
 
-  const mmPorChar = 0.3528 * estado.corpo * fn.larg;
-  const chars = manchaL > 0 ? Math.round(manchaL / mmPorChar) : 0;
+  /* A MEDIDA DE LINHA É POR COLUNA. É a coluna que o olho percorre; a mancha
+     inteira só diz onde a tinta pode cair. Em duas colunas de 86,7 mm com
+     medianiz de 6, cada coluna tem 40,3 — e é esse o número que entra na
+     faixa de 52 a 74, não o da mancha. */
+  const col = acha(COLUNAS_MANCHA, estado.colunas) || COLUNAS_MANCHA[0];
+  const medianiz = col.n > 1 ? col.medianiz : 0;
+  const larguraColuna = (manchaL - medianiz * (col.n - 1)) / col.n;
 
-  const entrelinha = fn.classe === "hyper" ? 1.45 : 1.35;
-  const alturaLinha = 0.3528 * estado.corpo * entrelinha;
+  const mmPorChar = 0.3528 * estado.corpo * fn.larg;
+  const chars = larguraColuna > 0 ? Math.round(larguraColuna / mmPorChar) : 0;
+
+  /* A ENTRELINHA DA ESTIMATIVA VEM DO PERFIL, quando o perfil a declara.
+     As constantes por classe (1,35 serifada, 1,45 Atkinson) são de quando a
+     Oficina não sabia qual perfil ia compor. O ABNT compõe a 1,725 (20,7 pt em
+     corpo 12): estimar por 1,35 daria 28 por cento de linhas a mais do que
+     cabe, e a conta da Oficina é o contrato com o Gerador. */
+  const pf = PERFIS.find(x => x.id === estado.perfil);
+  const alturaLinha = pf && pf.entrelinha
+    ? 0.3528 * pf.entrelinha
+    : 0.3528 * estado.corpo * (fn.classe === "hyper" ? 1.45 : 1.35);
   const linhasPagina = Math.max(1, Math.floor(manchaA / alturaLinha));
-  const palavrasPagina = Math.max(1, (chars/6) * linhasPagina * 0.92);
-  const paginas = Math.max(4, Math.ceil(tx.palavras / palavrasPagina / 2) * 2);
+  /* A página tem `col.n` colunas de `linhasPagina` linhas cada. */
+  const palavrasPagina = Math.max(1, (chars/6) * linhasPagina * col.n * 0.92);
+  const estimadas = Math.max(4, Math.ceil(tx.palavras / palavrasPagina / 2) * 2);
+
+  /* A CONTAGEM VENCE A ESTIMATIVA, quando existe e quando é desta
+     configuração. Arredondada para par: meia folha não se imprime, e todo o
+     resto da bancada (folhas, cadernos, espessura) conta de dois em dois. */
+  const assinatura = assinaturaDaqui(tx, f, cn, imp, col);
+  const retornoVale = !!(retornoDoGerador && retornoDoGerador.assinatura === assinatura);
+  const paginas = retornoVale
+    ? Math.max(4, Math.ceil(retornoDoGerador.paginas / 2) * 2)
+    : estimadas;
   const folhas = costuraJaponesa && en.id !== "fukuro"
       ? Math.ceil(paginas/2)
       : (en.id === "fukuro" ? paginas : Math.ceil(paginas/4));
@@ -552,7 +994,9 @@ function calcular(){
   const espessura = Math.max(6, Math.min(48, folhas * (en.id==="fukuro" ? 0.22 : 0.13) + 4));
 
   return {f,fn,en,tx,cp,costuraJaponesa,interna,externa,superior,inferior,
-          manchaL,manchaA,chars,linhasPagina,paginas,folhas,dif,linha,espessura};
+          manchaL,manchaA,chars,linhasPagina,paginas,folhas,dif,linha,espessura,
+          cn,imp,espelha:imp.espelha,col,medianiz,larguraColuna,
+          estimadas,retornoVale,assinatura};
 }
 
 /* =========================================================
@@ -562,11 +1006,31 @@ function calcular(){
    quem quiser outro padrão muda em um lugar só e a ficha inteira
    acompanha.
    ========================================================= */
+/* A capa dura NÃO é costurada em furos na dobra e sim em FITAS de cadarço
+   atravessadas na lombada: quantas depende da altura do livro, porque é a
+   altura que decide quanto a lombada flexiona. Constante de bancada, nomeada
+   aqui como as outras — não número mágico espalhado pelo código. */
+function fitasDaLombada(alturaMm){
+  return alturaMm < 160 ? 2 : alturaMm < 260 ? 3 : 4;
+}
+
 const CERCETA = 3;       // quanto o papelão sobra além do miolo, por borda
 const VIRADA  = 15;      // dobra do revestimento para dentro da tapa
 const CAVA    = 7;       // folga da dobradiça, entre tapa e lombada
 const FURO_X  = 15;      // distância do furo à dobra, na costura japonesa
-const FUROS_Y = [0.11, 0.36, 0.64, 0.89];   // os mesmos que o desenho usa
+/* As alturas dos furos, em fração da altura da folha. O primeiro e o último
+   ficam a 11 % das pontas — o bastante para a margem não rasgar —, e os do
+   meio se distribuem por igual. Com quatro furos dá a proporção clássica
+   (0,11 · 0,37 · 0,63 · 0,89); com oito, os intermediários entram entre eles.
+   Uma fórmula, não duas listas, para desenho e lista de corte não divergirem. */
+const FUROS_MARGEM = 0.11;
+function furosY(n){
+  if (n <= 1) return [0.5];
+  const a = [];
+  for (let i = 0; i < n; i++)
+    a.push(FUROS_MARGEM + (1 - 2 * FUROS_MARGEM) * i / (n - 1));
+  return a;
+}
 
 function espessuraPapelao(alturaMm){
   return alturaMm <= 160 ? 1.5 : alturaMm <= 230 ? 1.9 : 2.5;
@@ -576,8 +1040,8 @@ function espessuraPapelao(alturaMm){
    É a soma dos trechos que a agulha realmente percorre: a volta pela lombada
    em cada furo, as corridas verticais nas duas faces, e o arremate de cabeça
    e pé. Mais 30% para nós, sobra na agulha e erro honesto. */
-function fioJapones(altura, espessura){
-  const ys = FUROS_Y.map(p => altura * p);
+function fioJapones(altura, espessura, furos){
+  const ys = furosY(furos || 4).map(p => altura * p);
   const volta = 2 * (FURO_X + espessura);
   let c = ys.length * volta;                                  // uma volta por furo
   for (let i = 0; i < ys.length - 1; i++) c += 2 * (ys[i+1] - ys[i]);  // duas faces
@@ -591,21 +1055,39 @@ function listaDeCorte(c){
   const L = [];
 
   if (en.fam === "jap") {
-    const ys = FUROS_Y.map(p => f.a * p);
+    const ys = furosY(en.furos || 4).map(p => f.a * p);
     L.push(`- Miolo: ${c.folhas} folhas de ${mm(f.l)} × ${mm(f.a)} mm`);
     L.push(`- Capa: 2 folhas de ${mm(f.l)} × ${mm(f.a)} mm (mesma medida do miolo)`);
-    L.push(`- Furação: 4 furos a ${FURO_X} mm da dobra, nas alturas ` +
+    L.push(`- Furação: ${ys.length} furos a ${FURO_X} mm da dobra, nas alturas ` +
            ys.map(y => mm(y)).join(" / ") + " mm a partir da cabeça");
-    L.push(`- Fio: ${fioJapones(f.a, espessura)} mm (caminho da costura + 30%)`);
+    L.push(`- Fio: ${fioJapones(f.a, espessura, en.furos)} mm (caminho da costura + 30%)`);
     L.push(`- Sem papelão: a costura japonesa dispensa tapa rígida`);
   } else if (en.fam === "cad") {
     const porCaderno = en.id === "caderno" ? c.folhas : Math.min(6, Math.max(4, Math.round(c.folhas / 8)));
     const cadernos = Math.max(1, Math.ceil(c.folhas / porCaderno));
     L.push(`- Miolo: ${c.folhas} folhas de ${mm(f.l * 2)} × ${mm(f.a)} mm, dobradas ao meio`);
     L.push(`- Cadernos: ${cadernos} de ${porCaderno} folhas`);
-    L.push(`- Furação: 3 furos por caderno, na dobra, a ${mm(f.a * 0.18)} / ${mm(f.a * 0.5)} / ${mm(f.a * 0.82)} mm da cabeça`);
-    L.push(`- Fio: ${Math.ceil((cadernos * (f.a * 1.6 + 40)) / 10) * 10} mm`);
+    /* As estações saem da MESMA fórmula dos furos japoneses: as pontas a 11 %
+       e o resto por igual. Uma fórmula, não duas listas. */
+    const est = furosY(en.estacoes || 3).map(p => f.a * p);
+    L.push(`- Furação: ${est.length} estações por caderno, na dobra, a ` +
+           est.map(y => mm(y)).join(" / ") + " mm da cabeça");
+    /* O FIO SAI DAS ESTAÇÕES, não de um palpite por caderno. Por caderno:
+       o vaivém entre as estações (duas vezes o percurso da cabeça ao pé) mais
+       uma volta por estação para o elo com o caderno vizinho; nas costuras de
+       lombada exposta (copta, long stitch) o elo é o que segura o livro. Mais
+       30 %, como na japonesa: sobra na agulha e erro honesto. */
+    const percurso = 2 * (est[est.length - 1] - est[0]) + est.length * (espessura / 2 + 12);
+    L.push(`- Fio: ${Math.ceil(cadernos * percurso * 1.3 / 10) * 10} mm ` +
+           `(${cadernos} ${cadernos === 1 ? "caderno" : "cadernos"} × ` +
+           `${est.length} ${est.length === 1 ? "estação" : "estações"} + 30%)`);
     if (cp.id !== "mole") L.push(`- Papelão: 2 tapas de ${mm(f.a + 2*CERCETA)} × ${mm(f.l + CERCETA)} mm`);
+    if (en.id === "copta") L.push(
+      `- A copta costura caderno a caderno pela corrente, com a lombada EXPOSTA: ` +
+      `sem cola e sem lombada revestida, e é isso que a faz abrir plana a 360°`);
+    if (en.id === "long") L.push(
+      `- O long stitch atravessa a CAPA: os furos das estações vão também no ` +
+      `papel de capa, alinhados aos dos cadernos`);
   } else {
     const espPap = espessuraPapelao(f.a);
     const tapaA = f.a + 2 * CERCETA;
@@ -617,6 +1099,13 @@ function listaDeCorte(c){
            `${mm(2*tapaL + espessura + 2*CAVA + 2*VIRADA)} × ${mm(tapaA + 2*VIRADA)} mm ` +
            `(inclui ${VIRADA} mm de virada por borda e ${CAVA} mm de cava por dobradiça)`);
     L.push(`- Guardas: 2 folhas de ${mm(f.l * 2)} × ${mm(f.a)} mm, dobradas ao meio`);
+    /* A capa dura é costurada em fitas, e isso não estava em lugar nenhum da
+       lista — quem fosse montar descobriria na hora de costurar. */
+    const fitas = fitasDaLombada(f.a);
+    L.push(`- Fitas de cadarço: ${fitas} de ${mm(espessura + 2 * 45)} mm ` +
+           `(atravessam a lombada e sobram 45 mm por lado, para colar nas tapas)`);
+    L.push(`- Furação: ${fitas * 2} furos por caderno, na dobra, um de cada ` +
+           `lado de cada fita, mais cabeça e pé a ${mm(f.a * 0.1)} mm`);
   }
 
   if (estado.acabamentos.includes('fita')) L.push(`- Fita de marcador: ${mm(f.a + 60)} mm`);
@@ -712,8 +1201,8 @@ function desenharCostura(svg, c, fio, tema){
   const pf = el("g",{fill:tema.fundo === "#EDE7DA" ? "#3A3A3A" : "#000", opacity:.55});
 
   if(en.fam === "jap"){
-    const x = 15;
-    const ys = [0.11,0.36,0.64,0.89].map(p=>f.a*p);
+    const x = FURO_X;
+    const ys = furosY(en.furos || 4).map(p=>f.a*p);
     if(en.id === "fukuro"){
       svg.appendChild(el("line",{x1:f.l-3,x2:f.l-3,y1:0,y2:f.a,
         stroke:tema.texto,"stroke-width":.4,opacity:.3}));
@@ -725,45 +1214,90 @@ function desenharCostura(svg, c, fio, tema){
     for(let i=0;i<ys.length-1;i++)
       g.appendChild(el("path",{d:`M ${x} ${ys[i]} L ${x} ${ys[i+1]}`}));
     g.appendChild(el("path",{d:`M ${x} ${ys[0]} L ${x} 2 L 2 2`}));
-    g.appendChild(el("path",{d:`M ${x} ${ys[3]} L ${x} ${f.a-2} L 2 ${f.a-2}`}));
+    g.appendChild(el("path",{d:`M ${x} ${ys[ys.length-1]} L ${x} ${f.a-2} L 2 ${f.a-2}`}));
+    /* KŌKI-TOJI: o yotsume com os CANTOS reforçados. A volta extra abraça o
+       canto — da linha dos furos até a borda de cabeça e de pé —, e é ela que
+       protege a quina que mais sofre no manuseio. */
     if(en.id === "koki"){
-      g.appendChild(el("path",{d:`M 2 ${ys[0]} L ${x+7} 2`}));
-      g.appendChild(el("path",{d:`M 2 ${ys[3]} L ${x+7} ${f.a-2}`}));
-    }
-    if(en.id === "asanoha" || en.id === "kikko"){
-      ys.forEach((y,i)=>{
-        if(i<ys.length-1){
-          g.appendChild(el("path",{d:`M 2 ${y} L ${x} ${ys[i+1]}`}));
-          g.appendChild(el("path",{d:`M ${x} ${y} L 2 ${ys[i+1]}`}));
-        }
+      [ys[0], ys[ys.length-1]].forEach((y,k)=>{
+        const yb = k === 0 ? 2 : f.a - 2;
+        g.appendChild(el("path",{d:`M ${x} ${y} L 2 ${yb}`}));
+        g.appendChild(el("path",{d:`M 2 ${y} L ${x} ${yb}`}));
       });
+    }
+
+    /* ASA-NO-HA (folha de cânhamo) e KIKKŌ (casco de tartaruga) não são o
+       yotsume com enfeite: pedem furos INTERMEDIÁRIOS, e é por isso que a
+       lista de corte agora publica oito. O desenho é esquemático — mostra
+       quantos furos, onde, e para onde o fio vai —, não uma prancha de
+       manual. Quem costura confere no manual; quem fura confere aqui. */
+    if(en.id === "asanoha" || en.id === "kikko"){
+      for(let i=0;i<ys.length-1;i++){
+        g.appendChild(el("path",{d:`M 2 ${ys[i]} L ${x} ${ys[i+1]}`}));
+        g.appendChild(el("path",{d:`M ${x} ${ys[i]} L 2 ${ys[i+1]}`}));
+      }
+      /* O kikkō fecha o hexágono: as diagonais chegam à linha dos furos e uma
+         trave curta une os dois lados, entre furo e furo. */
       if(en.id === "kikko"){
-        ys.forEach(y=>{
-          g.appendChild(el("path",{d:`M ${x} ${y} l 7 -5`}));
-          g.appendChild(el("path",{d:`M ${x} ${y} l 7 5`}));
-          g.appendChild(el("path",{d:`M ${x+7} ${y-5} L ${x+7} ${y+5}`}));
-        });
+        for(let i=0;i<ys.length-1;i++){
+          const meio = (ys[i] + ys[i+1]) / 2;
+          g.appendChild(el("path",{d:`M 2 ${meio} L ${x} ${meio}`}));
+        }
       }
     }
   }
-  else if(en.id === "caderno"){
+  /* AS TRÊS COSTURAS DE CADERNO, desenhadas a partir das ESTAÇÕES — o mesmo
+     número que a lista de corte publica. Antes cada uma tinha um desenho
+     decorativo próprio, sem relação com a furação que a bancada ia fazer.
+     Esquemático de propósito: mostra quantas estações, onde, e o que a
+     costura faz entre elas. Quem costura confere no manual; quem fura confere
+     aqui. */
+  else if(en.fam === "cad"){
     const x = 4;
-    [0.5,0.18,0.82].forEach(p=>pf.appendChild(el("circle",{cx:x,cy:f.a*p,r:1.1})));
-    g.appendChild(el("path",{d:`M ${x} ${f.a*0.18} L ${x} ${f.a*0.82}`}));
-    svg.appendChild(el("line",{x1:1.5,x2:1.5,y1:0,y2:f.a,stroke:tema.texto,"stroke-width":.4,opacity:.3}));
-  }
-  else if(en.id === "copta"){
-    for(let y=8;y<f.a-6;y+=11) g.appendChild(el("path",{d:`M 3 ${y} q 4 3 0 6 q -4 3 0 6`}));
-  }
-  else if(en.id === "long"){
-    for(let y=12;y<f.a-8;y+=14){
-      g.appendChild(el("path",{d:`M 3 ${y} L 3 ${y+8}`}));
-      g.appendChild(el("path",{d:`M 8 ${y+2} L 8 ${y+6}`}));
+    const ys = furosY(en.estacoes || 3).map(p => f.a * p);
+    ys.forEach(y => pf.appendChild(el("circle",{cx:x,cy:y,r:1.1})));
+    /* A dobra, que é onde a costura passa. */
+    svg.appendChild(el("line",{x1:1.5,x2:1.5,y1:0,y2:f.a,
+      stroke:tema.texto,"stroke-width":.4,opacity:.3}));
+
+    if(en.id === "caderno"){
+      /* Panfleto: um percurso só, da primeira à última estação. */
+      g.appendChild(el("path",{d:`M ${x} ${ys[0]} L ${x} ${ys[ys.length-1]}`}));
+    }
+    else if(en.id === "copta"){
+      /* A CORRENTE. Em cada estação, o elo que prende um caderno ao seguinte
+         — e é a corrente, do lado de fora da lombada, que faz a copta abrir
+         a 360°. Três elos por estação dizem "vários cadernos" sem fingir
+         contar quantos. */
+      ys.forEach(y => {
+        for(let k = 0; k < 3; k++){
+          const yy = y - 3 + k * 3;
+          g.appendChild(el("path",{d:`M ${x-2} ${yy} q 2 1.5 0 3 q -2 1.5 0 3`}));
+        }
+        g.appendChild(el("path",{d:`M ${x} ${y} L ${x + 6} ${y}`}));
+      });
+    }
+    else if(en.id === "long"){
+      /* Ponto longo: o fio atravessa a CAPA e corre pela lombada de uma
+         estação à outra, à vista. É esse trecho comprido que dá nome. */
+      for(let i = 0; i < ys.length - 1; i++){
+        g.appendChild(el("path",{d:`M ${x} ${ys[i]} L ${x} ${ys[i+1]}`}));
+        g.appendChild(el("path",{d:`M ${x-2.5} ${ys[i]} L ${x-2.5} ${ys[i+1]}`}));
+      }
+      ys.forEach(y => g.appendChild(el("path",{d:`M ${x-2.5} ${y} L ${x + 5} ${y}`})));
     }
   }
   else if(en.id === "dura"){
     svg.appendChild(el("path",{d:`M 0 0 q -5 ${f.a/2} 0 ${f.a}`,
       fill:tema.fundo, stroke:"rgba(255,255,255,.12)","stroke-width":.4}));
+    /* As FITAS em que o miolo é costurado, que a lista de corte agora
+       publica: elas atravessam a lombada e vão coladas por dentro das tapas. */
+    const nf = fitasDaLombada(f.a);
+    for(let i = 0; i < nf; i++){
+      const y = f.a * (0.16 + 0.68 * (nf === 1 ? 0.5 : i / (nf - 1)));
+      g.appendChild(el("path",{d:`M 1 ${y - 2.5} L 9 ${y - 2.5}`}));
+      g.appendChild(el("path",{d:`M 1 ${y + 2.5} L 9 ${y + 2.5}`}));
+    }
   }
   svg.appendChild(pf); svg.appendChild(g);
 }
@@ -775,6 +1309,15 @@ function desenharPagina(c){
   svg.setAttribute("aria-label",
     `Mancha gráfica pelo cânone dos nonos: ${manchaL.toFixed(0)} por ${manchaA.toFixed(0)} milímetros`);
   svg.appendChild(el("rect",{x:0,y:0,width:f.l,height:f.a,fill:"#F4F0E6"}));
+  /* A medianiz desenhada: sem ela o cliente vê uma mancha só e a página
+     mente sobre o que vai ser impresso. */
+  if (c.col && c.col.n > 1){
+    for (let i = 1; i < c.col.n; i++){
+      const x = interna + i * c.larguraColuna + (i - 0.5) * c.medianiz;
+      svg.appendChild(el("line",{x1:x, y1:superior, x2:x, y2:superior+manchaA,
+        stroke:"var(--ui-texto-suave)", "stroke-width":0.3, "stroke-dasharray":"2 2"}));
+    }
+  }
   svg.appendChild(el("rect",{x:interna,y:superior,width:manchaL,height:manchaA,
     fill:"none",stroke:"#8A7220","stroke-width":.5,"stroke-dasharray":"2 1.6"}));
 
@@ -859,12 +1402,18 @@ function fichaTecnica(c){
 - Formato: ${c.f.nome} — ${mm(c.f.l)} × ${mm(c.f.a)} mm (${c.f.prop})
 - Origem da folha: ${c.f.origem}
 - Fibra paralela à lombada: ${c.f.fibra ? "sim" : "não — usar papel grão curto"}
-- Extensão estimada: ${c.paginas} páginas · ${c.folhas} folhas
+- Extensão ${c.retornoVale ? "MEDIDA" : "estimada"}: ${c.paginas} páginas · ${c.folhas} folhas${
+  c.retornoVale
+    ? ` (contadas pelo Gerador em ${retornoDoGerador.data || "composição"}; a estimativa desta bancada dizia ${c.estimadas})`
+    : " (estimativa por contagem de palavras — o número medido sai do Gerador)"}
 - Tipografia: ${c.fn.nome}, corpo ${String(estado.corpo).replace(".",",")} pt
 - Mancha gráfica: ${mm(c.manchaL)} × ${mm(c.manchaA)} mm
-- Medida de linha: ${c.chars} caracteres${c.chars<52?" — estreita":c.chars>74?" — longa":" — dentro da faixa"}
-- Margens (int/ext/sup/inf): ${mm(c.interna)} / ${mm(c.externa)} / ${mm(c.superior)} / ${mm(c.inferior)} mm
-- Cânone: nonos${c.costuraJaponesa ? " + 20 mm de folga para a costura" : ""}
+- Colunas: ${c.col.n}${c.col.n>1?` de ${mm(c.larguraColuna)} mm, medianiz ${mm(c.medianiz)} mm`:""}
+- Medida de linha${c.col.n>1?" (por coluna)":""}: ${c.chars} caracteres${c.chars<52?" — estreita":c.chars>74?" — longa":" — dentro da faixa"}
+- Margens (${c.espelha ? "int/ext" : "esq/dir"}/sup/inf): ${mm(c.interna)} / ${mm(c.externa)} / ${mm(c.superior)} / ${mm(c.inferior)} mm
+- Regra das margens: ${c.cn.nome}${c.costuraJaponesa ? " + 20 mm de folga para a costura" : ""}
+- Impressão do miolo: ${c.imp.nome} — ${c.espelha ? "as margens espelham" : "margens iguais em toda página"}
+- Perfil no Gerador: ${estado.perfil}
 
 ## Encadernação
 
@@ -878,7 +1427,7 @@ function fichaTecnica(c){
 ## Lista de corte
 
 ${listaDeCorte(c)}
-- Espessura estimada do miolo: ${mm(c.espessura)} mm
+- Espessura ${c.retornoVale ? "do miolo" : "estimada do miolo"}: ${mm(c.espessura)} mm
 - Constantes usadas: cerceta ${CERCETA} mm · virada ${VIRADA} mm · cava ${CAVA} mm
 
 ## Materiais
@@ -895,11 +1444,12 @@ Anotar o CÓDIGO do fornecedor, não o nome comercial.
 
 ## Produção
 
-- Fonte digital: corpus Pedra Angular
-- Pipeline: Markdown → LuaTeX (fontspec, unicode-math) → PDF${c.en.fam==="cad"?" → imposição (pdfbook2)":""}
+- Fonte digital: ${c.tx.doArquivo ? `${c.tx.arquivo} (corpus Pedra Angular)` : "corpus Pedra Angular"}
+- Pipeline: Markdown do corpus → Gerador (Paged.js, no navegador) → prensa.py (Chromium headless) → PDF conferido${c.en.fam==="cad"?" → impor.py (imposição em cadernos)":c.en.fam==="jap"?" → impor.py (folhas soltas)":""}
 - Impressão: ${c.costuraJaponesa && c.en.id!=="fukuro" ? "frente e verso, folha solta" : c.en.id==="fukuro" ? "somente frente, dobra na borda externa" : "imposto em cadernos"}
 - Link desta configuração: ${location.origin + location.pathname + paraHash()}
-- Status: rascunho
+- Contagem de páginas: ${c.retornoVale ? `medida no Gerador (${retornoDoGerador.arquivo})` : "estimada nesta bancada — para medir, exporte a especificação, componha no Gerador e traga o retorno de volta"}
+- Status: ${c.retornoVale ? "conferido contra a composição" : "rascunho"}
 
 Ὁ ΔιαΦορεύς παρῆν`;
 }
@@ -936,9 +1486,64 @@ function montarSecoes(){
   const alvo = document.getElementById("secoes");
   alvo.innerHTML = "";
 
-  alvo.appendChild(secao("s-texto","Texto","o que vai dentro", TEXTOS.map(t=>
-    fichaBotao({titulo:t.nome, sub:`${t.autor} · ${t.extensao}`, ativo:estado.texto===t.id,
-      onClick:()=>{estado.texto=t.id; render();}}))));
+  /* A PORTA É A ZONA DE ARRASTAR, como em todas as bancadas. O catálogo
+     continua existindo, abaixo e declarado como exemplo — e nem tudo que se
+     imprime é do acervo: um `.md` digitado à mão também vira volume. */
+  const fsTexto = document.createElement("fieldset");
+  fsTexto.id = "s-texto";
+  const lgTexto = document.createElement("legend");
+  lgTexto.innerHTML = '<span class="rotulo">Texto</span>' +
+    '<span class="dica">o que vai dentro</span>';
+  fsTexto.appendChild(lgTexto);
+
+  const zona = document.createElement("button");
+  zona.type = "button";
+  zona.id = "zona-md";
+  zona.className = "zona" + (estado.texto === 'arquivo' && obraDoArquivo ? " pronta" : "");
+  if (obraDoArquivo) {
+    const t1 = document.createElement("p"); t1.className = "grande";
+    t1.textContent = obraDoArquivo.nome;
+    const t2 = document.createElement("p");
+    t2.textContent = `${obraDoArquivo.autor} · ` +
+      `${obraDoArquivo.palavras.toLocaleString('pt-BR')} palavras · ${obraDoArquivo.extensao}`;
+    const t3 = document.createElement("p"); t3.className = "mono";
+    t3.textContent = obraDoArquivo.arquivo + " · arraste outro para trocar";
+    zona.append(t1, t2, t3);
+    /* A contagem que voltou do Gerador aparece na PORTA por onde entrou:
+       é ela que está movendo folhas e lista de corte, e ficar só no aviso
+       faria a bancada mudar de número sem mostrar o porquê. */
+    if (retornoDoGerador) {
+      const t4 = document.createElement("p"); t4.className = "mono";
+      t4.textContent = "+ " + retornoDoGerador.arquivo + " · " +
+        retornoDoGerador.paginas + " páginas contadas pelo Gerador";
+      zona.appendChild(t4);
+    }
+  } else {
+    const t1 = document.createElement("p"); t1.className = "grande";
+    t1.textContent = "Arraste aqui o .md";
+    const t2 = document.createElement("p");
+    t2.textContent = "ou clique para escolher — do acervo ou qualquer texto seu";
+    const t3 = document.createElement("p"); t3.className = "mono";
+    t3.textContent = "PDF vira .md no Conversor · o retorno .json do Gerador entra aqui também";
+    zona.append(t1, t2, t3);
+  }
+  zona.addEventListener("click", () => document.getElementById('arquivo-md').click());
+  fsTexto.appendChild(zona);
+
+  const dicaEx = document.createElement("p");
+  dicaEx.className = "dica";
+  dicaEx.textContent = obraDoArquivo
+    ? "Exemplos, para experimentar sem trocar de arquivo — a contagem deles é aproximada."
+    : "Sem arquivo, a bancada usa um exemplo: a contagem de palavras é aproximada e toda a conta sai dela.";
+  fsTexto.appendChild(dicaEx);
+
+  const filEx = document.createElement("div");
+  filEx.className = "fileira";
+  TEXTOS.forEach(x => filEx.appendChild(
+    fichaBotao({titulo:x.nome, sub:`${x.autor} · ${x.extensao}`, ativo:estado.texto===x.id,
+      onClick:()=>{estado.texto=x.id; render();}})));
+  fsTexto.appendChild(filEx);
+  alvo.appendChild(fsTexto);
 
   alvo.appendChild(secao("s-tipografia","Tipografia","o desenho da letra", FONTES.map(f=>{
     const b = fichaBotao({titulo:f.nome, sub:f.nota, ativo:estado.fonte===f.id,
@@ -954,6 +1559,62 @@ function montarSecoes(){
   alvo.appendChild(secao("s-formato","Formato","proporção e refile", FORMATOS.map(f=>
     fichaBotao({titulo:`${f.nome} · ${f.l}×${f.a}`, sub:`${f.prop}${f.fibra?" · fibra ok":""}`,
       ativo:estado.formato===f.id, onClick:()=>{estado.formato=f.id; render();}}))));
+
+  alvo.appendChild(secao("s-canone","Regra das margens",
+    "a mancha muda com ela", CANONES.map(k=>
+    fichaBotao({titulo:k.nome, sub:k.nota.split(" · ").slice(-1)[0],
+      ativo:estado.canone===k.id, onClick:()=>{estado.canone=k.id; render();}}))));
+
+  /* Os quatro valores só aparecem quando são usados: campo que não faz nada
+     na tela é pior que campo nenhum. */
+  if (estado.canone === "personalizada") {
+    const fs = document.createElement("fieldset");
+    fs.id = "s-margens";
+    fs.innerHTML = '<legend><span class="rotulo">Margens em milímetros</span>' +
+      '<span class="dica">interna (costura), externa, superior, inferior</span></legend>';
+    const fil = document.createElement("div");
+    fil.className = "fileira";
+    [["int","interna"],["ext","externa"],["sup","superior"],["inf","inferior"]]
+      .forEach(([k,rot])=>{
+        const l = document.createElement("label");
+        l.className = "ficha";
+        l.innerHTML = '<b>' + rot + '</b>';
+        const i = document.createElement("input");
+        i.type = "number"; i.min = "3"; i.max = "120"; i.step = "0.5";
+        i.value = estado.margens[k];
+        i.setAttribute("aria-label", "Margem " + rot + " em milímetros");
+        i.addEventListener("change", ()=>{
+          const v = parseFloat(i.value);
+          if (v > 0 && v < 200) { estado.margens[k] = v; render(); }
+        });
+        l.appendChild(i); fil.appendChild(l);
+      });
+    fs.appendChild(fil);
+    alvo.appendChild(fs);
+  }
+
+  alvo.appendChild(secao("s-colunas","Colunas da mancha",
+    "a medida de linha é por coluna", COLUNAS_MANCHA.map(k=>
+    fichaBotao({titulo:k.nome, sub:k.nota, ativo:estado.colunas===k.id,
+      onClick:()=>{estado.colunas=k.id; render();}}))));
+
+  alvo.appendChild(secao("s-impressao","Impressão do miolo",
+    "espelha as margens ou não", IMPRESSOES.map(i=>
+    fichaBotao({titulo:i.nome, sub:i.nota, ativo:estado.impressao===i.id,
+      onClick:()=>{estado.impressao=i.id; render();}}))));
+
+  if (PERFIS.length) alvo.appendChild(secao("s-perfil","Perfil tipográfico",
+    "quem compõe a página é o Gerador; o perfil é dele", PERFIS.map(pf=>
+    fichaBotao({titulo:pf.nome, sub:pf.para, ativo:estado.perfil===pf.id,
+      onClick:()=>{
+        estado.perfil = pf.id;
+        /* O perfil ARRASTA fonte e corpo quando a Oficina os conhece: são o
+           mesmo número dos dois lados, e deixar divergir aqui seria estimar a
+           medida de linha com uma fonte e compor com outra. */
+        if (pf.fonte && acha(FONTES, pf.fonte)) estado.fonte = pf.fonte;
+        if (pf.corpo && CORPOS.includes(pf.corpo)) estado.corpo = pf.corpo;
+        render();
+      }}))));
 
   alvo.appendChild(secao("s-capa-tema","Tema da capa","cores do volume, não da tela", TEMAS.map(t=>{
     const sw = `<span class="fio-cor" style="background:${t.fundo};border-color:${t.texto}"></span>`;
@@ -998,7 +1659,10 @@ function render(){
     ["Formato", `${c.f.l}×${c.f.a}`, "mm"],
     ["Mancha", `${c.manchaL.toFixed(0)}×${c.manchaA.toFixed(0)}`, "mm"],
     ["Linha", c.chars, "caracteres"],
-    ["Extensão", c.paginas, `pág · ${c.folhas} folhas`],
+    /* De onde vem o número que move todo o material: dito no próprio placar,
+       não numa nota de rodapé da ficha. */
+    ["Extensão", c.paginas,
+      `pág · ${c.folhas} folhas · ${c.retornoVale ? "contadas" : "estimadas"}`],
     ["Dificuldade", `${c.dif}/5 ` + "◆".repeat(c.dif)+"◇".repeat(5-c.dif), ""],
     ["Linha editorial", c.linha, ""],
   ];
@@ -1010,23 +1674,58 @@ function render(){
   if(!c.f.fibra) msgs.push({tipo:"alerta", txt:`<strong>${c.f.nome}</strong> corta o A4 contra a fibra. Funciona, mas a dobra resiste e o miolo tende a arquear. Use papel grão curto.`});
   else msgs.push({tipo:"ok", txt:`<strong>${c.f.nome}</strong> mantém a fibra paralela à lombada com sulfite A4 comum.`});
   if(c.chars < 52) msgs.push({tipo:"alerta", txt:`Medida de <strong>${c.chars} caracteres</strong> — estreita demais. Aumente o formato ou reduza o corpo.`});
-  if(c.chars > 74) msgs.push({tipo:"alerta", txt:`Medida de <strong>${c.chars} caracteres</strong> — linha longa. Considere duas colunas ou corpo maior.`});
+  if(c.chars > 74) msgs.push({tipo:"alerta", txt:`Medida de <strong>${c.chars} caracteres</strong> — linha longa. ${c.col.n>1?"Nem duas colunas resolveram: o corpo é pequeno demais para esta mancha.":"Duas colunas resolvem (a seção <em>Colunas da mancha</em>), ou corpo maior."}`});
+  if(c.col.n > 1 && c.chars < 40) msgs.push({tipo:"alerta", txt:`Cada coluna ficou com <strong>${c.chars} caracteres</strong> — estreita. Em coluna curta a justificação abre buracos e a hifenização vira obrigação. Menos colunas, corpo menor ou mancha maior.`});
   if(c.fn.classe==="hyper" && c.chars < 55) msgs.push({tipo:"alerta", txt:`Atkinson Hyperlegible é larga: ela pede formato maior que o escolhido.`});
+  if(!c.fn.vendorizada) msgs.push({tipo:"alerta", txt:
+    `<strong>${c.fn.nome}</strong> não está vendorizada em <code>gerador/fontes/</code>: o Gerador RECUSA compor com ela, em vez de compor com a métrica errada. A estimativa desta tela vale; o PDF não sai. Para compor de verdade, escolha uma fonte com arquivo — ou vendorize a ${c.fn.nome} e propague.`});
+  /* A CONTAGEM DO GERADOR, quando existe — e por que deixou de valer, quando
+     deixou. A estimativa é honesta como estimativa; o que não pode é ela se
+     passar pelo número medido, nem o número medido sobreviver à troca de
+     formato que o invalidou. */
+  if(c.retornoVale){
+    const d = c.paginas - c.estimadas;
+    msgs.push({tipo:"ok", txt:
+      `<strong>${c.paginas} páginas contadas</strong> pelo Gerador ` +
+      `(${retornoDoGerador.arquivo}${retornoDoGerador.data ? ", " + retornoDoGerador.data : ""}). ` +
+      `Folhas, espessura do miolo e lista de corte saem deste número. ` +
+      (d === 0
+        ? `A estimativa desta bancada tinha acertado na mosca.`
+        : `A estimativa dizia ${c.estimadas} — ${Math.abs(d)} ${Math.abs(d)===1?"página":"páginas"} ` +
+          `${d > 0 ? "a menos" : "a mais"} do que o livro tem ` +
+          `(${Math.abs(Math.round(100 * d / c.estimadas))} %).`)});
+  } else if(retornoDoGerador){
+    msgs.push({tipo:"alerta", txt:
+      `O retorno <strong>${retornoDoGerador.arquivo}</strong> foi contado em ` +
+      `outra configuração (${retornoDoGerador.obra || "obra"}${retornoDoGerador.data ? ", " + retornoDoGerador.data : ""}), ` +
+      `e não vale para a que está na tela. Voltei à <strong>estimativa</strong>: ` +
+      `${c.paginas} páginas. Componha de novo no Gerador e traga o retorno novo — ` +
+      `aplicar o número do livro de ontem numa lista de corte de hoje é cortar errado.`});
+  }
+  if(!c.tx.doArquivo && !c.retornoVale) msgs.push({tipo:"alerta", txt:
+    `Este é um texto da <strong>vitrine</strong>, com contagem aproximada de palavras. Páginas, folhas, espessura e lista de corte saem dessa contagem. Para um volume real, carregue o <code>.md</code> do acervo na seção <em>Texto</em>.`});
 
   /* A fonte tem os caracteres do texto?
      Medido nos arquivos com fontTools, não suposto: EB Garamond traz latim e
      grego politônico e NENHUM hebraico; Cardo traz as três; Atkinson só latim.
-     Compor o Eclesiastes em Garamond faz o hebraico cair num fallback do
-     sistema no meio da página — dois desenhos de letra no mesmo livro. */
+     Compor o Eclesiastes em Garamond faz o hebraico cair no piso da pilha, a
+     Cardo (N72), no meio da página — não some, mas são dois desenhos de letra
+     no mesmo livro. O aviso continua valendo por isso. */
   const ESCRITA_DA_LINGUA = {he:"hebraico", grc:"grego", el:"grego", la:"latim", "pt-BR":"latim"};
   const precisa = ESCRITA_DA_LINGUA[c.tx.lang] || "latim";
   if(!c.fn.escritas.includes(precisa)){
     msgs.push({tipo:"alerta", txt:
       `<strong>${c.fn.nome}</strong> não tem ${precisa}. O subtítulo de ` +
-      `<strong>${c.tx.nome}</strong> (${c.tx.sub}) cairia numa fonte de sistema, ` +
+      `<strong>${c.tx.nome}</strong> (${c.tx.sub}) cairia na Cardo, o piso da pilha, ` +
       `com outro desenho de letra. Para esta obra, use ` +
       FONTES.filter(f=>f.escritas.includes(precisa)).map(f=>f.nome).join(" ou ") + `.`});
   }
+  if(c.cn.id==="abnt" && !(c.f.l===210 && c.f.a===297)) msgs.push({tipo:"alerta",
+    txt:`A <strong>ABNT NBR 14724</strong> pressupõe folha A4 (210 × 297 mm), e o formato escolhido é ${c.f.nome}. As margens saem em centímetros fixos de qualquer jeito — só não é mais a norma.`});
+  if(c.cn.id==="abnt" && c.espelha) msgs.push({tipo:"alerta",
+    txt:`Trabalho em <strong>ABNT</strong> impresso em frente e verso espelha as margens (3 cm sempre do lado da lombada). É o que a norma pede para os dois lados; se o professor recebe só frente, troque a impressão para <strong>somente frente</strong>.`});
+  if(!c.espelha && c.en.fam==="cad") msgs.push({tipo:"alerta",
+    txt:`<strong>Somente frente</strong> com encadernação em cadernos desperdiça metade do papel: o caderno dobrado tem verso. Para caderno, use frente e verso.`});
   if(c.en.fam==="dura" && c.paginas < 40) msgs.push({tipo:"alerta", txt:`Só <strong>${c.paginas} páginas</strong> para capa dura — a lombada fica frágil. Considere caderno único.`});
   if(c.en.fam==="jap" && c.folhas > 110) msgs.push({tipo:"alerta", txt:`<strong>${c.folhas} folhas</strong> excedem o limite prático da costura japonesa (~15 mm). Divida em volumes.`});
   av.innerHTML = msgs.map(x=>
@@ -1073,7 +1772,10 @@ btnPhi.addEventListener('click',()=>{
   const painel = document.getElementById('ui-sumario'), botao = document.getElementById('ui-xi');
   const alvos = [
     ['#s-texto','Texto'],['#s-tipografia','Tipografia'],['#s-corpo','Corpo'],
-    ['#s-formato','Formato'],['#s-capa-tema','Tema da capa'],['#s-encad','Encadernação'],
+    ['#s-formato','Formato'],['#s-canone','Regra das margens'],
+    ['#s-colunas','Colunas'],
+    ['#s-impressao','Impressão'],['#s-perfil','Perfil tipográfico'],
+    ['#s-capa-tema','Tema da capa'],['#s-encad','Encadernação'],
     ['#s-fio','Fio'],['#s-capa','Capa'],['#s-acabamentos','Acabamentos'],
     ['#acervo','Acervo completo']
   ];
@@ -1131,6 +1833,132 @@ document.getElementById("btn-copiar").addEventListener("click", e=>
   copiar(document.getElementById("saida").textContent, e.currentTarget, "Ficha copiada"));
 document.getElementById("btn-link").addEventListener("click", e=>
   copiar(location.origin + location.pathname + paraHash(), e.currentTarget, "Link copiado"));
+
+/* =========================================================
+   A PONTE COM O GERADOR
+
+   O Gerador não recalcula geometria (proposta, seção 8): ele LÊ. Este arquivo
+   é o contrato — os mesmos campos do `especificacao.*.json` do Marco 0. O que
+   a Oficina calculou aqui é o que a bancada compõe lá, sem uma conta repetida
+   no meio.
+   ========================================================= */
+function especificacaoParaGerador(c){
+  const r = n => +(+n).toFixed(4);
+  return {
+    _leiame: [
+      "Exportado pela Oficina para o Gerador. Os numeros de geometria sao os",
+      "dela: o Gerador nao os recalcula (proposta, secao 8). Se um numero aqui",
+      "estiver errado, o conserto e na Oficina e a exportacao se refaz."
+    ],
+    versao: 2,
+    exportado_em: new Date().toISOString().slice(0, 10),
+    exportado_por: "oficina/index.html · calcular()",
+    origem_hash: location.origin + location.pathname + paraHash(),
+    obra: {
+      id: c.tx.id, titulo: c.tx.nome, autor: c.tx.autor,
+      palavras: c.tx.palavras,
+      /* Do arquivo, quando veio de arquivo: é o colofão do Gerador que publica
+         isto, e publicar "domínio público" sobre um texto que não é seria a
+         ficha mentindo no lugar em que ela mais vale. */
+      licenca: c.tx.licenca || (c.tx.doArquivo ? "" : "dominio_publico"),
+      edicao: c.tx.fonte || "",
+      arquivo: c.tx.arquivo || ""
+    },
+    perfil: estado.perfil,
+    formato: {
+      id: c.f.id, nome: c.f.nome, largura_mm: c.f.l, altura_mm: c.f.a,
+      proporcao: c.f.prop, origem: c.f.origem,
+      fibra_paralela_a_lombada: !!c.f.fibra
+    },
+    margens_mm: {
+      canone: c.cn.id, canone_nome: c.cn.nome, canone_frase: c.cn.frase,
+      interna: r(c.interna), externa: r(c.externa),
+      superior: r(c.superior), inferior: r(c.inferior),
+      folga_costura_japonesa: c.costuraJaponesa ? 20 : 0
+    },
+    impressao: c.imp.id,
+    mancha_mm: { largura: r(c.manchaL), altura: r(c.manchaA) },
+    composicao: {
+      medida_de_linha_caracteres: c.chars,
+      linhas_por_pagina: c.linhasPagina,
+      paginas_estimadas: c.paginas,
+      /* De onde veio o número: sem isto, o Gerador não tem como saber se a
+         especificação já passou por uma composição de verdade. */
+      paginas_origem: c.retornoVale ? "medida_no_gerador" : "estimada_na_oficina",
+      colunas: c.col.n,
+      medianiz_mm: r(c.medianiz),
+      largura_coluna_mm: r(c.larguraColuna)
+    },
+    encadernacao: {
+      id: c.en.id, nome: c.en.nome, familia: c.en.fam,
+      folhas: c.folhas, espessura_miolo_mm: r(c.espessura)
+    },
+    linha_editorial: c.linha,
+    avisos: []
+  };
+}
+
+document.getElementById("btn-gerador").addEventListener("click", e=>{
+  const c = calcular();
+  const nome = "especificacao." + c.f.id + "-" + estado.perfil + "-" +
+               (acha(CANONES, estado.canone) || {}).id + ".json";
+  const texto = JSON.stringify(especificacaoParaGerador(c), null, 2) + "\n";
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([texto], {type:"application/json"}));
+  a.download = nome;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+  const antes = e.currentTarget.textContent;
+  e.currentTarget.textContent = "Arraste no Gerador";
+  setTimeout(()=>{e.currentTarget.textContent = antes;}, 2400);
+});
+
+/* ---------- o arquivo do acervo ---------- */
+/* FileReader, nunca fetch: a bancada abre por duplo clique (`file://`), e ali
+   ler o arquivo ao lado é bloqueado. */
+function abrirArquivo(f){
+  if (!f) return;
+  const ehMd = /\.(md|markdown)$/i.test(f.name);
+  /* A MESMA PORTA para as duas coisas que entram: o texto e a contagem que o
+     Gerador devolve. Duas zonas de arrastar para dois arquivos que chegam da
+     mesma mão seria a bancada pedindo que o Bruno decorasse qual é qual. */
+  const ehJson = /\.json$/i.test(f.name);
+  if (!ehMd && !ehJson) {
+    alert('A Oficina lê .md (o texto) e o retorno .json do Gerador (a contagem '
+        + 'de páginas). PDF vira .md no Conversor, que é a bancada anterior.');
+    return;
+  }
+  const leitor = new FileReader();
+  leitor.onload = () => ehMd
+    ? receberMd(f.name, String(leitor.result))
+    : receberRetorno(f.name, String(leitor.result));
+  leitor.readAsText(f, 'utf-8');
+}
+document.getElementById('arquivo-md').addEventListener('change', e => {
+  abrirArquivo(e.target.files[0]); e.target.value = '';
+});
+/* A zona RESPONDE ao arrastar: sem resposta, quem arrasta não sabe se a
+   página aceita, e larga o arquivo em cima do navegador — que abre o .md numa
+   aba e perde a montagem. */
+function marcarZona(ligada){
+  const z = document.getElementById('zona-md');
+  if (z) z.classList.toggle('sobre', ligada);
+}
+document.addEventListener('dragover', e => { e.preventDefault(); marcarZona(true); });
+document.addEventListener('dragleave', e => {
+  if (e.relatedTarget === null) marcarZona(false);
+});
+document.addEventListener('drop', e => {
+  e.preventDefault(); marcarZona(false);
+  /* Os DOIS de uma vez, como no Gerador: o texto e o retorno do Gerador
+     chegam da mesma mao e nao ha razao para duas viagens. O texto entra
+     primeiro — e ele que decide a obra — e o retorno em cima. */
+  const vindos = Array.from(e.dataTransfer.files || []);
+  vindos.filter(f => /\.(md|markdown)$/i.test(f.name)).slice(0, 1).forEach(abrirArquivo);
+  vindos.filter(f => /\.json$/i.test(f.name)).slice(0, 1).forEach(abrirArquivo);
+  /* Nem .md nem .json: `abrirArquivo` e quem explica o que esta bancada le. */
+  if (!vindos.some(f => /\.(md|markdown|json)$/i.test(f.name))) abrirArquivo(vindos[0]);
+});
 
 /* ---------- partida ---------- */
 /* Com JavaScript, o acervo começa recolhido (o Φ o abre). Sem JavaScript,
