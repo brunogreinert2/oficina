@@ -10,10 +10,28 @@ usada pela Oficina é arquivo desta pasta.
 | `Atkinson-Regular.woff2` · `Atkinson-Bold.woff2` | Atkinson Hyperlegible 400 / 700 | `Atkinson-OFL.txt` |
 | `EBGaramond-Regular.woff2` · `-Italic` · `-SemiBold` | EB Garamond 400 / 400 itálico / 600 | `EBGaramond-OFL.txt` |
 | `Cardo-Regular.woff2` · `-Italic` · `-Bold` | Cardo 400 / 400 itálico / 700 | `Cardo-OFL.txt` |
+| `DejaVuSans.woff2` · `DejaVuSans-Bold.woff2` | DejaVu Sans 400 / 700, declarada como `'DejaVu Guarnicao'` | `DejaVu-LICENSE.txt` |
 
 Atkinson é a fonte da **interface** (vendorizada de
 `app-leitura/scripts/rolo/fontes/` — não editar aqui). EB Garamond e Cardo são
 as tipografias dos **volumes**, usadas na prévia da capa e da lombada.
+
+## A pilha (N72, N73)
+
+```
+<escolha> → Cardo (piso) → DejaVu Guarnicao → genérica
+```
+
+Vale para a interface e para cada `data-css` do catálogo — que é o que o SVG
+da capa usa. Nenhuma fonte do sistema operacional entra. Até 2026-09-11 a
+interface caía em Verdana e o catálogo em Georgia; Verdana não existe no
+Android, e o Φ da lombada saía com o desenho do aparelho.
+
+A DejaVu estava nesta pasta desde 2026-08-09 sem `@font-face` que a
+declarasse e sem licença ao lado. O `DejaVu-LICENSE.txt` foi copiado em
+2026-09-11 de `app-infantil/src/fontes/` (idêntico byte a byte ao de
+`gerador/fontes/`) e propagado para `conversor/fontes/` e `corretor/fontes/`,
+que vendorizam desta pasta (N56).
 
 ## Cobertura de escrita — medida, não suposta
 
@@ -27,8 +45,8 @@ Lida dos arquivos com `fontTools`, não do que a documentação promete:
 
 **Cardo é a única das três que compõe as três escritas.** É por isso que a
 Oficina avisa quando se escolhe o Eclesiastes com EB Garamond: o hebraico
-cairia numa fonte de sistema e o livro sairia com dois desenhos de letra na
-mesma página. Esse aviso é gerado a partir do atributo `data-escritas` de cada
+cairia no piso da pilha (a Cardo) e o livro sairia com dois desenhos de letra
+na mesma página. Esse aviso é gerado a partir do atributo `data-escritas` de cada
 fonte no catálogo — se um dia entrar uma família nova, medir antes de declarar.
 
 Reproduzir a medição:

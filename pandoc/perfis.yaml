@@ -1,0 +1,431 @@
+# perfis.yaml — os perfis tipográficos do ecossistema, em um arquivo só.
+#
+# UMA VERDADE, DOIS CONSUMIDORES.
+#   consumidor 1: o pandoc, pelos `*.yaml` desta mesma pasta
+#   consumidor 2: o Gerador (C:\Claude\gerador), que compõe no navegador
+#
+# Este arquivo mora AQUI, e não no Gerador, porque a Oficina já guardava os
+# perfis — são os nove `*.yaml` ao lado. Criar um `perfis.yaml` dentro do
+# Gerador teria feito uma terceira cópia dos mesmos números, que é exatamente
+# o defeito que o N56 descreve: o `gerador_rolo.py` bifurcou em 538 linhas sem
+# que nada avisasse. O Gerador carrega uma cópia VENDORIZADA deste arquivo,
+# carimbada e não editável, e `conferir_perfis.py` denuncia divergência.
+#
+# O que é de quem (PROPOSTA-gerador-v2.md, seção 2):
+#   formato, mancha, margens, linhas/página  -> a Oficina calcula, ninguém mais
+#   fonte, corpo, entrelinha, espaçamento    -> este arquivo
+#   alinhamento, hifenização, notas, papel   -> este arquivo
+#
+# ---------------------------------------------------------------------------
+# POR QUE A ENTRELINHA ESTÁ EM PONTOS E NÃO EM MULTIPLICADOR
+#
+# `linestretch` do pandoc e `line-height` do CSS NÃO são o mesmo número. O
+# LaTeX já parte de um baselineskip de 1,2, então `linestretch: 1.2` compõe a
+# ~1,44 de entrelinha efetiva — e o comentário do `abnt.yaml` registra a
+# medição que prova isso (1,5 em corpo 12 produz ~20,9 pt, não 21,6).
+#
+# Um único multiplicador serviria a um consumidor e mentiria para o outro. O
+# ponto tipográfico não mente para nenhum dos dois: é a distância física entre
+# duas linhas no papel, é o que a régua mede, e é o número que o colofão
+# publica ("entrelinha 23,2 pt"). Cada consumidor deriva o que precisa:
+#
+#   Gerador  ->  line-height: <entrelinha_pt>pt                    (exato)
+#   pandoc   ->  linestretch ~= entrelinha_pt / (1,2 x corpo_pt)   (aproximado)
+#
+# O campo `pandoc_linestretch` abaixo é o que está HOJE no `*.yaml` de cada
+# perfil, copiado, não recalculado. Onde ele não bate com a entrelinha em
+# pontos, o `conferir_perfis.py` reclama e a divergência está anotada no
+# próprio perfil. Nenhuma foi resolvida em silêncio.
+# ---------------------------------------------------------------------------
+#
+# Fonte: derivado de abnt.yaml, academico.yaml, caderno*.yaml (esta pasta),
+#        negocio/01-briefing-linha-acessivel.md,
+#        negocio/02-estudo-linha-acessivel.md,
+#        e das constantes de classe da Oficina (index.html, calcular()).
+# Escrito em 2026-09-10.
+
+versao: 1
+gerado_em: "2026-09-10"
+
+# As constantes de classe da Oficina. Ela usa uma entrelinha por CLASSE de
+# fonte para estimar linhas/página quando ainda não há perfil escolhido.
+# Estão repetidas aqui para que a divergência entre estimativa e composição
+# tenha de onde ser explicada — não para serem uma segunda verdade.
+# Origem: oficina/index.html, função calcular(), variável `entrelinha`.
+constantes_da_oficina:
+  entrelinha_serif: 1.35
+  entrelinha_hyper: 1.45
+  mm_por_ponto: 0.3528
+  medida_de_linha_boa: [52, 74]   # caracteres; fora disso a Oficina avisa
+
+# Largura média do caractere, em em. É o que converte largura de mancha em
+# medida de linha. Origem: `data-larg` das fontes em oficina/index.html.
+# NÃO estimar: quem quiser acrescentar uma família mede antes.
+#
+# A PILHA DE CADA FAMÍLIA OBEDECE À N72 E À N73:
+#   <escolha> -> Cardo -> DejaVu Guarnicao -> genérica
+# A Cardo é o piso: é ela que compõe o grego politônico e o hebraico que a
+# Atkinson, a OpenDyslexic e a EB Garamond não cobrem. Fonte do sistema
+# (Verdana, Georgia, Arial...) não entra em pilha nenhuma.
+#
+# Corrigido em 2026-09-11. A versão anterior punha a Atkinson e a OpenDyslexic
+# direto na DejaVu, com Verdana no meio — e a prensa mostrou o custo: no Salmos
+# em Letra Grande o selo grego do colofão saiu em DejaVu Sans, não em Cardo.
+# Na tela ninguém repararia; no papel é outra letra.
+fontes:
+  cardo:
+    css: "'Cardo', 'DejaVu Guarnicao', serif"
+    arquivos: [Cardo-Regular.woff2, Cardo-Italic.woff2, Cardo-Bold.woff2]
+    classe: serif
+    largura_media_em: 0.40
+    escritas: [latim, grego_politonico, hebraico]
+    tem_italico: true
+    tem_negrito_italico: false   # daí o FakeSlant nos perfis pandoc
+
+  atkinson:
+    css: "'Atkinson Hyperlegible', 'Cardo', 'DejaVu Guarnicao', sans-serif"
+    arquivos: [Atkinson-Regular.woff2, Atkinson-Bold.woff2]
+    classe: hyper
+    largura_media_em: 0.466
+    escritas: [latim]
+    tem_italico: false
+    tem_negrito_italico: false
+
+  opendyslexic:
+    css: "'OpenDyslexic', 'Cardo', 'DejaVu Guarnicao', sans-serif"
+    arquivos: [opendyslexic-400.woff, opendyslexic-700.woff, opendyslexic-400i.woff]
+    classe: hyper
+    largura_media_em: 0.50       # ESTIMADA, não medida. Ver `pendencias`.
+    largura_medida: false
+    escritas: [latim]
+    tem_italico: true
+    tem_negrito_italico: false
+
+  liberation:
+    css: "'Liberation Serif', 'Cardo', 'DejaVu Guarnicao', serif"
+    arquivos: [LiberationSerif-Regular.woff2, LiberationSerif-Italic.woff2,
+               LiberationSerif-Bold.woff2, LiberationSerif-BoldItalic.woff2]
+    classe: serif
+    # MEDIDA nos proprios arquivos com fontTools em 2026-09-11: media das
+    # larguras de avanco das letras de uma amostra de portugues corrido.
+    # 0.4108 arredondado. A Cardo, pelo mesmo metodo, da 0.40.
+    largura_media_em: 0.411
+    largura_medida: true
+    escritas: [latim, grego_politonico, hebraico]
+    tem_italico: true
+    tem_negrito_italico: true
+    # Por que ela: a ABNT pede Times New Roman ou Arial, que sao fontes do
+    # sistema — e fonte do sistema nao entra na composicao (N73). A Liberation
+    # Serif tem as METRICAS da Times (mesmo avanco por caractere, mesma
+    # quebra de linha) e e livre (OFL 1.1). Conferido na maquina do Bruno:
+    # versao 2.1.5, 27 de 27 letras hebraicas e 114 de 128 do bloco grego
+    # politonico. Vendorizada em gerador/fontes/ a partir de C:/Windows/Fonts.
+    # Para Arial, o equivalente e a Liberation Sans — ainda nao vendorizada.
+
+  garamond:
+    css: "'EB Garamond', 'Cardo', 'DejaVu Guarnicao', serif"
+    arquivos: []                 # não vendorizada no Gerador ainda
+    classe: serif
+    largura_media_em: 0.39
+    escritas: [latim, grego_politonico]
+    tem_italico: true
+    tem_negrito_italico: true
+
+# ---------------------------------------------------------------------------
+# ABERTURA DE CAPÍTULO — o campo que mais mexe na conta de papel.
+#
+#   pagina-nova : todo capítulo começa numa folha limpa. É o livro.
+#   corrido     : o capítulo desce logo abaixo do anterior, com um respiro.
+#
+# Não é enfeite. Medido no Salmos, Oitavo Φ / Cardo 11: os 150 salmos são
+# curtos, e `pagina-nova` gasta uma folha por salmo mesmo quando o salmo tem
+# seis versículos. Em corpo 16 isso multiplica. Um livro de filosofia com 20
+# capítulos longos quase não sente a diferença; um saltério com 150 sente
+# inteira.
+#
+# Ficou no perfil e não na obra porque é decisão tipográfica, e porque a Linha
+# Acessível tem uma razão que vale para toda ela: papel é o maior custo
+# variável do objeto (estudo, seção 7). Quem quiser o contrário num título
+# específico troca na bancada e vê o número mudar antes de imprimir.
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# ALINHAMENTO DO TÍTULO — separado do alinhamento do corpo, de propósito.
+#
+# Título justificado é erro tipográfico: "Capítulo 2" numa linha de 50
+# caracteres vira "Capítulo" num canto e "2" no outro. Aconteceu de verdade
+# nesta bancada em 2026-09-11, e o Bruno viu antes de mim.
+#
+# O corpo pode ser justificado e o título não; são decisões diferentes e por
+# isso são dois campos. `esquerda` é o padrão porque combina com a bandeira da
+# Linha Acessível; `centro` é a tradição do livro de salmos e de missal, e está
+# a um menu de distância na bancada.
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# A MOBÍLIA DA PÁGINA — cabeçalho corrente e adorno.
+#
+# `cabecalho`:
+#   nenhum   : só o fólio no pé
+#   corrente : título da obra no verso, título do capítulo na frente
+#
+# `adorno`:
+#   nenhum   : página limpa
+#   friso    : uma faixa de grega sob o cabeçalho
+#   moldura  : a grega contornando a mancha pelos quatro lados
+#
+# A grega (meandro) é a mesma do Pedra Angular — `GregaMeandro.tsx`. Não é
+# enfeite avulso: é o que faz o leitor reconhecer de onde o livro vem antes de
+# ler uma linha, do mesmo jeito que a mancha pelos nonos e o Φ da barra.
+#
+# TUDO ISSO VIVE NA MARGEM, nunca dentro da mancha. Adorno que invade a mancha
+# come linha, e linha é a conta da Oficina — seriam duas verdades sobre a mesma
+# página. A bancada confere a mancha depois de desenhar a mobília.
+#
+# POR QUE OS PERFIS ACESSÍVEIS NÃO TÊM NENHUM DOS DOIS.
+# A LEI 5 é explícita: acessibilidade vence decoração, sempre e sem
+# configuração. E há uma razão tipográfica junto, a mesma da nota de rodapé:
+# cabeçalho corrente sai em corpo menor que o texto, e corpo menor contradiz um
+# perfil que existe justamente para aumentar o corpo. Em corpo igual, ele comeria
+# a margem. Página limpa, e o fólio orienta — é também o que a RNIB recomenda.
+# Quem quiser o contrário liga na bancada e vê o resultado antes de imprimir.
+# ---------------------------------------------------------------------------
+
+perfis:
+
+  # -------------------------------------------------------------------------
+  padrao:
+    nome: "Padrão"
+    nome_comercial: "Padrão"
+    para: "leitura adulta sem necessidade declarada"
+    fonte: cardo
+    corpo_pt: 11
+    entrelinha_pt: 14.85          # 11 x 1,35 — a constante serifada da Oficina
+    pandoc_linestretch: 1.2       # caderno.yaml
+    divergencia: >
+      O caderno.yaml compõe a ~1,44 efetivo (1,2 x 1,2 do LaTeX), mais aberto
+      que os 1,35 que a Oficina usa para estimar. Escolhi 1,35 para que a Grade
+      e a Oficina batam POR CONSTRUÇÃO no caso que a própria proposta trabalhou
+      (Oitavo Phi / Cardo 11 -> 26 linhas por página). Quem preferir o papel de
+      hoje muda para 15.84 aqui, e então a estimativa da Oficina passa a errar
+      7 por cento. Decisão do Bruno, uma vez, para os dois consumidores.
+    letra_em: 0
+    palavra_em: 0
+    alinhamento: justificado
+    alinhamento_titulo: esquerda
+    hifenizacao: true
+    hifenizacao_idiomas: [pt, la, el-polyton, en]
+    abertura_de_capitulo: pagina-nova
+    cabecalho: corrente
+    adorno: friso
+    notas: rodape
+    notas_corpo: menor
+    papel: "off-white ou branco, 75-90 g"
+    papel_cor: "branco"
+    pandoc_perfil: caderno.yaml
+
+  # -------------------------------------------------------------------------
+  letra-grande:
+    nome: "Letra Grande"
+    # O estudo (seção 4.1-B) é explícito: o mercado NÃO compra "baixa visão",
+    # compra "letra grande". O nome clínico serve ao consultório e à escola; na
+    # capa do balcão, nunca. Os dois nomes existem de propósito, e é o colofão
+    # que carrega o clínico — o nome vende conforto, a ficha vende autoridade.
+    nome_comercial: "Letra Grande"
+    nome_clinico: "Baixa visão"
+    para: "baixa visão; e o présbita de balcão, que compra pelo conforto"
+    fonte: atkinson
+    corpo_pt: 16
+    entrelinha_pt: 23.2           # briefing e estudo; = 16 x 1,45 da Oficina
+    pandoc_linestretch: 1.6       # caderno-baixa-visao.yaml
+    divergencia: >
+      O caderno-baixa-visao.yaml é outro produto: Cardo 17 pt. Este perfil segue
+      o briefing e o estudo de set/2026 — Atkinson 16 / 23,2 pt — que é a
+      especificação do objeto que vai ao teste de 90 dias. O yaml do pandoc
+      ficou para trás e deve ser atualizado, não seguido.
+    letra_em: 0
+    palavra_em: 0
+    alinhamento: bandeira-esquerda
+    alinhamento_titulo: esquerda
+    hifenizacao: false            # palavra partida é custo de leitura
+    abertura_de_capitulo: corrido
+    cabecalho: nenhum
+    adorno: nenhum
+    notas: fim-de-capitulo
+    notas_corpo: igual            # nota em corpo menor contradiz o perfil
+    papel: "off-white fosco, 90-120 g; pólen 80 g no teste de 90 dias"
+    papel_cor: "off-white"
+    evidencia: >
+      Corpo: Russell-Minda et al. 2007 (JVIB, revisão de 18 estudos) — mínimo de
+      16 a 18 pt para legibilidade máxima em baixa visão; Legge & Bigelow 2011.
+      Fonte: sans mais legível que Times (Russell-Minda). A Atkinson
+      especificamente NÃO tem estudo comparativo revisado por pares — é escolha
+      defensável, não comprovada, e o colofão não deve dizer o contrário.
+      Bandeira à esquerda e papel fosco: boa prática RNIB, sem ensaio.
+    pandoc_perfil: caderno-baixa-visao.yaml
+
+  # -------------------------------------------------------------------------
+  presbiopia:
+    nome: "Vista cansada"
+    nome_comercial: "Leitura confortável"
+    nome_clinico: "Presbiopia"
+    para: "quem passou dos quarenta e afasta o texto para focar"
+    fonte: cardo
+    corpo_pt: 12
+    entrelinha_pt: 19.4           # 1,62 = o efetivo do pandoc (1,35 x 1,2)
+    pandoc_linestretch: 1.35      # caderno-presbiopia.yaml
+    divergencia: >
+      Aqui segui o pandoc, não a constante da Oficina. Motivo: este perfil já
+      foi impresso e conferido — "9 páginas viram 12, medido no Barnes".
+      Apertar para 1,35 seria regressão num papel que já existe. Consequência:
+      a estimativa da Oficina erra cerca de 17 por cento para MENOS neste
+      perfil, e a Grade tem de dizer isso na tela em vez de esconder.
+    letra_em: 0
+    palavra_em: 0
+    alinhamento: bandeira-esquerda
+    alinhamento_titulo: esquerda
+    hifenizacao: false
+    abertura_de_capitulo: corrido
+    cabecalho: nenhum
+    adorno: nenhum
+    notas: fim-de-capitulo
+    notas_corpo: igual
+    papel: "off-white fosco, 90 g"
+    papel_cor: "off-white"
+    pandoc_perfil: caderno-presbiopia.yaml
+
+  # -------------------------------------------------------------------------
+  astigmatismo:
+    nome: "Astigmatismo"
+    nome_comercial: "Traço aberto"
+    nome_clinico: "Astigmatismo"
+    para: "borrão com direção; as letras parecem colar umas nas outras"
+    fonte: atkinson
+    corpo_pt: 12
+    entrelinha_pt: 19.4           # 1,62 = o efetivo do pandoc (1,35 x 1,2)
+    pandoc_linestretch: 1.35      # caderno-astigmatismo.yaml
+    letra_em: 0.02                # LetterSpace=2.0 do fontspec = 2/100 em
+    palavra_em: 0.07              # ver `pendencias`: a regra da BDA é relação
+    alinhamento: bandeira-esquerda
+    alinhamento_titulo: esquerda
+    hifenizacao: false
+    abertura_de_capitulo: corrido
+    cabecalho: nenhum
+    adorno: nenhum
+    notas: fim-de-capitulo
+    notas_corpo: igual
+    papel: "off-white fosco, 90 g"
+    papel_cor: "off-white"
+    evidencia: >
+      Aumentar o corpo ajuda MENOS do que se espera neste caso; quem resolve é
+      o espaço entre letras. A Atkinson tem traço uniforme e letras bem
+      diferentes entre si.
+    pandoc_perfil: caderno-astigmatismo.yaml
+
+  # -------------------------------------------------------------------------
+  dislexia:
+    nome: "Dislexia"
+    nome_comercial: "Leitura espaçada"
+    nome_clinico: "Dislexia"
+    para: "troca de b/d e p/q; crowding"
+    fonte: opendyslexic
+    corpo_pt: 12
+    entrelinha_pt: 23.0           # 1,92 = o efetivo do pandoc (1,6 x 1,2)
+    pandoc_linestretch: 1.6       # caderno-dislexia.yaml
+    letra_em: 0.02
+    palavra_em: 0.07
+    alinhamento: bandeira-esquerda
+    alinhamento_titulo: esquerda
+    hifenizacao: false
+    abertura_de_capitulo: corrido
+    cabecalho: nenhum
+    adorno: nenhum
+    notas: fim-de-capitulo
+    notas_corpo: igual
+    papel: "creme ou pastel suave, fosco, 90 g"
+    papel_cor: "creme"
+    evidencia: >
+      Espaçamento: Zorzi et al. 2012 (PNAS) — evidência FORTE, o item mais bem
+      apoiado de toda a linha. A FONTE é o oposto: a evidência de ganho objetivo
+      com fontes para dislexia é MISTA, e Rello & Baeza-Yates 2013 indica que a
+      OpenDyslexic não supera as demais. O que é bem relatado é a PREFERÊNCIA de
+      quem usa. Por isso é opção, nunca padrão — e o colofão declara a fonte sem
+      alegar benefício.
+    pandoc_perfil: caderno-dislexia.yaml
+
+  # -------------------------------------------------------------------------
+  # O perfil que NÃO é um livro: trabalho acadêmico em norma.
+  #
+  # Os outros perfis existem para alguém LER melhor. Este existe para alguém
+  # ENTREGAR — ao professor, à banca, ao protocolo. Quem manda é a NBR 14724,
+  # e onde ela manda não há escolha tipográfica a fazer: corpo 12, entrelinha
+  # 1,5, recuo de 1,25 cm, citação longa recuada 4 cm em corpo menor e espaço
+  # simples, nota de rodapé em corpo 10, número da página no alto à direita.
+  #
+  # As margens NÃO estão aqui: são geometria, e geometria é da Oficina — lá o
+  # cânone `abnt` dá 3 cm em cima e à esquerda, 2 cm embaixo e à direita, e a
+  # impressão decide se elas espelham (frente e verso) ou não (só frente).
+  abnt:
+    nome: "ABNT"
+    nome_comercial: "Trabalho acadêmico (ABNT)"
+    para: "trabalho de faculdade entregue em norma NBR 14724"
+    fonte: liberation
+    corpo_pt: 12
+    # MEDIDO na propria fonte: a linha simples da Liberation Serif e 1,1499 em
+    # (ascender + descender + lineGap, tabela hhea), o que da 13,80 pt em corpo
+    # 12; "1,5 linhas" do Word e 20,70 pt. E o numero do Word que o professor
+    # confere, entao e o numero daqui.
+    entrelinha_pt: 20.7
+    pandoc_linestretch: 1.5       # abnt.yaml
+    divergencia: >
+      O XeLaTeX com linestretch 1.5 compoe a ~21,5 pt (o baselineskip do LaTeX
+      ja parte de 1,2), e o Word a ~20,7. Os dois passam na regua do professor,
+      mas quem recebe o PDF compara com o Word. Segui o Word: 20,7 pt. A
+      diferenca e de 4 por cento, invisivel a olho nu, e esta escrita aqui em
+      vez de resolvida em silencio.
+    letra_em: 0
+    palavra_em: 0
+    alinhamento: justificado
+    alinhamento_titulo: esquerda
+    hifenizacao: true
+    hifenizacao_idiomas: [pt, la, el-polyton, en]
+    # A norma manda secao primaria comecar em folha nova.
+    abertura_de_capitulo: pagina-nova
+    cabecalho: nenhum
+    adorno: nenhum
+    notas: rodape
+    notas_corpo: menor
+    notas_corpo_pt: 10
+    # A NBR 14724 distingue secao por NEGRITO e caixa, nao por tamanho: o
+    # titulo sai no mesmo corpo do texto. Medido antes: 13,2 pt.
+    titulos_corpo_pt: 12
+    recuo_primeira_linha_mm: 12.5
+    citacao_recuo_mm: 40
+    citacao_corpo_pt: 10
+    citacao_entrelinha_pt: 11.5   # simples em corpo 10: 10 x 1,1499
+    folio: alto-direita
+    papel: "A4 branco, 75 g"
+    papel_cor: "branco"
+    pandoc_perfil: abnt.yaml
+
+# ---------------------------------------------------------------------------
+# O que este arquivo NÃO resolve, escrito para não parecer resolvido.
+pendencias:
+  - >
+    opendyslexic.largura_media_em 0.50 é ESTIMATIVA, não medição. As outras três
+    vieram do data-larg da Oficina, que foi medido. Enquanto isto não for
+    medido, toda medida de linha do perfil dislexia é palpite com número do
+    lado — e a Grade marca esse número como estimado na tela.
+  - >
+    palavra_em não é derivável. A regra da BDA é uma RELAÇÃO (espaço entre
+    palavras maior ou igual a 3,5x o espaço entre letras), e o espaço entre
+    letras que ela mede inclui as laterais naturais do desenho, que o CSS não
+    expõe. O 0,07 em é valor de partida a conferir no papel, não um cálculo.
+  - >
+    O "+35 por cento" de espaçamento entre letras que a PROPOSTA-gerador-v2
+    cita não tem fonte no briefing nem no estudo. O número real dos perfis que
+    já imprimem é LetterSpace=2.0, ou seja 0,02 em. Segui o que imprime.
+  - >
+    garamond fica declarada mas sem arquivos vendorizados no Gerador. Um perfil
+    que a use comporia com a métrica errada. A Grade recusa, em vez de compor
+    errado em silêncio.

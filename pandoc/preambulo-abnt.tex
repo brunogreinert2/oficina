@@ -1,0 +1,49 @@
+% preambulo-abnt.tex
+% Detalhes da ABNT NBR 14724 que não cabem em variáveis do Pandoc.
+% Instalar em: <userdir>\preambulo-abnt.tex
+% Usado por abnt.yaml.
+
+% --- recuo de primeira linha: 1,25 cm ----------------------------------------
+% O padrão do LaTeX é ~0,6 cm em corpo 12. A convenção acadêmica brasileira
+% é 1,25 cm (o padrão do Word). Exige 'indent: true' no YAML.
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+
+% O LaTeX não recua o primeiro parágrafo depois de um título — é a tradição
+% tipográfica anglo-saxã. A convenção brasileira (e o Word) recuam todos.
+\usepackage{indentfirst}
+
+% --- número de página no canto superior direito ------------------------------
+% A norma pede o número a 2 cm da borda superior, na margem direita.
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+% A primeira página de cada seção também numerada (a norma não abre exceção).
+\fancypagestyle{plain}{\fancyhf{}\fancyhead[R]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+% --- citação longa: recuo 4 cm, corpo 10, espaço simples ---------------------
+% Na norma, citação com mais de três linhas sai recuada 4 cm da margem
+% esquerda, em corpo menor e entrelinha simples, SEM aspas.
+% No Markdown isso é o bloco iniciado por ">".
+\usepackage{setspace}
+\renewenvironment{quote}
+  {\begin{list}{}{%
+     \setlength{\leftmargin}{4cm}%
+     \setlength{\rightmargin}{0pt}%
+     \setlength{\listparindent}{0pt}%
+     \setlength{\itemindent}{0pt}%
+     \setlength{\topsep}{12pt}%
+     \setlength{\parsep}{0pt}}%
+   \item\relax\footnotesize\setstretch{1}}
+  {\end{list}}
+
+% --- notas de rodapé: corpo 10, espaço simples -------------------------------
+% Sem isto, o esticamento global de 1,5 vaza para as notas.
+\let\ABNToldfootnote\footnote
+\renewcommand{\footnote}[1]{\ABNToldfootnote{\setstretch{1}#1}}
+
+% --- títulos de seção --------------------------------------------------------
+% A norma pede numeração progressiva e títulos sem ponto final.
+% A numeração vem de 'number-sections: true' no YAML.

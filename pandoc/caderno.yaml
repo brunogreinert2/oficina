@@ -1,0 +1,51 @@
+# Pandoc defaults — caderno para IMPRIMIR E COSTURAR (frente e verso)
+# Instalar em: <userdir>\defaults\caderno.yaml
+# Usar com:    pandoc arquivo.md -d caderno -o arquivo.pdf
+#
+# Para costura japonesa com furos a 15 mm da borda.
+# A margem interna (do lado da costura) ALTERNA automaticamente:
+#   páginas ímpares (frente) -> margem grande à esquerda
+#   páginas pares   (verso)  -> margem grande à direita
+# Isso só funciona se você imprimir FRENTE E VERSO.
+# Se for imprimir só na frente, use caderno-frente.yaml.
+
+pdf-engine: xelatex
+
+include-in-header:
+  - "C:/Users/bruno/AppData/Roaming/pandoc/preambulo-simbolos.tex"
+
+variables:
+  # twoside na CLASSE, não só no geometry: faz a numeração de página
+  # alternar junto com as margens.
+  # Atenção: 'classoption' precisa ficar DENTRO de 'variables'. Solto no
+  # topo do arquivo, o Pandoc rejeita com "Error parsing ... line N".
+  classoption:
+    - twoside
+
+  # Cardo — ver academico.yaml para o porquê e as alternativas.
+  mainfont: "Cardo"
+  mainfontoptions:
+    - "BoldItalicFont={Cardo Bold}"
+    - "BoldItalicFeatures={FakeSlant=0.2}"
+  monofont: "Consolas"
+
+  # Cardo tem x-height menor que a Palatino: 11pt nela parece ~10,5pt.
+  # Se no papel ficar miúdo, suba para 12pt — a mancha comporta.
+  fontsize: 11pt
+
+  # inner=32mm: 15 mm somem na costura + 17 mm de respiro visual.
+  # outer=22mm: margem externa enxuta, como você pediu.
+  # bottom > top: convenção tipográfica — o bloco de texto fica
+  # ligeiramente acima do centro óptico da página.
+  # Resultado medido: mancha de 156 x 250 mm, ~74 caracteres por linha
+  # (a faixa confortável de leitura é 60-75).
+  geometry: "a4paper,inner=32mm,outer=22mm,top=22mm,bottom=25mm,twoside"
+
+  linestretch: 1.2
+  indent: false
+  colorlinks: true
+  linkcolor: black      # no papel, link colorido não serve para nada
+  urlcolor: black
+  lang: pt-BR
+
+number-sections: false

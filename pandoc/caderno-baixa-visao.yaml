@@ -1,0 +1,39 @@
+# Pandoc defaults — baixa visao
+# Instalar em: <userdir>\defaults\caderno-baixa-visao.yaml
+# Usar com:    pandoc arquivo.md -d caderno-baixa-visao -o arquivo.pdf
+#
+# Corpo grande, entrelinha ampla e impressao SO NA FRENTE.
+# So frente elimina o fantasma do verso, que come contraste
+# justamente onde ele e escasso.
+#
+# Custo em papel: 9 paginas em 11pt viram 26 em 17pt.
+# A costura japonesa comporta uns 15mm de bloco - acima disso,
+# divida em volumes.
+# 
+# ATENCAO: para baixa visao, espiral ou wire-o e MELHOR que
+# costura japonesa. Costura nao abre plana, e a pessoa precisa
+# achatar o livro com a mao enquanto le de perto.
+
+pdf-engine: xelatex
+
+include-in-header:
+  - "C:/Users/bruno/AppData/Roaming/pandoc/preambulo-simbolos.tex"
+
+variables:
+  # article so aceita ate 12pt; acima disso o valor e ignorado em silencio.
+  documentclass: extarticle
+  mainfont: "Cardo"
+  mainfontoptions:
+    - "BoldItalicFont={Cardo Bold}"
+    - "BoldItalicFeatures={FakeSlant=0.2}"
+  monofont: "Consolas"
+  fontsize: 17pt
+  linestretch: 1.6
+  geometry: "a4paper,left=32mm,right=22mm,top=22mm,bottom=25mm"
+  indent: false
+  colorlinks: true
+  linkcolor: black
+  urlcolor: black
+  lang: pt-BR
+
+number-sections: false

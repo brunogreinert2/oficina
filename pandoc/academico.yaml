@@ -1,0 +1,51 @@
+# Pandoc defaults — PDF acadêmico com grego politônico
+# Instalar em: C:\Users\bruno\AppData\Roaming\pandoc\defaults\academico.yaml
+# Usar com:    pandoc arquivo.md -d academico -o arquivo.pdf
+#
+# Testado nos textos do Barnes e nos handouts do Zillig: 0 caracteres perdidos.
+
+pdf-engine: xelatex
+
+# Fallback para símbolos que a fonte principal não tem (setas, subscritos,
+# colchetes angulares). Sem isto eles somem do PDF em silêncio.
+include-in-header:
+  - "C:/Users/bruno/AppData/Roaming/pandoc/preambulo-simbolos.tex"
+
+variables:
+  # Cardo — a fonte da identidade visual dos apps. Desenhada por David Perry
+  # para classicistas e medievalistas: cobre latim, grego politônico, hebraico
+  # e sinais filológicos. A romana deriva do tipo de Francesco Griffo cortado
+  # para Aldo Manuzio em 1495.
+  # Alternativas se precisar: Palatino Linotype (vem com o Windows),
+  # Libertinus Serif, Cambria. Rode Testar-Fontes.ps1 para conferir cobertura.
+  mainfont: "Cardo"
+
+  # Cardo tem Regular, Italic e Bold — mas NÃO tem Bold Italic.
+  # Sem isto, negrito+itálico (***assim***) cai numa fonte substituta ou some.
+  # A linha abaixo usa o Bold e inclina artificialmente.
+  mainfontoptions:
+    - "BoldItalicFont={Cardo Bold}"
+    - "BoldItalicFeatures={FakeSlant=0.2}"
+
+  # Cardo não tem versão monoespaçada.
+  monofont: "Consolas"
+
+  fontsize: 11pt
+  geometry: "a4paper,margin=2.5cm"
+  linestretch: 1.15
+  indent: false
+
+  colorlinks: true
+  linkcolor: RoyalBlue
+  urlcolor: RoyalBlue
+  citecolor: RoyalBlue
+
+  # Hifenização em português.
+  # Se der "Undefined control sequence \l@portuges", falta o pacote de idioma:
+  #   MiKTeX Console → Packages → instalar "hyphen-portuguese" e "babel-portuges"
+  # Enquanto não instalar, comente a linha abaixo — o PDF sai igual, só sem hifenizar.
+  lang: pt-BR
+
+# Notas de rodapé no fim da página (padrão do Pandoc já é assim em LaTeX)
+# toc: true   ← descomente para sumário
+number-sections: false

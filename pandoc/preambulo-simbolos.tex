@@ -1,0 +1,72 @@
+% preambulo-simbolos.tex
+% Fallback de fonte para símbolos que a fonte principal não tem.
+% Instalar em: <userdir>\preambulo-simbolos.tex
+% Usado por academico.yaml, caderno.yaml e caderno-frente.yaml.
+%
+% POR QUE ISTO EXISTE
+% XeLaTeX não faz fallback automático de fonte. Se a fonte principal não
+% tem o glifo, o caractere some do PDF e o único sinal é um
+% "[WARNING] Missing character" na saída. Palatino Linotype cobre latim e
+% grego politônico, mas não tem setas, subscritos nem colchetes angulares.
+%
+% Cada \newunicodechar abaixo desvia UM caractere para a fonte de símbolos.
+%
+% COMO ACRESCENTAR UM CARACTERE
+% Copie uma linha, troque o caractere e o código hexadecimal:
+%     \newunicodechar{X}{\FBsym{"XXXX}}
+% O código aparece no próprio aviso do Pandoc: "no → (U+2192)" -> "2192.
+%
+% CUIDADO COM A SINTAXE
+% Escrever \newcommand\FB[1]{{\symbolfont #1}} e passar o caractere como
+% argumento QUEBRA o build, com "Argument of \MT@is@char has an extra }"
+% — é conflito com o microtype. Por isso aqui se usa \symbol{"código}
+% dentro de \bgroup...\egroup, que não passa o caractere adiante.
+
+\usepackage{newunicodechar}
+
+% Fonte de fallback para os símbolos que a Cardo não tem.
+% A Cardo é excelente em latim, grego politônico e sinais filológicos,
+% mas não traz setas, subscritos nem colchetes angulares matemáticos.
+% "Segoe UI Symbol" vem com o Windows e cobre tudo o que está mapeado
+% abaixo. Alternativas testadas: DejaVu Sans, Segoe UI, Cambria Math.
+% Se o build reclamar que a fonte não existe, troque só esta linha.
+\newfontfamily\symbolfont{Segoe UI Symbol}[Scale=MatchLowercase]
+
+\newcommand\FBsym[1]{\bgroup\symbolfont\symbol{#1}\egroup}
+
+% --- setas (aparecem nos handouts, em diagramas) ---
+\newunicodechar{→}{\FBsym{"2192}}
+\newunicodechar{←}{\FBsym{"2190}}
+\newunicodechar{↑}{\FBsym{"2191}}
+\newunicodechar{↓}{\FBsym{"2193}}
+\newunicodechar{↔}{\FBsym{"2194}}
+\newunicodechar{⇒}{\FBsym{"21D2}}
+\newunicodechar{⇔}{\FBsym{"21D4}}
+
+% --- colchetes angulares (inserção editorial: ⟨texto do editor⟩) ---
+\newunicodechar{⟨}{\FBsym{"27E8}}
+\newunicodechar{⟩}{\FBsym{"27E9}}
+
+% --- subscritos (Barnes usa em fórmulas) ---
+\newunicodechar{₀}{\FBsym{"2080}}
+\newunicodechar{₁}{\FBsym{"2081}}
+\newunicodechar{₂}{\FBsym{"2082}}
+\newunicodechar{₃}{\FBsym{"2083}}
+\newunicodechar{₄}{\FBsym{"2084}}
+
+% --- matemáticos e sinais diversos ---
+\newunicodechar{≥}{\FBsym{"2265}}
+\newunicodechar{≤}{\FBsym{"2264}}
+\newunicodechar{≠}{\FBsym{"2260}}
+\newunicodechar{≈}{\FBsym{"2248}}
+\newunicodechar{∴}{\FBsym{"2234}}
+% ⸫ (U+2E2B) é o "portanto" que aparece nas reconstruções de argumento dos
+% handouts. Quase nenhuma fonte o tem — aqui ele é desenhado com o ∴ (U+2234),
+% que é o símbolo lógico correto e existe em toda parte.
+\newunicodechar{⸫}{\FBsym{"2234}}
+\newunicodechar{∙}{\FBsym{"2219}}
+\newunicodechar{★}{\FBsym{"2605}}
+
+% --- latim estendido raro (transliteração do grego) ---
+\newunicodechar{ḗ}{\FBsym{"1E17}}
+\newunicodechar{ṓ}{\FBsym{"1E53}}

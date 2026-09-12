@@ -1,0 +1,29 @@
+% preambulo-grego-cardo.tex
+% Faz a Cardo entrar sozinha nos trechos em grego, mantendo o resto do
+% texto na fonte principal.
+% Instalar em: <userdir>\preambulo-grego-cardo.tex
+%
+% POR QUE ISTO EXISTE
+% As fontes desenhadas para acessibilidade — Atkinson Hyperlegible,
+% OpenDyslexic — não cobrem grego politônico. Usá-las sem tratamento faria
+% o grego SUMIR do PDF, com apenas um "[WARNING] Missing character" na saída.
+%
+% Este preâmbulo resolve o conflito: o português sai na fonte acessível e
+% o grego sai em Cardo, que cobre politônico. A troca é automática — o
+% pacote ucharclasses observa o bloco Unicode de cada caractere.
+%
+% Blocos cobertos:
+%   Greek         U+0370–U+03FF  (grego moderno e básico)
+%   GreekExtended U+1F00–U+1FFF  (politônico: espíritos e acentos)
+%
+% Usado por Novo-Caderno.ps1 quando a fonte escolhida não é a Cardo.
+% Com Cardo como fonte principal, este arquivo é desnecessário.
+
+\usepackage{fontspec}
+
+% Scale=MatchLowercase iguala a altura-x da Cardo à da fonte principal,
+% para o grego não parecer menor que o português ao redor.
+\newfontfamily\gregofont{Cardo}[Scale=MatchLowercase]
+
+\usepackage[Latin,Greek,GreekExtended]{ucharclasses}
+\setTransitionsForGreek{\gregofont}{\normalfont}

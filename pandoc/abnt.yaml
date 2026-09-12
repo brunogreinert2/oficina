@@ -1,0 +1,61 @@
+# Pandoc defaults — trabalho acadêmico em norma ABNT (NBR 14724)
+# Instalar em: <userdir>\defaults\abnt.yaml
+# Usar com:    pandoc arquivo.md -d abnt -o arquivo.pdf
+#
+# O que a norma fixa e este perfil entrega:
+#   papel A4 branco
+#   margens  superior 3 cm, esquerda 3 cm, inferior 2 cm, direita 2 cm
+#   corpo    12 para o texto
+#   entrelinha 1,5
+#   recuo de primeira linha 1,25 cm
+#   alinhamento justificado
+#   citação longa recuada 4 cm, corpo 10, entrelinha simples
+#   notas de rodapé corpo 10, entrelinha simples
+#   número de página no canto superior direito
+#   seções numeradas progressivamente
+#
+# NÃO entrega (são partes do trabalho, não formatação):
+#   capa, folha de rosto, sumário, resumo, referências
+#   Escreva-as no próprio .md ou monte à parte.
+
+pdf-engine: xelatex
+
+include-in-header:
+  - "C:/Users/bruno/AppData/Roaming/pandoc/preambulo-simbolos.tex"
+  - "C:/Users/bruno/AppData/Roaming/pandoc/preambulo-grego-cardo.tex"
+  - "C:/Users/bruno/AppData/Roaming/pandoc/preambulo-abnt.tex"
+
+variables:
+  # A norma recomenda Arial ou Times New Roman. Times é o que a maioria
+  # dos professores espera em humanidades. Para trocar por Arial, mude
+  # só esta linha.
+  # O grego sai em Cardo automaticamente (preambulo-grego-cardo.tex),
+  # porque a cobertura politônica da Times é incompleta.
+  mainfont: "Times New Roman"
+  monofont: "Consolas"
+
+  fontsize: 12pt
+
+  # Medido: 1.5 aqui produz ~20,9 pt entre linhas em corpo 12 — praticamente
+  # o mesmo que "1,5 linhas" do Word (~20,7 pt). Não confunda com o
+  # baselineskip do LaTeX, que já parte de 1,2.
+  linestretch: 1.5
+
+  # headsep=0.6cm posiciona o número de página a 2 cm da borda superior,
+  # como a norma pede. Medido no PDF: 20,4 mm.
+  geometry: "a4paper,top=3cm,left=3cm,right=2cm,bottom=2cm,headsep=0.6cm"
+
+  # Recuo de primeira linha em vez de espaço entre parágrafos.
+  # O valor de 1,25 cm vem do preambulo-abnt.tex.
+  indent: true
+
+  # Em trabalho impresso, link colorido não serve para nada.
+  colorlinks: true
+  linkcolor: black
+  urlcolor: black
+  citecolor: black
+
+  lang: pt-BR
+
+# Numeração progressiva das seções (1, 1.1, 1.1.1).
+number-sections: true

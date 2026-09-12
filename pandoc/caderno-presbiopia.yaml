@@ -1,0 +1,40 @@
+# Pandoc defaults — caderno para vista cansada (presbiopia)
+# Instalar em: <userdir>\defaults\caderno-presbiopia.yaml
+# Usar com:    pandoc arquivo.md -d caderno-presbiopia -o arquivo.pdf
+#
+# Para quem passou dos quarenta e precisa afastar o texto para focar.
+# O texto está nítido — falta tamanho e ar entre as linhas.
+# Um degrau de corpo e entrelinha mais folgada costumam bastar.
+#
+# Custo em papel, medido no Barnes: 9 páginas viram 12.
+# Para necessidades maiores que esta, use o Novo-Caderno.ps1.
+
+pdf-engine: xelatex
+
+include-in-header:
+  - "C:/Users/bruno/AppData/Roaming/pandoc/preambulo-simbolos.tex"
+
+variables:
+  mainfont: "Cardo"
+  mainfontoptions:
+    - "BoldItalicFont={Cardo Bold}"
+    - "BoldItalicFeatures={FakeSlant=0.2}"
+  monofont: "Consolas"
+
+  # 12pt é o teto da classe article. Acima disso o valor é ignorado
+  # silenciosamente — é preciso trocar a classe para extarticle.
+  # Medido: ~68 caracteres por linha, dentro da faixa boa.
+  fontsize: 12pt
+  linestretch: 1.35
+
+  geometry: "a4paper,inner=32mm,outer=22mm,top=22mm,bottom=25mm,twoside"
+  classoption:
+    - twoside
+
+  indent: false
+  colorlinks: true
+  linkcolor: black
+  urlcolor: black
+  lang: pt-BR
+
+number-sections: false

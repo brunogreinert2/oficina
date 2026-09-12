@@ -1,0 +1,38 @@
+# Pandoc defaults — caderno para IMPRIMIR SÓ NA FRENTE e costurar
+# Instalar em: <userdir>\defaults\caderno-frente.yaml
+# Usar com:    pandoc arquivo.md -d caderno-frente -o arquivo.pdf
+#
+# Igual ao caderno.yaml, mas com a margem grande SEMPRE à esquerda,
+# porque todas as folhas são frente. Usar 'twoside' aqui seria erro:
+# metade das páginas ficaria com a margem larga no lado errado.
+
+pdf-engine: xelatex
+
+include-in-header:
+  - "C:/Users/bruno/AppData/Roaming/pandoc/preambulo-simbolos.tex"
+
+variables:
+  # Cardo — ver academico.yaml para o porquê e as alternativas.
+  mainfont: "Cardo"
+  mainfontoptions:
+    - "BoldItalicFont={Cardo Bold}"
+    - "BoldItalicFeatures={FakeSlant=0.2}"
+  monofont: "Consolas"
+
+  # Se no papel ficar miúdo, suba para 12pt.
+  fontsize: 11pt
+
+  # left=32mm: 15 mm somem na costura + 17 mm de respiro.
+  # Sem 'oneside' aqui: não é opção do geometry, e a classe article
+  # já é oneside por padrão. Escrever 'oneside' faz o build falhar com
+  # "Package keyval Error: oneside undefined".
+  geometry: "a4paper,left=32mm,right=22mm,top=22mm,bottom=25mm"
+
+  linestretch: 1.2
+  indent: false
+  colorlinks: true
+  linkcolor: black
+  urlcolor: black
+  lang: pt-BR
+
+number-sections: false

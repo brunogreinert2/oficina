@@ -1,0 +1,36 @@
+# Pandoc defaults — dislexia
+# Instalar em: <userdir>\defaults\caderno-dislexia.yaml
+# Usar com:    pandoc arquivo.md -d caderno-dislexia -o arquivo.pdf
+#
+# OpenDyslexic tem a base das letras mais pesada, contra a troca
+# de b/d e p/q. Letras e linhas bem afastadas.
+#
+# A evidencia cientifica de ganho objetivo de velocidade com
+# fontes para dislexia e MISTA. O que e bem relatado e a
+# preferencia de quem usa. Por isso e uma opcao, nunca a padrao.
+# 
+# OpenDyslexic nao cobre grego: a Cardo entra sozinha no grego.
+
+pdf-engine: xelatex
+
+include-in-header:
+  - "C:/Users/bruno/AppData/Roaming/pandoc/preambulo-simbolos.tex"
+  - "C:/Users/bruno/AppData/Roaming/pandoc/preambulo-grego-cardo.tex"
+
+variables:
+  mainfont: "OpenDyslexic"
+  mainfontoptions:
+    - "LetterSpace=2.0"
+  monofont: "Consolas"
+  fontsize: 12pt
+  linestretch: 1.6
+  geometry: "a4paper,inner=32mm,outer=22mm,top=22mm,bottom=25mm,twoside"
+  classoption:
+    - twoside
+  indent: false
+  colorlinks: true
+  linkcolor: black
+  urlcolor: black
+  lang: pt-BR
+
+number-sections: false

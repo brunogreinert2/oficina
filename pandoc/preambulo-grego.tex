@@ -1,0 +1,13 @@
+% Preâmbulo para troca automática de fonte em blocos gregos.
+% Instalar em: C:\Users\bruno\AppData\Roaming\pandoc\preambulo-grego.tex
+% Usado por academico-neohellenic.yaml. Requer XeLaTeX.
+
+\usepackage{fontspec}
+
+% Fonte usada sempre que o texto entra em grego (básico ou politônico).
+\newfontfamily\greekfont{GFS NeoHellenic}
+
+% ucharclasses observa o bloco Unicode de cada caractere e dispara a transição.
+% "Greek" cobre U+0370–U+03FF; "GreekExtended" cobre U+1F00–U+1FFF (politônico).
+\usepackage[Latin,Greek,GreekExtended]{ucharclasses}
+\setTransitionsForGreek{\begingroup\greekfont}{\endgroup}

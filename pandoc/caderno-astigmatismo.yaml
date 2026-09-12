@@ -1,0 +1,36 @@
+# Pandoc defaults — astigmatismo
+# Instalar em: <userdir>\defaults\caderno-astigmatismo.yaml
+# Usar com:    pandoc arquivo.md -d caderno-astigmatismo -o arquivo.pdf
+#
+# O borrao tem direcao: as letras parecem colar umas nas outras
+# e a parte fina do desenho some.
+# Aumentar o corpo ajuda MENOS do que se espera - quem resolve
+# e o espaco entre letras.
+#
+# Atkinson Hyperlegible tem traco uniforme e letras bem
+# diferentes entre si. NAO cobre grego politonico: por isso o
+# preambulo-grego-cardo.tex, que poe a Cardo so nos trechos gregos.
+
+pdf-engine: xelatex
+
+include-in-header:
+  - "C:/Users/bruno/AppData/Roaming/pandoc/preambulo-simbolos.tex"
+  - "C:/Users/bruno/AppData/Roaming/pandoc/preambulo-grego-cardo.tex"
+
+variables:
+  mainfont: "Atkinson Hyperlegible"
+  mainfontoptions:
+    - "LetterSpace=2.0"
+  monofont: "Consolas"
+  fontsize: 12pt
+  linestretch: 1.35
+  geometry: "a4paper,inner=32mm,outer=22mm,top=22mm,bottom=25mm,twoside"
+  classoption:
+    - twoside
+  indent: false
+  colorlinks: true
+  linkcolor: black
+  urlcolor: black
+  lang: pt-BR
+
+number-sections: false
