@@ -17,5 +17,18 @@ REM ---------------------------------------------------------------------------
 cd /d "%~dp0"
 start "Servidor do Oficina" /min cmd /c python servir.py 4184
 timeout /t 2 /nobreak >nul
+REM Se o app ja foi instalado pelo Edge ("Instalar este site como aplicativo"),
+REM abre o APP: janela propria e o icone proprio na barra de tarefas. O Edge
+REM guarda cada app instalado numa pasta _crx__<app-id>, com o icone batizado
+REM pelo nome do manifesto - e do nome dessa pasta que sai o app-id. Ainda nao
+REM instalado: abre no navegador, como sempre. (O ? no nome casa a letra
+REM acentuada; este arquivo e ASCII de proposito.)
+set "APPDIR="
+for /d %%D in ("%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\Web Applications\_crx__*") do if exist "%%D\Oficina.ico" set "APPDIR=%%~nxD"
+if not defined APPDIR goto navegador
+start "" "%ProgramFiles(x86)%\Microsoft\Edge\Application\msedge_proxy.exe" --profile-directory=Default --app-id=%APPDIR:~6%
+exit
+
+:navegador
 start "" "http://localhost:4184/"
 exit
