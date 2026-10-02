@@ -213,6 +213,51 @@ Não introduzir nenhum dos quatro.
   12): estimar por 1,35 daria 28 % de linhas a mais do que cabe — e a conta da
   Oficina é o contrato com o Gerador.
 
+- **A COSTURA DO ATELIÊ (2026-09-19).** Dentro da casca
+  (`atelie/index.html`), esta bancada atende `postMessage` com `pa:'atelie'` e
+  aplica o papel pelas MESMAS funções do arrasto — nada de segunda porta de
+  leitura. Ela se apresenta sozinha («ola, aceito ...»), porque a casca so
+  entrega a quem cumprimenta: `<iframe>` recem-criado tem um `about:blank` com
+  `readyState` 'complete', e postar para ele perde o papel sem erro nenhum
+  (medido: o .md sumia e a especificacao entrava). Aberta sozinha, por duplo
+  clique, `window.parent === window` e nada disso roda.
+
+- **A ABERTURA DE CAPÍTULO é decisão da Oficina (2026-09-18).** Menu novo
+  («como o perfil manda» · página nova · corrido), lista `dados-aberturas` no
+  `<body>`, campo no FIM do hash, e `composicao.abertura_de_capitulo` na
+  especificação — sempre com valor CONCRETO, resolvido por `aberturaEfetiva()`.
+  Está aqui porque é **a escolha que mais mexe na conta de papel** (medido nos
+  Salmos: 300 páginas contra 244) e papel é o custo do objeto, que é o que esta
+  bancada projeta. O perfil passou a declarar a sua abertura também aqui
+  (`data-abertura`, gerado pelo `conferir_perfis.py --propagar`). A lista é
+  FECHADA e o `conferir.py` a compara com o menu do Gerador (testado
+  quebrando: id a mais, id trocado). **A ESTIMATIVA de páginas ainda não usa a
+  abertura** — continua contando palavras por página, e é por isso que ela erra
+  314 % no Encheirídion com página nova. Está declarado, e é trabalho da
+  proposta, seção 8.
+
+- **Materiais da bancada: o que se USA, declarado (2026-09-15).** Lista
+  `dados-estoque` no `<body>`: Pólen 80 g/m² (Suzano) no miolo, Offset
+  240 g/m² (Quinto Império) na capa, linha Círculo Linho cor Anil Profundo
+  (75 % algodão, 25 % linho, tex 369), cera de abelha. As listas de materiais e
+  insumos dizem o que SERVE; esta diz o que está na bancada, e vai na
+  especificação (`materiais`) para o colofão do Gerador publicar papel, linha e
+  peso. **Um item por uso**: dois papéis de miolo sem menu fariam a exportação
+  levar o primeiro em silêncio, e o `conferir.py` reprova (testado quebrando:
+  dois miolos, papel sem gramatura, uso desconhecido). No dia do papel Horller:
+  acrescentar o item E fazer o menu.
+
+- **A regra do miolo é UMA função: `regraDoMiolo()`.** Quantas páginas cabem
+  numa folha de papel e de que tamanho é a folha — usada por folhas, espessura,
+  lista de corte e peso do colofão. Escrever a regra num lugar só expôs dois
+  defeitos: **só frente contava as folhas como frente e verso** (metade do
+  papel; agora a japonesa leva 1 página por folha e o caderno 2 por folha
+  dupla) e **o fukuro-toji saía na lista de corte com folha «l × a»**, quando
+  a folha dele é dupla, dobrada na borda externa (a espessura já contava
+  0,22 mm por folha dupla). Frente e verso não muda: conferido, japonesa 14
+  páginas → 7 folhas, copta 12 → 3. Capa de papel só se pesa na japonesa
+  (`pecasDaCapa()`): nas outras a peça depende da lombada.
+
 - **A espessura do miolo é calculada uma vez** em `calcular()` e usada tanto
   pelo desenho da lombada quanto pela lista de corte. Não recalcular.
 

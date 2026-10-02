@@ -391,6 +391,10 @@ def escrever_lista_na_oficina(dados):
             "data-id": nome,
             "data-nome": p.get("nome", nome),
             "data-para": p.get("para", ""),
+            # A abertura de capitulo: a Oficina precisa dela para mostrar o que
+            # o perfil faz e para exportar um valor CONCRETO na especificacao.
+            # Sem isto, a escolha ficava so no menu do Gerador e nao viajava.
+            "data-abertura": p.get("abertura_de_capitulo", "pagina-nova"),
             "data-fonte": p.get("fonte", ""),
             "data-corpo": p.get("corpo_pt", ""),
             # A Oficina estima linhas por pagina, e para isso precisa da

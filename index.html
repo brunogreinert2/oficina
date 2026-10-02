@@ -423,7 +423,7 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
 
   <h2 id="ac-capas">Capas</h2>
   <ul id="dados-capas">
-    <li data-id="mole" data-dif="0"><b>Papel de capa</b> <span class="mono">· Color Plus 180 g</span></li>
+    <li data-id="mole" data-dif="0"><b>Papel de capa</b> <span class="mono">· o papel em uso está em Materiais da bancada</span></li>
     <li data-id="carton" data-dif="1"><b>Cartonagem</b> <span class="mono">· papelão revestido</span></li>
     <li data-id="rigida" data-dif="2"><b>Capa dura</b> <span class="mono">· tecido ou couro</span></li>
   </ul>
@@ -459,6 +459,22 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
     <li data-id="fio-linho" data-fam="fio"><b>Linho encerado 18/3</b> <span class="mono">· copta e long stitch · aguenta a tração da lombada exposta</span></li>
     <li data-id="pva" data-fam="cola"><b>PVA neutro (pH neutro)</b> <span class="mono">· padrão de conservação · seca flexível · não usar cola escolar comum, que amarela e endurece</span></li>
     <li data-id="amido" data-fam="cola"><b>Metilcelulose ou cola de amido</b> <span class="mono">· reversível com água · obrigatória em tecido sem suporte e em couro</span></li>
+  </ul>
+
+  <h2 id="ac-estoque">Materiais da bancada</h2>
+  <!-- O QUE ESTÁ NA BANCADA DE VERDADE, declarado pelo Bruno em 2026-09-15.
+       As listas acima dizem o que SERVE; esta diz o que se USA. É daqui que o
+       colofão do Gerador tira papel, linha e peso — então nada aqui é
+       recomendação nem faixa. Gramatura é a NOMINAL do fabricante; tolerância
+       só entra quando o fabricante a declarar. UM item por uso: no dia de um
+       segundo papel de miolo a Oficina precisa de um menu, e o conferir.py
+       reprova até ele existir (o colofão usaria o primeiro em silêncio).
+       Cola ainda não há. -->
+  <ul id="dados-estoque">
+    <li data-id="polen-80-suzano" data-uso="miolo" data-gram="80" data-marca="Suzano" data-folha="A4"><b>Pólen 80 g/m²</b> <span class="mono">· miolo · Suzano · folha A4</span></li>
+    <li data-id="offset-240-quinto-imperio" data-uso="capa" data-gram="240" data-marca="Quinto Império" data-folha="A4"><b>Offset 240 g/m²</b> <span class="mono">· capa · Quinto Império · folha A4</span></li>
+    <li data-id="circulo-linho-anil-profundo" data-uso="linha" data-marca="Círculo" data-cor="Anil Profundo" data-composicao="75% algodão, 25% linho" data-tex="369"><b>Círculo Linho</b> <span class="mono">· linha · cor Anil Profundo · 75% algodão, 25% linho · tex 369</span></li>
+    <li data-id="cera-de-abelha" data-uso="cera"><b>Cera de abelha</b> <span class="mono">· para encerar a linha</span></li>
   </ul>
 
   <h2 id="ac-cor">Sobre escolher cor de material</h2>
@@ -513,6 +529,19 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
       <span class="mono">· medianiz de 6 mm · bíblia, apostila, dicionário, A4 acadêmico</span></li>
   </ul>
 
+  <h2 id="ac-abertura">Abertura de capítulo</h2>
+  <p>Cada capítulo começa em folha nova, ou o texto corre e o capítulo seguinte
+     entra logo abaixo do anterior? É <b>a escolha que mais mexe na conta de
+     papel</b>: medido nos Salmos, 300 páginas contra 244 — 23 % do livro numa
+     decisão só. Por isso ela é da Oficina, e vai na especificação: o Gerador
+     compõe o que está aqui.</p>
+  <ul id="dados-aberturas">
+    <li data-id="pagina-nova"><b>Página nova a cada capítulo</b>
+      <span class="mono">· o livro clássico · gasta mais papel, e o quanto depende de quantos capítulos a obra tem</span></li>
+    <li data-id="corrido"><b>Corrido</b>
+      <span class="mono">· o capítulo seguinte começa logo abaixo · economiza papel · as quebras que você quiser escolher a dedo ficam nas intervenções, ao lado do .md</span></li>
+  </ul>
+
   <h2 id="ac-impressao">Impressão</h2>
   <ul id="dados-impressao">
     <li data-id="frente-verso" data-espelha="1"><b>Frente e verso</b>
@@ -528,12 +557,12 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
      bancada. Não editar à mão (N2, N57).</p>
   <!-- PERFIS-OFICINA:INICIO — gerado, não editar -->
   <ul id="dados-perfis-oficina">
-  <li data-id="padrao" data-nome="Padrão" data-para="leitura adulta sem necessidade declarada" data-fonte="cardo" data-corpo="11" data-entrelinha="14.85"><b>Padrão</b> <span class="mono">· leitura adulta sem necessidade declarada · cardo 11 pt</span></li>
-  <li data-id="letra-grande" data-nome="Letra Grande" data-para="baixa visão; e o présbita de balcão, que compra pelo conforto" data-fonte="atkinson" data-corpo="16" data-entrelinha="23.2"><b>Letra Grande</b> <span class="mono">· baixa visão; e o présbita de balcão, que compra pelo conforto · atkinson 16 pt</span></li>
-  <li data-id="presbiopia" data-nome="Vista cansada" data-para="quem passou dos quarenta e afasta o texto para focar" data-fonte="cardo" data-corpo="12" data-entrelinha="19.4"><b>Vista cansada</b> <span class="mono">· quem passou dos quarenta e afasta o texto para focar · cardo 12 pt</span></li>
-  <li data-id="astigmatismo" data-nome="Astigmatismo" data-para="borrão com direção; as letras parecem colar umas nas outras" data-fonte="atkinson" data-corpo="12" data-entrelinha="19.4"><b>Astigmatismo</b> <span class="mono">· borrão com direção; as letras parecem colar umas nas outras · atkinson 12 pt</span></li>
-  <li data-id="dislexia" data-nome="Dislexia" data-para="troca de b/d e p/q; crowding" data-fonte="opendyslexic" data-corpo="12" data-entrelinha="23.0"><b>Dislexia</b> <span class="mono">· troca de b/d e p/q; crowding · opendyslexic 12 pt</span></li>
-  <li data-id="abnt" data-nome="ABNT" data-para="trabalho de faculdade entregue em norma NBR 14724" data-fonte="liberation" data-corpo="12" data-entrelinha="20.7"><b>ABNT</b> <span class="mono">· trabalho de faculdade entregue em norma NBR 14724 · liberation 12 pt</span></li>
+  <li data-id="padrao" data-nome="Padrão" data-para="leitura adulta sem necessidade declarada" data-abertura="pagina-nova" data-fonte="cardo" data-corpo="11" data-entrelinha="14.85"><b>Padrão</b> <span class="mono">· leitura adulta sem necessidade declarada · cardo 11 pt</span></li>
+  <li data-id="letra-grande" data-nome="Letra Grande" data-para="baixa visão; e o présbita de balcão, que compra pelo conforto" data-abertura="corrido" data-fonte="atkinson" data-corpo="16" data-entrelinha="23.2"><b>Letra Grande</b> <span class="mono">· baixa visão; e o présbita de balcão, que compra pelo conforto · atkinson 16 pt</span></li>
+  <li data-id="presbiopia" data-nome="Vista cansada" data-para="quem passou dos quarenta e afasta o texto para focar" data-abertura="corrido" data-fonte="cardo" data-corpo="12" data-entrelinha="19.4"><b>Vista cansada</b> <span class="mono">· quem passou dos quarenta e afasta o texto para focar · cardo 12 pt</span></li>
+  <li data-id="astigmatismo" data-nome="Astigmatismo" data-para="borrão com direção; as letras parecem colar umas nas outras" data-abertura="corrido" data-fonte="atkinson" data-corpo="12" data-entrelinha="19.4"><b>Astigmatismo</b> <span class="mono">· borrão com direção; as letras parecem colar umas nas outras · atkinson 12 pt</span></li>
+  <li data-id="dislexia" data-nome="Dislexia" data-para="troca de b/d e p/q; crowding" data-abertura="corrido" data-fonte="opendyslexic" data-corpo="12" data-entrelinha="23.0"><b>Dislexia</b> <span class="mono">· troca de b/d e p/q; crowding · opendyslexic 12 pt</span></li>
+  <li data-id="abnt" data-nome="ABNT" data-para="trabalho de faculdade entregue em norma NBR 14724" data-abertura="pagina-nova" data-fonte="liberation" data-corpo="12" data-entrelinha="20.7"><b>ABNT</b> <span class="mono">· trabalho de faculdade entregue em norma NBR 14724 · liberation 12 pt</span></li>
   </ul>
   <!-- PERFIS-OFICINA:FIM -->
 
@@ -601,6 +630,13 @@ const ENCADERNACOES = lerLista('dados-encad', (d,li) => ({
 }));
 const FIOS = lerLista('dados-fios', (d,li) => ({id:d.id, nome:nomeDe(li), cor:d.cor}));
 const CAPAS = lerLista('dados-capas', (d,li) => ({id:d.id, nome:nomeDe(li), dif:+d.dif, nota:notaDe(li)}));
+/* O que está na bancada (dados-estoque): um item por uso. Uso não declarado
+   é `null`, e o colofão do Gerador cala em vez de inventar. */
+const ESTOQUE = lerLista('dados-estoque', (d,li) => ({
+  id:d.id, uso:d.uso, nome:nomeDe(li), gram:+d.gram || 0, marca:d.marca || '',
+  cor:d.cor || '', composicao:d.composicao || '', tex:+d.tex || 0
+}));
+const emUso = uso => ESTOQUE.find(m => m.uso === uso) || null;
 const ACABAMENTOS = lerLista('dados-acabamentos', (d,li) => ({
   id:d.id, nome:nomeDe(li), dif:+d.dif, nota:notaDe(li)
 }));
@@ -612,6 +648,9 @@ const CANONES = lerLista('dados-canones', (d,li) => ({
 const COLUNAS_MANCHA = lerLista('dados-colunas', (d,li) => ({
   id:d.id, nome:nomeDe(li), n:+d.n, medianiz:+d.medianiz, nota:notaDe(li)
 }));
+const ABERTURAS = lerLista('dados-aberturas', (d,li) => ({
+  id:d.id, nome:nomeDe(li), nota:notaDe(li)
+}));
 const IMPRESSOES = lerLista('dados-impressao', (d,li) => ({
   id:d.id, nome:nomeDe(li), espelha:d.espelha==='1', nota:notaDe(li)
 }));
@@ -621,6 +660,7 @@ const IMPRESSOES = lerLista('dados-impressao', (d,li) => ({
 const PERFIS = [...document.querySelectorAll('#dados-perfis-oficina li')].map(li => ({
   id: li.dataset.id, nome: li.dataset.nome || li.dataset.id,
   fonte: li.dataset.fonte || '', corpo: +li.dataset.corpo || 0,
+  abertura: li.dataset.abertura || 'pagina-nova',
   entrelinha: +li.dataset.entrelinha || 0,
   para: li.dataset.para || ''
 }));
@@ -869,7 +909,11 @@ const PADRAO = {
      link que um cliente já salvou continua abrindo, sem estes campos, nos
      valores de sempre — que são exatamente os de antes. */
   canone:"nonos", impressao:"frente-verso", perfil:"padrao", colunas:"1",
-  margens:{int:25, ext:20, sup:25, inf:25}
+  margens:{int:25, ext:20, sup:25, inf:25},
+  /* 2026-09-18, no fim do hash como todo campo novo. "perfil" quer dizer «o
+     que o perfil escolhido manda» — e a EXPORTACAO resolve isso num valor
+     concreto, para que a especificacao nunca saia ambigua. */
+  abertura:"perfil"
 };
 let estado = {...PADRAO, acabamentos:[...PADRAO.acabamentos],
               margens:{...PADRAO.margens}};
@@ -882,7 +926,7 @@ function paraHash(){
                 e.acabamentos.join('.'),
                 e.canone,e.impressao,e.perfil,
                 [e.margens.int,e.margens.ext,e.margens.sup,e.margens.inf].join('.'),
-                e.colunas
+                e.colunas, e.abertura
                ].join('/');
 }
 function doHash(){
@@ -913,11 +957,36 @@ function doHash(){
   if (m.length === 4 && m.every(x=>x > 0 && x < 200))
     estado.margens = {int:m[0], ext:m[1], sup:m[2], inf:m[3]};
   estado.colunas = val(COLUNAS_MANCHA,p[13],PADRAO.colunas);
+  estado.abertura = (p[14] === 'perfil' || acha(ABERTURAS, p[14]))
+                  ? p[14] : PADRAO.abertura;
 }
 
 /* =========================================================
    CÁLCULO — cânone dos nonos + medida de linha
    ========================================================= */
+/* QUANTAS PÁGINAS CABEM NUMA FOLHA DE PAPEL, E DE QUE TAMANHO É A FOLHA.
+   Uma regra só, para a lista de corte, a espessura e o peso que o colofão do
+   Gerador publica (2026-09-15). Frente e verso: a japonesa leva 2 páginas numa
+   folha do formato; caderno e capa dura, 4 numa folha do dobro da largura,
+   dobrada ao meio. O fukuro-toji imprime só a frente de uma folha do dobro da
+   largura e a dobra na borda externa: 1 página por folha dupla — a lista de
+   corte dizia «l × a», e a espessura (0,22 mm por folha) já contava a dupla.
+   SÓ FRENTE gasta o dobro. Até aqui as folhas contavam como frente e verso em
+   qualquer impressão, e o trabalho em ABNT saía com metade do papel. */
+function regraDoMiolo(f, en, imp){
+  const soFrente = !!imp && imp.id === "so-frente";
+  if (en.id === "fukuro") return { paginasPorFolha: 1, l: f.l * 2, a: f.a, dobra: "na borda externa" };
+  if (en.fam === "jap")   return { paginasPorFolha: soFrente ? 1 : 2, l: f.l, a: f.a, dobra: "" };
+  return { paginasPorFolha: soFrente ? 2 : 4, l: f.l * 2, a: f.a, dobra: "ao meio" };
+}
+
+/* A capa de papel que a lista de corte manda cortar — e que o colofão pesa.
+   Só a japonesa tem capa de folhas soltas do tamanho do miolo; nas outras a
+   peça depende da lombada, e pesar sem ela seria chutar. */
+function pecasDaCapa(c){
+  return c.en.fam === "jap" ? [{ quantidade: 2, largura: c.f.l, altura: c.f.a }] : [];
+}
+
 function calcular(){
   const f  = acha(FORMATOS, estado.formato);
   const fn = acha(FONTES,   estado.fonte);
@@ -980,9 +1049,8 @@ function calcular(){
   const paginas = retornoVale
     ? Math.max(4, Math.ceil(retornoDoGerador.paginas / 2) * 2)
     : estimadas;
-  const folhas = costuraJaponesa && en.id !== "fukuro"
-      ? Math.ceil(paginas/2)
-      : (en.id === "fukuro" ? paginas : Math.ceil(paginas/4));
+  const regraMiolo = regraDoMiolo(f, en, imp);
+  const folhas = Math.ceil(paginas / regraMiolo.paginasPorFolha);
 
   let dif = en.dif + cp.dif;
   estado.acabamentos.forEach(a => dif += (acha(ACABAMENTOS,a)?.dif || 0));
@@ -1003,7 +1071,7 @@ function calcular(){
   return {f,fn,en,tx,cp,costuraJaponesa,interna,externa,superior,inferior,
           manchaL,manchaA,chars,linhasPagina,paginas,folhas,dif,linha,espessura,
           cn,imp,espelha:imp.espelha,col,medianiz,larguraColuna,
-          estimadas,retornoVale,assinatura};
+          estimadas,retornoVale,assinatura,regraMiolo};
 }
 
 /* =========================================================
@@ -1063,8 +1131,10 @@ function listaDeCorte(c){
 
   if (en.fam === "jap") {
     const ys = furosY(en.furos || 4).map(p => f.a * p);
-    L.push(`- Miolo: ${c.folhas} folhas de ${mm(f.l)} × ${mm(f.a)} mm`);
-    L.push(`- Capa: 2 folhas de ${mm(f.l)} × ${mm(f.a)} mm (mesma medida do miolo)`);
+    L.push(`- Miolo: ${c.folhas} folhas de ${mm(c.regraMiolo.l)} × ${mm(c.regraMiolo.a)} mm` +
+           (c.regraMiolo.dobra ? `, dobradas ${c.regraMiolo.dobra}` : ""));
+    pecasDaCapa(c).forEach(p => L.push(
+      `- Capa: ${p.quantidade} folhas de ${mm(p.largura)} × ${mm(p.altura)} mm (mesma medida do miolo)`));
     L.push(`- Furação: ${ys.length} furos a ${FURO_X} mm da dobra, nas alturas ` +
            ys.map(y => mm(y)).join(" / ") + " mm a partir da cabeça");
     L.push(`- Fio: ${fioJapones(f.a, espessura, en.furos)} mm (caminho da costura + 30%)`);
@@ -1610,6 +1680,20 @@ function montarSecoes(){
     fichaBotao({titulo:i.nome, sub:i.nota, ativo:estado.impressao===i.id,
       onClick:()=>{estado.impressao=i.id; render();}}))));
 
+  /* A ABERTURA DE CAPITULO. Fica DEPOIS do perfil porque o primeiro botão
+     mostra o que o perfil escolhido faz — e o perfil pode mudar. */
+  const pfAgora = acha(PERFIS, estado.perfil);
+  const doPerfil = (pfAgora && pfAgora.abertura) || "pagina-nova";
+  alvo.appendChild(secao("s-abertura","Abertura de capítulo",
+    "a escolha que mais mexe na conta de papel",
+    [fichaBotao({titulo:"Como o perfil manda",
+      sub:(acha(ABERTURAS, doPerfil)||{}).nome,
+      ativo:estado.abertura==="perfil",
+      onClick:()=>{estado.abertura="perfil"; render();}})].concat(
+      ABERTURAS.map(a=>fichaBotao({titulo:a.nome, sub:a.nota,
+        ativo:estado.abertura===a.id,
+        onClick:()=>{estado.abertura=a.id; render();}})))));
+
   if (PERFIS.length) alvo.appendChild(secao("s-perfil","Perfil tipográfico",
     "quem compõe a página é o Gerador; o perfil é dele", PERFIS.map(pf=>
     fichaBotao({titulo:pf.nome, sub:pf.para, ativo:estado.perfil===pf.id,
@@ -1849,6 +1933,46 @@ document.getElementById("btn-link").addEventListener("click", e=>
    a Oficina calculou aqui é o que a bancada compõe lá, sem uma conta repetida
    no meio.
    ========================================================= */
+/* OS MATERIAIS VÃO JUNTO (2026-09-15). O colofão do Gerador publica papel,
+   linha e peso, e nada disso é dele: o que está na bancada é declarado aqui
+   (dados-estoque), e a regra do miolo é a mesma da lista de corte. O Gerador
+   só multiplica pelas páginas que CONTOU. Uso não declarado vai `null`. */
+function materiaisParaGerador(c){
+  const r = n => +(+n).toFixed(4);
+  const papel = m => m && { id: m.id, nome: m.nome, gramatura_g_m2: m.gram, marca: m.marca };
+  const miolo = emUso("miolo"), capa = emUso("capa"), linha = emUso("linha"), cera = emUso("cera");
+  return {
+    _leiame: "Declarados na lista dados-estoque da Oficina. Gramatura NOMINAL do " +
+             "fabricante, sem tolerancia declarada. O peso nao sai daqui: o Gerador " +
+             "multiplica pelas paginas que contou.",
+    regra_do_miolo: {
+      paginas_por_folha: c.regraMiolo.paginasPorFolha,
+      folha_mm: { largura: r(c.regraMiolo.l), altura: r(c.regraMiolo.a) },
+      dobra: c.regraMiolo.dobra
+    },
+    miolo: papel(miolo),
+    /* Capa de PAPEL só quando a capa escolhida é de papel: cartonagem e capa
+       dura são papelão e tecido, que ninguém declarou. */
+    capa: capa && c.cp.id === "mole"
+      ? Object.assign(papel(capa), { pecas_mm: pecasDaCapa(c).map(p =>
+          ({ quantidade: p.quantidade, largura: r(p.largura), altura: r(p.altura) })) })
+      : null,
+    linha: linha && { id: linha.id, nome: linha.nome, cor: linha.cor,
+                      composicao: linha.composicao, tex: linha.tex },
+    cera: cera && { id: cera.id, nome: cera.nome }
+  };
+}
+
+/* O valor CONCRETO da abertura. Na tela «como o perfil manda» é uma escolha
+   legítima; na especificação seria uma pergunta sem resposta, porque quem lê
+   do outro lado teria de adivinhar qual perfil estava valendo. */
+function aberturaEfetiva(){
+  if (estado.abertura !== "perfil" && acha(ABERTURAS, estado.abertura))
+    return estado.abertura;
+  const pf = acha(PERFIS, estado.perfil);
+  return (pf && pf.abertura) || "pagina-nova";
+}
+
 function especificacaoParaGerador(c){
   const r = n => +(+n).toFixed(4);
   return {
@@ -1893,6 +2017,11 @@ function especificacaoParaGerador(c){
          especificação já passou por uma composição de verdade. */
       paginas_origem: c.retornoVale ? "medida_no_gerador" : "estimada_na_oficina",
       colunas: c.col.n,
+      /* A abertura de capítulo (2026-09-18). O Gerador compõe por ela; sem o
+         campo, ele segue com a do perfil, como sempre foi. A ESTIMATIVA acima
+         ainda não a leva em conta — é a conta de palavras por página, que não
+         sabe de capítulo que abre folha. Está na proposta, seção 8. */
+      abertura_de_capitulo: aberturaEfetiva(),
       medianiz_mm: r(c.medianiz),
       largura_coluna_mm: r(c.larguraColuna)
     },
@@ -1901,6 +2030,7 @@ function especificacaoParaGerador(c){
       folhas: c.folhas, espessura_miolo_mm: r(c.espessura)
     },
     linha_editorial: c.linha,
+    materiais: materiaisParaGerador(c),
     avisos: []
   };
 }
@@ -1910,14 +2040,21 @@ document.getElementById("btn-gerador").addEventListener("click", e=>{
   const nome = "especificacao." + c.f.id + "-" + estado.perfil + "-" +
                (acha(CANONES, estado.canone) || {}).id + ".json";
   const texto = JSON.stringify(especificacaoParaGerador(c), null, 2) + "\n";
+  /* Dentro do Ateliê a especificação já chega ao Gerador por aqui — e o
+     arquivo continua baixando, porque o livro_fisico.bat come arquivo. */
+  if (window.ATELIE) window.ATELIE.enviar({tipo:'especificacao', nome, texto});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([texto], {type:"application/json"}));
   a.download = nome;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
-  const antes = e.currentTarget.textContent;
-  e.currentTarget.textContent = "Arraste no Gerador";
-  setTimeout(()=>{e.currentTarget.textContent = antes;}, 2400);
+  /* O BOTAO, e nao `e.currentTarget`: o navegador zera o currentTarget quando
+     o despacho acaba, e a restauracao dentro do setTimeout estourava — o
+     rotulo ficava congelado no aviso. */
+  const botao = e.currentTarget;
+  const antes = botao.textContent;
+  botao.textContent = window.ATELIE ? "Aplicada no Gerador" : "Arraste no Gerador";
+  setTimeout(()=>{ botao.textContent = antes; }, 2400);
 });
 
 /* ---------- o arquivo do acervo ---------- */
@@ -1966,6 +2103,61 @@ document.addEventListener('drop', e => {
   /* Nem .md nem .json: `abrirArquivo` e quem explica o que esta bancada le. */
   if (!vindos.some(f => /\.(md|markdown|json)$/i.test(f.name))) abrirArquivo(vindos[0]);
 });
+
+/* =========================================================
+   A COSTURA DO ATELIÊ (2026-09-19)
+
+   Quando esta bancada está dentro da casca (`atelie/index.html`), a
+   especificação vai para o Gerador pela memória, e o retorno volta por ali —
+   sem baixar, sem arrastar. O arquivo continua saindo: é ele que o
+   `livro_fisico.bat` consome, e tirá-lo seria trocar um caminho por outro em
+   vez de somar.
+
+   Aberta sozinha (duplo clique, `file://`), `window.parent === window` e nada
+   aqui roda: a bancada é a mesma de sempre.
+
+   O papel entra pelas MESMAS funções do arrasto (`receberMd`,
+   `receberRetorno`). Uma segunda porta de leitura seria uma segunda verdade
+   sobre o mesmo arquivo — o defeito que este ecossistema existe para evitar.
+   ========================================================= */
+(function costuraDoAtelie(){
+  if (window.parent === window) return;
+  const ACEITA = ['md', 'retorno'];
+  const responder = m => {
+    try { window.parent.postMessage(Object.assign({pa:'atelie'}, m), location.origin); }
+    catch (e) { /* casca de outra origem: não é o nosso caso, e não custa */ }
+  };
+  window.ATELIE = { versao:1, sala:'oficina', aceita:ACEITA, enviar:responder };
+  window.addEventListener('message', e => {
+    if (e.origin !== location.origin || e.source !== window.parent) return;
+    const d = e.data;
+    if (!d || d.pa !== 'atelie') return;
+    if (d.tipo === 'ola')
+      return responder({tipo:'ola', sala:'oficina', versao:1, aceita:ACEITA});
+    if (d.tipo === 'md'){
+      receberMd(d.nome, d.texto);
+      return responder({tipo:'recebido', o:'o texto', nome:d.nome});
+    }
+    if (d.tipo === 'retorno'){
+      receberRetorno(d.nome, d.texto);
+      /* O RECIBO DIZ O DESFECHO. A contagem pode chegar e NÃO valer: a
+         assinatura (obra · formato · cânone · impressão · perfil · colunas)
+         tem de bater com o que está na tela, senão a bancada volta à
+         estimativa — de propósito. Quem está olhando a outra sala precisa
+         saber qual dos dois aconteceu. */
+      const c = calcular();
+      return responder({tipo:'recebido', o:'a contagem', nome:d.nome,
+        ok: !!c.retornoVale,
+        detalhe: c.retornoVale
+          ? c.paginas + ' páginas contadas no lugar da estimativa'
+          : 'a contagem não bate com esta configuração da Oficina — ' +
+            'a estimativa continua valendo'});
+    }
+  });
+  /* Apresenta-se sem esperar ser chamada: a casca pode ter perguntado antes
+     de este script existir. Os dois lados cumprimentam. */
+  responder({tipo:'ola', sala:'oficina', versao:1, aceita:ACEITA});
+})();
 
 /* ---------- partida ---------- */
 /* Com JavaScript, o acervo começa recolhido (o Φ o abre). Sem JavaScript,

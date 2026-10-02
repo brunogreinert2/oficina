@@ -74,6 +74,8 @@ LISTAS = {
     "dados-temas": ["fundo", "texto"],
     "dados-capas": ["dif"],
     "dados-fios": ["cor"],
+    "dados-estoque": ["uso"],
+    "dados-aberturas": [],
 }
 
 
@@ -113,6 +115,54 @@ for lista, obrigatorios in LISTAS.items():
         for campo in obrigatorios:
             if campo not in d:
                 falhas.append("%s/%s: falta data-%s." % (lista, ident, campo))
+
+# --- 3b. o estoque: um item por uso, e papel com gramatura ----------------
+# E daqui que o colofao do Gerador tira papel, linha e peso. Dois papeis de
+# miolo sem menu para escolher fariam a exportacao levar o primeiro em
+# silencio — o livro sairia com a ficha de outro papel.
+USOS = ("miolo", "capa", "linha", "cera")
+por_uso = {}
+for bruto in (itens("dados-estoque") or []):
+    d = atributos(bruto)
+    uso = d.get("uso")
+    if uso not in USOS:
+        falhas.append("dados-estoque/%s: uso '%s' desconhecido (conheco: %s)."
+                      % (d.get("id"), uso, ", ".join(USOS)))
+        continue
+    por_uso.setdefault(uso, []).append(d.get("id"))
+    if uso in ("miolo", "capa"):
+        try:
+            ok = float(d.get("gram", "")) > 0
+        except ValueError:
+            ok = False
+        if not ok:
+            falhas.append("dados-estoque/%s: papel sem data-gram. O peso que o "
+                          "colofao publica sai dela." % d.get("id"))
+for uso, ids in sorted(por_uso.items()):
+    if len(ids) > 1:
+        falhas.append("dados-estoque: %d itens de uso '%s' (%s). A Oficina ainda "
+                      "nao tem menu para escolher, e exportaria o primeiro em "
+                      "silencio." % (len(ids), uso, ", ".join(ids)))
+
+# --- 3c. a abertura de capitulo e lista FECHADA nas duas bancadas ---------
+# A Oficina exporta o valor e o Gerador compoe por ele. Um id a mais de um lado
+# so viraria uma especificacao que a outra bancada nao entende — e o sintoma
+# seria um livro com outro numero de paginas, sem erro nenhum na tela.
+aberturas_aqui = set()
+for bruto in (itens("dados-aberturas") or []):
+    aberturas_aqui.add(atributos(bruto).get("id"))
+if os.path.exists(GERADOR):
+    g_txt = io.open(GERADOR, encoding="utf-8").read()
+    m_sel = re.search(r'<select id="sel-abertura">(.*?)</select>', g_txt, re.S)
+    if not m_sel:
+        notas.append("nao achei o menu de abertura no Gerador; lista nao conferida.")
+    else:
+        la = set(v for v in re.findall(r'<option value="([^"]*)"', m_sel.group(1)) if v)
+        if la != aberturas_aqui:
+            falhas.append(
+                "abertura de capitulo: a Oficina conhece %s e o Gerador %s. A "
+                "lista e FECHADA: a Oficina exporta o valor e o Gerador compoe "
+                "por ele." % (sorted(aberturas_aqui), sorted(la)))
 
 # --- 4. a costura japonesa declara os furos --------------------------------
 for bruto in (itens("dados-encad") or []):
