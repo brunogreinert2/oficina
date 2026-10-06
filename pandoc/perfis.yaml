@@ -122,14 +122,6 @@ fontes:
     # politonico. Vendorizada em gerador/fontes/ a partir de C:/Windows/Fonts.
     # Para Arial, o equivalente e a Liberation Sans — ainda nao vendorizada.
 
-  garamond:
-    css: "'EB Garamond', 'Cardo', 'DejaVu Guarnicao', serif"
-    arquivos: []                 # não vendorizada no Gerador ainda
-    classe: serif
-    largura_media_em: 0.39
-    escritas: [latim, grego_politonico]
-    tem_italico: true
-    tem_negrito_italico: true
 
 # ---------------------------------------------------------------------------
 # ABERTURA DE CAPÍTULO — o campo que mais mexe na conta de papel.
@@ -425,7 +417,3 @@ pendencias:
     O "+35 por cento" de espaçamento entre letras que a PROPOSTA-gerador-v2
     cita não tem fonte no briefing nem no estudo. O número real dos perfis que
     já imprimem é LetterSpace=2.0, ou seja 0,02 em. Segui o que imprime.
-  - >
-    garamond fica declarada mas sem arquivos vendorizados no Gerador. Um perfil
-    que a use comporia com a métrica errada. A Grade recusa, em vez de compor
-    errado em silêncio.

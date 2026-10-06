@@ -46,7 +46,7 @@ JavaScript, o botão Φ mostra e esconde essa mesma seção. O dado existe uma
 vez só no arquivo.
 
 **A configuração inteira cabe na URL.** O endereço vira
-`#encheiridion/garamond/11/folio-phi/azul/yotsume/branco/mole/phi`. Copiar o
+`#encheiridion/cardo/11/folio-phi/azul/yotsume/branco/mole/phi`. Copiar o
 link é salvar o projeto; colar é abri-lo. Sem servidor, sem cadastro, sem
 banco.
 
