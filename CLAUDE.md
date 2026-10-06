@@ -43,6 +43,19 @@ Não introduzir nenhum dos quatro.
 
 ## O que é específico daqui
 
+- **A TIPOGRAFIA VIAJA NA ESPECIFICAÇÃO (2026-10-06).** Até aqui a
+  especificação levava o `perfil` e não o corpo: o Bruno escolhia Cardo 12 e o
+  Gerador compunha Cardo 11, porque lá o corpo é o do perfil. A medida de linha
+  e as linhas por página que esta bancada calcula SÃO com o corpo escolhido —
+  exportar um sem o outro faz dos dois números uma mentira. Agora
+  `composicao.tipografia` leva fonte, corpo e entrelinha.
+
+- **A ENTRELINHA DO PERFIL É PARA O CORPO DO PERFIL.** O padrão compõe 11/14,85
+  (razão 1,35); mantendo 14,85 com corpo 12 a razão cai para 1,24 e o texto
+  aperta. A entrelinha passou a escalar na MESMA RAZÃO que o perfil escolheu —
+  não é conta nova, é a decisão do perfil aplicada ao corpo que se pediu.
+  Medido: corpo 12 no perfil padrão dá 16,20 pt.
+
 - **O catálogo mora no `<body>`.** Textos, tipografias, formatos,
   encadernações, fios, capas, acabamentos e materiais são listas HTML com
   `data-*`; o JavaScript lê delas e monta o configurador. **Não mover dado

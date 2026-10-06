@@ -1033,9 +1033,14 @@ function calcular(){
      corpo 12): estimar por 1,35 daria 28 por cento de linhas a mais do que
      cabe, e a conta da Oficina é o contrato com o Gerador. */
   const pf = PERFIS.find(x => x.id === estado.perfil);
-  const alturaLinha = pf && pf.entrelinha
-    ? 0.3528 * pf.entrelinha
-    : 0.3528 * estado.corpo * (fn.classe === "hyper" ? 1.45 : 1.35);
+  /* A ENTRELINHA DO PERFIL E PARA O CORPO DO PERFIL. Trocar o corpo e manter a
+     entrelinha aperta o texto: o padrao compoe 11/14,85 (razao 1,35), e com
+     corpo 12 a mesma entrelinha cai para 1,24. Escala-se na MESMA RAZAO, que e
+     a decisao tipografica que o perfil tomou — nao uma conta nova. */
+  const entrelinhaPt = pf && pf.entrelinha
+    ? (pf.corpo ? pf.entrelinha * estado.corpo / pf.corpo : pf.entrelinha)
+    : estado.corpo * (fn.classe === "hyper" ? 1.45 : 1.35);
+  const alturaLinha = 0.3528 * entrelinhaPt;
   const linhasPagina = Math.max(1, Math.floor(manchaA / alturaLinha));
   /* A página tem `col.n` colunas de `linhasPagina` linhas cada. */
   const palavrasPagina = Math.max(1, (chars/6) * linhasPagina * col.n * 0.92);
@@ -1070,7 +1075,7 @@ function calcular(){
 
   return {f,fn,en,tx,cp,costuraJaponesa,interna,externa,superior,inferior,
           manchaL,manchaA,chars,linhasPagina,paginas,folhas,dif,linha,espessura,
-          cn,imp,espelha:imp.espelha,col,medianiz,larguraColuna,
+          cn,imp,espelha:imp.espelha,col,medianiz,larguraColuna,entrelinhaPt,
           estimadas,retornoVale,assinatura,regraMiolo};
 }
 
@@ -2022,6 +2027,17 @@ function especificacaoParaGerador(c){
          ainda não a leva em conta — é a conta de palavras por página, que não
          sabe de capítulo que abre folha. Está na proposta, seção 8. */
       abertura_de_capitulo: aberturaEfetiva(),
+      /* A TIPOGRAFIA VIAJA (2026-10-06). A medida de linha e as linhas por
+         pagina acima foram calculadas COM ESTES NUMEROS. Sem eles o Gerador
+         compoe pelo corpo do perfil, e os dois numeros viram mentira: o Bruno
+         escolheu Cardo 12 aqui e o livro saiu em Cardo 11. Especificacao
+         antiga, sem o campo, segue pelo perfil — nenhum livro ja composto
+         muda. */
+      tipografia: {
+        fonte: c.fn.id, fonte_nome: c.fn.nome,
+        corpo_pt: estado.corpo,
+        entrelinha_pt: r(c.entrelinhaPt)
+      },
       medianiz_mm: r(c.medianiz),
       largura_coluna_mm: r(c.larguraColuna)
     },
