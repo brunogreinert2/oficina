@@ -912,7 +912,11 @@ const PADRAO = {
   /* 2026-09-18, no fim do hash como todo campo novo. "perfil" quer dizer «o
      que o perfil escolhido manda» — e a EXPORTACAO resolve isso num valor
      concreto, para que a especificacao nunca saia ambigua. */
-  abertura:"perfil"
+  abertura:"perfil",
+  /* 2026-10-07, no fim do hash como todo campo novo. `digital` zera a
+     costura: margens iguais dos dois lados, sem encadernacao, sem folhas,
+     sem espessura. Link antigo, sem o campo, e livro fisico. */
+  edicao:"fisica"
 };
 let estado = {...PADRAO, acabamentos:[...PADRAO.acabamentos],
               margens:{...PADRAO.margens}};
@@ -925,7 +929,7 @@ function paraHash(){
                 e.acabamentos.join('.'),
                 e.canone,e.impressao,e.perfil,
                 [e.margens.int,e.margens.ext,e.margens.sup,e.margens.inf].join('.'),
-                e.colunas, e.abertura
+                e.colunas, e.abertura, e.edicao
                ].join('/');
 }
 function doHash(){
@@ -958,6 +962,7 @@ function doHash(){
   estado.colunas = val(COLUNAS_MANCHA,p[13],PADRAO.colunas);
   estado.abertura = (p[14] === 'perfil' || acha(ABERTURAS, p[14]))
                   ? p[14] : PADRAO.abertura;
+  estado.edicao = (p[15] === 'digital') ? 'digital' : PADRAO.edicao;
 }
 
 /* =========================================================
@@ -992,7 +997,9 @@ function calcular(){
   const en = acha(ENCADERNACOES, estado.encad);
   const tx = obraAtual();
   const cp = acha(CAPAS,    estado.capa);
-  const costuraJaponesa = en.fam === "jap";
+  /* DOCUMENTO DIGITAL: nao ha costura, entao nao ha lado de dentro. */
+  const digital = estado.edicao === 'digital';
+  const costuraJaponesa = en.fam === "jap" && !digital;
 
   /* A REGRA DAS MARGENS é escolha, não constante. O cânone dos nonos continua
      o padrão — é o do livro —, mas trabalho em ABNT tem centímetro fixo por
@@ -1009,7 +1016,18 @@ function calcular(){
 
   let interna = mm4.int;
   if(costuraJaponesa) interna += 20;
-  const externa  = mm4.ext;
+  let externa = mm4.ext;
+  /* MARGENS IGUAIS DOS DOIS LADOS, pela MEDIA. A diferenca entre interna e
+     externa e a costura comendo o lado de dentro; sem costura ela nao tem
+     razao de ser. Pela media e nao por uma das duas porque assim a LARGURA DA
+     MANCHA nao muda: mesma medida de linha, mesmas linhas por pagina, mesma
+     contagem de paginas. O documento so desliza para o centro, e as duas
+     versoes continuam comparaveis.
+
+     A assimetria de cima e de baixo FICA: ela nao e da encadernacao, e optica
+     — o olho poe o centro de uma pagina acima do centro geometrico, e um
+     bloco centrado de verdade parece estar caindo. */
+  if (digital) { const m = (interna + externa) / 2; interna = m; externa = m; }
   const superior = mm4.sup;
   const inferior = mm4.inf;
   const manchaL = f.l - interna - externa;
@@ -1070,7 +1088,11 @@ function calcular(){
   /* Espessura do miolo. Vive aqui e não mais dentro do desenho, porque a
      lista de corte precisa do mesmo número que a lombada desenhada — dois
      cálculos separados divergem no dia em que alguém mexe num só. */
-  const espessura = Math.max(6, Math.min(48, folhas * (en.id==="fukuro" ? 0.22 : 0.13) + 4));
+  /* Um arquivo nao tem folha nem espessura. Zero aqui faz a lista de corte,
+     o peso do papel e a ficha calarem sozinhos, em vez de publicarem a conta
+     de um objeto que nao existe. */
+  const espessura = digital ? 0
+    : Math.max(6, Math.min(48, folhas * (en.id==="fukuro" ? 0.22 : 0.13) + 4));
 
   return {f,fn,en,tx,cp,costuraJaponesa,interna,externa,superior,inferior,
           manchaL,manchaA,chars,linhasPagina,paginas,folhas,dif,linha,espessura,
@@ -1679,6 +1701,21 @@ function montarSecoes(){
     fichaBotao({titulo:k.nome, sub:k.nota, ativo:estado.colunas===k.id,
       onClick:()=>{estado.colunas=k.id; render();}}))));
 
+  /* QUE EDIÇÃO É ESTA. Vem ANTES da impressão de propósito: num documento
+     digital não há miolo a espelhar, e a pergunta seguinte deixa de fazer
+     sentido. É a decisão mais a montante que esta bancada toma depois do
+     formato — ela muda as MARGENS. */
+  alvo.appendChild(secao("s-edicao","Que edição é esta",
+    "sem costura não há lado de dentro",
+    [fichaBotao({titulo:"Livro físico",
+      sub:"margem interna maior, para a costura comer",
+      ativo:estado.edicao!=="digital",
+      onClick:()=>{estado.edicao="fisica"; render();}}),
+     fichaBotao({titulo:"Documento digital",
+      sub:"margens iguais dos dois lados; sem folhas, costura nem papel",
+      ativo:estado.edicao==="digital",
+      onClick:()=>{estado.edicao="digital"; render();}})]));
+
   alvo.appendChild(secao("s-impressao","Impressão do miolo",
     "espelha as margens ou não", IMPRESSOES.map(i=>
     fichaBotao({titulo:i.nome, sub:i.nota, ativo:estado.impressao===i.id,
@@ -2012,6 +2049,11 @@ function especificacaoParaGerador(c){
       folga_costura_japonesa: c.costuraJaponesa ? 20 : 0
     },
     impressao: c.imp.id,
+    /* QUE EDICAO E ESTA (2026-10-07). `digital` diz ao Gerador que o colofao
+       nao deve declarar papel, folhas nem costura — e e a mesma decisao que
+       aqui ja deixou as margens simetricas. Especificacao antiga, sem o campo,
+       e livro fisico, como sempre foi. */
+    edicao: (estado.edicao === 'digital' ? 'digital' : 'fisica'),
     mancha_mm: { largura: r(c.manchaL), altura: r(c.manchaA) },
     composicao: {
       medida_de_linha_caracteres: c.chars,

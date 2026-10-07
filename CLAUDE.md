@@ -43,6 +43,32 @@ Não introduzir nenhum dos quatro.
 
 ## O que é específico daqui
 
+- **O DOCUMENTO DIGITAL NASCE AQUI (2026-10-07).** Até 2026-10-06 a edição
+  era escolha do Gerador, no momento de compor. Errado, e o Bruno mostrou por
+  quê: num documento digital **as margens mudam**. Não há lombada, não há lado
+  de dentro, não há costura comendo a margem interna — e se as margens mudam,
+  não é o mesmo objeto. A decisão é de quem projeta o objeto.
+
+  **A margem dos dois lados é a MÉDIA de interna e externa.** Pela média, e não
+  por uma das duas, porque assim a **largura da mancha não muda**: mesma medida
+  de linha, mesmas linhas por página, mesma contagem de páginas. O documento só
+  desliza para o centro, e as duas versões continuam comparáveis. Medido (A4,
+  nonos, copta): físico 23,33 / 46,67 e digital 35 / 35 — mancha 140 × 198 mm
+  nas duas, 58 páginas nas duas.
+
+  **A assimetria VERTICAL fica.** Ela não é da encadernação, é óptica: o olho
+  põe o centro de uma página acima do centro geométrico, e um bloco centrado de
+  verdade parece estar caindo.
+
+  **A folga da costura japonesa some**, e aí a mancha alarga 20 mm — é a única
+  largura que muda, e muda porque a costura deixou de existir. E a espessura do
+  miolo vai a zero: um arquivo não tem folha nem lombada, e zero aqui faz a
+  lista de corte e o peso do papel calarem sozinhos.
+
+  O campo entra no FIM do hash (`edicao`) e na especificação (`edicao`), e o
+  Gerador o põe no menu dele. Especificação antiga, sem o campo, é livro
+  físico. Aceite: `gerador/teste_edicao.py`, que usa as duas bancadas.
+
 - **A TIPOGRAFIA VIAJA NA ESPECIFICAÇÃO (2026-10-06).** Até aqui a
   especificação levava o `perfil` e não o corpo: o Bruno escolhia Cardo 12 e o
   Gerador compunha Cardo 11, porque lá o corpo é o do perfil. A medida de linha
@@ -193,10 +219,12 @@ Não introduzir nenhum dos quatro.
   de lá, um aviso lembra que a contagem é aproximada. PDF não entra na
   Oficina: PDF vira `.md` no Conversor, que é a bancada anterior.
 
-- **Fonte sem arquivo vendorizado é aviso, não silêncio.** A EB Garamond está
-  declarada e não tem `.woff2` em `gerador/fontes/`: o Gerador RECUSA compor
-  com ela. A Oficina passou a dizer isso na tela — antes deixava projetar um
-  volume inteiro numa fonte que não compõe.
+- **Fonte sem arquivo vendorizado é aviso, não silêncio.** O Gerador RECUSA
+  compor numa família que não tenha `.woff2` em `gerador/fontes/`, e esta
+  bancada diz isso na tela — antes deixava projetar um volume inteiro numa
+  fonte que não compõe. **O caso que originou a regra saiu do catálogo em
+  2026-10-06** (a EB Garamond, a pedido do Bruno: «nunca usei e gosto muito da
+  Cardo»). A regra fica de pé para a próxima.
 
 - **O mesmo vale para as ESTAÇÕES das encadernações de caderno.** A lista de
   corte dizia «3 furos por caderno» para caderno único, copta e long stitch,
@@ -277,9 +305,8 @@ Não introduzir nenhum dos quatro.
 ## Tipografia
 
 `fontes/` é vendorizada e local (LEI 3, zero rede). A Atkinson veio de
-`app-leitura/scripts/rolo/fontes/` — não editar aqui. EB Garamond e Cardo
-ainda faltam; o `@font-face` já as espera pelos nomes exatos listados em
-`fontes/LEIAME.md`.
+`app-leitura/scripts/rolo/fontes/` — não editar aqui. A Cardo ainda falta; o
+`@font-face` já a espera pelo nome exato listado em `fontes/LEIAME.md`.
 
 ## Acessibilidade
 
