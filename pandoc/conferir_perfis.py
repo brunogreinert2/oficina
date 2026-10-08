@@ -395,6 +395,11 @@ def escrever_lista_na_oficina(dados):
             # o perfil faz e para exportar um valor CONCRETO na especificacao.
             # Sem isto, a escolha ficava so no menu do Gerador e nao viajava.
             "data-abertura": p.get("abertura_de_capitulo", "pagina-nova"),
+            # ONDE A NOTA CAI (2026-10-07). A Oficina precisa dela pelo mesmo
+            # motivo da abertura: mostrar o que o perfil faz, e exportar um
+            # valor CONCRETO na especificacao. Sem isto a escolha ficava presa
+            # no perfil e nao viajava para lugar nenhum.
+            "data-notas": p.get("notas", "rodape"),
             "data-fonte": p.get("fonte", ""),
             "data-corpo": p.get("corpo_pt", ""),
             # A Oficina estima linhas por pagina, e para isso precisa da

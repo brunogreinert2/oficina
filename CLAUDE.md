@@ -263,6 +263,18 @@ Não introduzir nenhum dos quatro.
   (medido: o .md sumia e a especificacao entrava). Aberta sozinha, por duplo
   clique, `window.parent === window` e nada disso roda.
 
+- **ONDE A NOTA CAI é decisão daqui (2026-10-07).** Estava presa ao perfil, e
+  o perfil amarrava duas coisas sem relação: Padrão 11 pt / ao pé, Vista
+  cansada 12 pt / **fim de capítulo**. Quem quisesse corpo 12 com nota ao pé
+  tinha de saber de cor qual perfil não serve — foi o Bruno quem apontou.
+
+  Está aqui pelo mesmo motivo da abertura: **muda a conta de papel**. Medido na
+  Apologia em A4 corpo 12: 42 páginas com as notas no fim contra 34 ao pé.
+  Lista `dados-notas` no `<body>`, campo no FIM do hash, e `composicao.notas`
+  na especificação com valor CONCRETO, resolvido por `notasEfetivas()` — «como
+  o perfil manda» é escolha de tela; na especificação seria pergunta sem
+  resposta. O perfil declara a sua em `data-notas`, propagado do `perfis.yaml`.
+
 - **A ABERTURA DE CAPÍTULO é decisão da Oficina (2026-09-18).** Menu novo
   («como o perfil manda» · página nova · corrido), lista `dados-aberturas` no
   `<body>`, campo no FIM do hash, e `composicao.abertura_de_capitulo` na
