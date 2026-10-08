@@ -553,6 +553,58 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
       <span class="mono">· a página de texto fica limpa · o leitor tem de ir até lá · em duas colunas evita os vãos que a nota ao pé abre</span></li>
   </ul>
 
+  <h2 id="ac-alinhamento">Alinhamento do corpo</h2>
+  <ul id="dados-alinhamentos">
+    <li data-id="justificado"><b>Justificado</b>
+      <span class="mono">· as duas margens retas · é o livro · pede hifenização, senão abre vãos entre as palavras</span></li>
+    <li data-id="bandeira-esquerda"><b>Bandeira à esquerda</b>
+      <span class="mono">· margem direita irregular · espaço entre palavras sempre igual · é o que a Linha Acessível usa</span></li>
+    <li data-id="centrado"><b>Centrado</b>
+      <span class="mono">· para poesia e epígrafe · em prosa corrida, cansa</span></li>
+    <li data-id="bandeira-direita"><b>Bandeira à direita</b>
+      <span class="mono">· raro em corpo de texto · existe para quem precisar</span></li>
+  </ul>
+
+  <h2 id="ac-alinhamento-titulo">Alinhamento do título</h2>
+  <p>Decisão separada do corpo, e tem de ser: «Capítulo 2» justificado numa
+     linha de 50 caracteres vira «Capítulo» num canto e «2» no outro.</p>
+  <ul id="dados-alinhamentos-titulo">
+    <li data-id="esquerda"><b>À esquerda</b>
+      <span class="mono">· o padrão da casa</span></li>
+    <li data-id="centro"><b>Centrado</b>
+      <span class="mono">· a tradição do saltério e do livro litúrgico</span></li>
+    <li data-id="direita"><b>À direita</b>
+      <span class="mono">· incomum, e por isso marcante numa abertura</span></li>
+  </ul>
+
+  <h2 id="ac-adorno">Adorno</h2>
+  <ul id="dados-adornos">
+    <li data-id="nenhum"><b>Nenhum</b>
+      <span class="mono">· a norma acadêmica e o documento sóbrio</span></li>
+    <li data-id="friso"><b>Grega, friso</b>
+      <span class="mono">· a faixa de meandro no alto da página · é a mesma do Pedra Angular, desenhada por fórmula</span></li>
+    <li data-id="filete"><b>Filete com losango</b>
+      <span class="mono">· um traço fino e um losango ao centro · discreto</span></li>
+    <li data-id="moldura"><b>Grega, moldura</b>
+      <span class="mono">· a faixa em volta da mancha inteira · pesado, e desliga o recolhimento de linha solta</span></li>
+  </ul>
+
+  <h2 id="ac-cabecalho">Cabeçalho corrente</h2>
+  <ul id="dados-cabecalhos">
+    <li data-id="corrente"><b>O capítulo corrente</b>
+      <span class="mono">· o nome do capítulo no alto de cada página · é o que deixa folhear um livro procurando um trecho</span></li>
+    <li data-id="nenhum"><b>Nenhum</b>
+      <span class="mono">· página limpa · a norma acadêmica não o pede</span></li>
+  </ul>
+
+  <h2 id="ac-hifenizacao">Hifenização</h2>
+  <ul id="dados-hifenizacao">
+    <li data-id="sim"><b>Hifenizar</b>
+      <span class="mono">· padrões do TeX, os mesmos do pandoc · obrigatória em justificado, senão a linha abre vãos</span></li>
+    <li data-id="nao"><b>Não hifenizar</b>
+      <span class="mono">· palavra partida é custo de leitura · é o que a Linha Acessível escolhe, junto com a bandeira</span></li>
+  </ul>
+
   <h2 id="ac-impressao">Impressão</h2>
   <ul id="dados-impressao">
     <li data-id="frente-verso" data-espelha="1"><b>Frente e verso</b>
@@ -568,12 +620,13 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
      bancada. Não editar à mão (N2, N57).</p>
   <!-- PERFIS-OFICINA:INICIO — gerado, não editar -->
   <ul id="dados-perfis-oficina">
-  <li data-id="padrao" data-nome="Padrão" data-para="leitura adulta sem necessidade declarada" data-abertura="pagina-nova" data-notas="rodape" data-fonte="cardo" data-corpo="11" data-entrelinha="14.85"><b>Padrão</b> <span class="mono">· leitura adulta sem necessidade declarada · cardo 11 pt</span></li>
-  <li data-id="letra-grande" data-nome="Letra Grande" data-para="baixa visão; e o présbita de balcão, que compra pelo conforto" data-abertura="corrido" data-notas="fim-de-capitulo" data-fonte="atkinson" data-corpo="16" data-entrelinha="23.2"><b>Letra Grande</b> <span class="mono">· baixa visão; e o présbita de balcão, que compra pelo conforto · atkinson 16 pt</span></li>
-  <li data-id="presbiopia" data-nome="Vista cansada" data-para="quem passou dos quarenta e afasta o texto para focar" data-abertura="corrido" data-notas="fim-de-capitulo" data-fonte="cardo" data-corpo="12" data-entrelinha="19.4"><b>Vista cansada</b> <span class="mono">· quem passou dos quarenta e afasta o texto para focar · cardo 12 pt</span></li>
-  <li data-id="astigmatismo" data-nome="Astigmatismo" data-para="borrão com direção; as letras parecem colar umas nas outras" data-abertura="corrido" data-notas="fim-de-capitulo" data-fonte="atkinson" data-corpo="12" data-entrelinha="19.4"><b>Astigmatismo</b> <span class="mono">· borrão com direção; as letras parecem colar umas nas outras · atkinson 12 pt</span></li>
-  <li data-id="dislexia" data-nome="Dislexia" data-para="troca de b/d e p/q; crowding" data-abertura="corrido" data-notas="fim-de-capitulo" data-fonte="opendyslexic" data-corpo="12" data-entrelinha="23.0"><b>Dislexia</b> <span class="mono">· troca de b/d e p/q; crowding · opendyslexic 12 pt</span></li>
-  <li data-id="abnt" data-nome="ABNT" data-para="trabalho de faculdade entregue em norma NBR 14724" data-abertura="pagina-nova" data-notas="rodape" data-fonte="liberation" data-corpo="12" data-entrelinha="20.7"><b>ABNT</b> <span class="mono">· trabalho de faculdade entregue em norma NBR 14724 · liberation 12 pt</span></li>
+  <li data-id="padrao" data-nome="Padrão" data-para="leitura adulta sem necessidade declarada" data-abertura="pagina-nova" data-notas="rodape" data-alinhamento="justificado" data-alinhamento-titulo="esquerda" data-adorno="friso" data-cabecalho="corrente" data-hifenizacao="true" data-fonte="cardo" data-corpo="11" data-entrelinha="14.85"><b>Padrão</b> <span class="mono">· leitura adulta sem necessidade declarada · cardo 11 pt</span></li>
+  <li data-id="letra-grande" data-nome="Letra Grande" data-para="baixa visão; e o présbita de balcão, que compra pelo conforto" data-abertura="corrido" data-notas="fim-de-capitulo" data-alinhamento="bandeira-esquerda" data-alinhamento-titulo="esquerda" data-adorno="nenhum" data-cabecalho="nenhum" data-hifenizacao="false" data-fonte="atkinson" data-corpo="16" data-entrelinha="23.2"><b>Letra Grande</b> <span class="mono">· baixa visão; e o présbita de balcão, que compra pelo conforto · atkinson 16 pt</span></li>
+  <li data-id="presbiopia" data-nome="Vista cansada" data-para="quem passou dos quarenta e afasta o texto para focar" data-abertura="corrido" data-notas="fim-de-capitulo" data-alinhamento="bandeira-esquerda" data-alinhamento-titulo="esquerda" data-adorno="nenhum" data-cabecalho="nenhum" data-hifenizacao="false" data-fonte="cardo" data-corpo="12" data-entrelinha="19.4"><b>Vista cansada</b> <span class="mono">· quem passou dos quarenta e afasta o texto para focar · cardo 12 pt</span></li>
+  <li data-id="astigmatismo" data-nome="Astigmatismo" data-para="borrão com direção; as letras parecem colar umas nas outras" data-abertura="corrido" data-notas="fim-de-capitulo" data-alinhamento="bandeira-esquerda" data-alinhamento-titulo="esquerda" data-adorno="nenhum" data-cabecalho="nenhum" data-hifenizacao="false" data-fonte="atkinson" data-corpo="12" data-entrelinha="19.4"><b>Astigmatismo</b> <span class="mono">· borrão com direção; as letras parecem colar umas nas outras · atkinson 12 pt</span></li>
+  <li data-id="dislexia" data-nome="Dislexia" data-para="troca de b/d e p/q; crowding" data-abertura="corrido" data-notas="fim-de-capitulo" data-alinhamento="bandeira-esquerda" data-alinhamento-titulo="esquerda" data-adorno="nenhum" data-cabecalho="nenhum" data-hifenizacao="false" data-fonte="opendyslexic" data-corpo="12" data-entrelinha="23.0"><b>Dislexia</b> <span class="mono">· troca de b/d e p/q; crowding · opendyslexic 12 pt</span></li>
+  <li data-id="abnt" data-nome="ABNT" data-para="trabalho de faculdade entregue em norma NBR 14724" data-abertura="pagina-nova" data-notas="rodape" data-alinhamento="justificado" data-alinhamento-titulo="esquerda" data-adorno="nenhum" data-cabecalho="nenhum" data-hifenizacao="true" data-fonte="liberation" data-corpo="12" data-entrelinha="20.7"><b>ABNT</b> <span class="mono">· trabalho de faculdade entregue em norma NBR 14724 · liberation 12 pt</span></li>
+  <li data-id="personalizado" data-nome="Personalizado" data-para="ponto de partida neutro; tudo se escolhe na Paginacao" data-abertura="pagina-nova" data-notas="rodape" data-alinhamento="justificado" data-alinhamento-titulo="esquerda" data-adorno="nenhum" data-cabecalho="nenhum" data-hifenizacao="true" data-fonte="cardo" data-corpo="11" data-entrelinha="14.85"><b>Personalizado</b> <span class="mono">· ponto de partida neutro; tudo se escolhe na Paginacao · cardo 11 pt</span></li>
   </ul>
   <!-- PERFIS-OFICINA:FIM -->
 
@@ -662,9 +715,47 @@ const COLUNAS_MANCHA = lerLista('dados-colunas', (d,li) => ({
 const ABERTURAS = lerLista('dados-aberturas', (d,li) => ({
   id:d.id, nome:nomeDe(li), nota:notaDe(li)
 }));
-const NOTAS = lerLista('dados-notas', (d,li) => ({
-  id:d.id, nome:nomeDe(li), nota:notaDe(li)
-}));
+/* =========================================================
+   AS DECISÕES DE PAGINAÇÃO (2026-10-07)
+
+   Até aqui elas eram do PERFIL e só dele: quem quisesse corpo 12 com nota ao
+   pé tinha de saber de cor que «Vista cansada» manda as notas para o fim do
+   capítulo. O Bruno chamou o que faltava pelo nome: «tá faltando uma
+   Paginação no ecossistema». Agora o perfil SUGERE e esta bancada DECIDE.
+
+   UMA TABELA, e não seis blocos copiados: as seis têm exatamente o mesmo
+   desenho — catálogo no `<body>`, «como o perfil manda» na tela, valor
+   CONCRETO na especificação, campo no fim do hash. Seis cópias seriam seis
+   lugares para esquecer um detalhe no dia em que a sétima aparecer.
+
+   A ORDEM DESTA TABELA É A ORDEM NO HASH, e por isso é eterna (LEI 6):
+   decisão nova entra NO FIM, nunca no meio — senão todo link salvo passa a
+   ler outro campo.
+
+   `perfil` é o nome do atributo no `dados-perfis-oficina`, que o
+   `conferir_perfis.py --propagar` escreve a partir do `perfis.yaml`. */
+const PAGINACAO = [
+  { chave:'notas', lista:'dados-notas', perfil:'notas', padrao:'rodape',
+    titulo:'Notas', sub:'ao pé custa altura da mancha; no fim, folha própria' },
+  { chave:'alinhamento', lista:'dados-alinhamentos', perfil:'alinhamento',
+    padrao:'justificado',
+    titulo:'Alinhamento do corpo', sub:'justificado pede hifenização' },
+  { chave:'alinhamentoTitulo', lista:'dados-alinhamentos-titulo',
+    perfil:'alinhamentoTitulo', padrao:'esquerda',
+    titulo:'Alinhamento do título', sub:'decisão separada do corpo, e tem de ser' },
+  { chave:'adorno', lista:'dados-adornos', perfil:'adorno', padrao:'nenhum',
+    titulo:'Adorno', sub:'a grega, o filete, ou nada' },
+  { chave:'cabecalho', lista:'dados-cabecalhos', perfil:'cabecalho',
+    padrao:'nenhum',
+    titulo:'Cabeçalho corrente', sub:'é o que deixa folhear procurando um trecho' },
+  { chave:'hifenizacao', lista:'dados-hifenizacao', perfil:'hifenizacao',
+    padrao:'sim',
+    titulo:'Hifenização', sub:'os padrões do TeX, os mesmos do pandoc' },
+];
+PAGINACAO.forEach(d => { d.opcoes = lerLista(d.lista, (x,li) => ({
+  id:x.id, nome:nomeDe(li), nota:notaDe(li) })); });
+/* O nome antigo continua valendo onde já estava escrito. */
+const NOTAS = PAGINACAO[0].opcoes;
 const IMPRESSOES = lerLista('dados-impressao', (d,li) => ({
   id:d.id, nome:nomeDe(li), espelha:d.espelha==='1', nota:notaDe(li)
 }));
@@ -675,9 +766,15 @@ const PERFIS = [...document.querySelectorAll('#dados-perfis-oficina li')].map(li
   id: li.dataset.id, nome: li.dataset.nome || li.dataset.id,
   fonte: li.dataset.fonte || '', corpo: +li.dataset.corpo || 0,
   abertura: li.dataset.abertura || 'pagina-nova',
-  /* Onde o PERFIL põe a nota. A tela mostra isso embaixo de «como o perfil
-     manda», para a escolha não depender de memória. */
+  /* O QUE O PERFIL SUGERE em cada decisão de paginação. A tela mostra isso
+     embaixo de «como o perfil manda», para a escolha não depender de
+     memória — que foi exatamente a queixa do Bruno. */
   notas: li.dataset.notas || 'rodape',
+  alinhamento: li.dataset.alinhamento || 'justificado',
+  alinhamentoTitulo: li.dataset.alinhamentoTitulo || 'esquerda',
+  adorno: li.dataset.adorno || 'nenhum',
+  cabecalho: li.dataset.cabecalho || 'nenhum',
+  hifenizacao: li.dataset.hifenizacao === 'false' ? 'nao' : 'sim',
   entrelinha: +li.dataset.entrelinha || 0,
   para: li.dataset.para || ''
 }));
@@ -938,7 +1035,11 @@ const PADRAO = {
   /* 2026-10-07, no fim do hash como todo campo novo. "perfil" quer dizer «o
      que o perfil escolhido manda», e a EXPORTACAO resolve num valor concreto.
      Link antigo, sem o campo, segue o perfil — que e exatamente o de antes. */
-  notas:"perfil"
+  notas:"perfil",
+  /* As outras cinco decisoes de paginacao, todas em "perfil" por padrao: a
+     tela abre mostrando o que o perfil escolhido faz, e dali a pessoa mexe. */
+  alinhamento:"perfil", alinhamentoTitulo:"perfil", adorno:"perfil",
+  cabecalho:"perfil", hifenizacao:"perfil"
 };
 let estado = {...PADRAO, acabamentos:[...PADRAO.acabamentos],
               margens:{...PADRAO.margens}};
@@ -951,8 +1052,8 @@ function paraHash(){
                 e.acabamentos.join('.'),
                 e.canone,e.impressao,e.perfil,
                 [e.margens.int,e.margens.ext,e.margens.sup,e.margens.inf].join('.'),
-                e.colunas, e.abertura, e.edicao, e.notas
-               ].join('/');
+                e.colunas, e.abertura, e.edicao
+               ].concat(PAGINACAO.map(d => e[d.chave])).join('/');
 }
 function doHash(){
   const p = decodeURIComponent(location.hash.slice(1)).split('/');
@@ -985,8 +1086,11 @@ function doHash(){
   estado.abertura = (p[14] === 'perfil' || acha(ABERTURAS, p[14]))
                   ? p[14] : PADRAO.abertura;
   estado.edicao = (p[15] === 'digital') ? 'digital' : PADRAO.edicao;
-  estado.notas = (p[16] === 'perfil' || acha(NOTAS, p[16]))
-               ? p[16] : PADRAO.notas;
+  /* A PAGINACAO, na ordem da tabela, a partir de p[16]. */
+  PAGINACAO.forEach((d, i) => {
+    const v = p[16 + i];
+    estado[d.chave] = (v === 'perfil' || acha(d.opcoes, v)) ? v : PADRAO[d.chave];
+  });
 }
 
 /* =========================================================
@@ -1759,18 +1863,19 @@ function montarSecoes(){
         ativo:estado.abertura===a.id,
         onClick:()=>{estado.abertura=a.id; render();}})))));
 
-  /* ONDE A NOTA CAI. Ao lado da abertura de propósito: são as duas decisões
-     de PAGINAÇÃO que estavam presas no perfil, e as duas mexem em papel. */
-  const notasDoPerfil = (pfAgora && pfAgora.notas) || "rodape";
-  alvo.appendChild(secao("s-notas","Notas",
-    "estava presa ao perfil; agora é escolha sua",
-    [fichaBotao({titulo:"Como o perfil manda",
-      sub:(acha(NOTAS, notasDoPerfil)||{}).nome,
-      ativo:estado.notas==="perfil",
-      onClick:()=>{estado.notas="perfil"; render();}})].concat(
-      NOTAS.map(a=>fichaBotao({titulo:a.nome, sub:a.nota,
-        ativo:estado.notas===a.id,
-        onClick:()=>{estado.notas=a.id; render();}})))));
+  /* A PAGINAÇÃO, logo depois da abertura de propósito: são as decisões que
+     estavam presas no perfil, e o perfil passou a ser ATALHO, não gaiola. */
+  PAGINACAO.forEach(d => {
+    const doPerfil = (pfAgora && pfAgora[d.perfil]) || d.padrao;
+    alvo.appendChild(secao("s-" + d.chave.toLowerCase(), d.titulo, d.sub,
+      [fichaBotao({titulo:"Como o perfil manda",
+        sub:(acha(d.opcoes, doPerfil)||{}).nome,
+        ativo:estado[d.chave]==="perfil",
+        onClick:()=>{estado[d.chave]="perfil"; render();}})].concat(
+        d.opcoes.map(a=>fichaBotao({titulo:a.nome, sub:a.nota,
+          ativo:estado[d.chave]===a.id,
+          onClick:()=>{estado[d.chave]=a.id; render();}})))));
+  });
 
   if (PERFIS.length) alvo.appendChild(secao("s-perfil","Perfil tipográfico",
     "quem compõe a página é o Gerador; o perfil é dele", PERFIS.map(pf=>
@@ -2055,11 +2160,11 @@ function aberturaEfetiva(){
    «como o perfil manda» é escolha legítima; na especificação seria pergunta
    sem resposta, porque quem lê do outro lado teria de adivinhar qual perfil
    estava valendo. */
-function notasEfetivas(){
-  if (estado.notas !== "perfil" && acha(NOTAS, estado.notas))
-    return estado.notas;
+function paginacaoEfetiva(d){
+  if (estado[d.chave] !== "perfil" && acha(d.opcoes, estado[d.chave]))
+    return estado[d.chave];
   const pf = acha(PERFIS, estado.perfil);
-  return (pf && pf.notas) || "rodape";
+  return (pf && pf[d.perfil]) || d.padrao;
 }
 
 function especificacaoParaGerador(c){
@@ -2116,11 +2221,18 @@ function especificacaoParaGerador(c){
          ainda não a leva em conta — é a conta de palavras por página, que não
          sabe de capítulo que abre folha. Está na proposta, seção 8. */
       abertura_de_capitulo: aberturaEfetiva(),
-      /* ONDE A NOTA CAI (2026-10-07). Vem daqui porque muda a conta de papel
-         — a nota ao pé encurta a mancha da página em que ela cai, e no fim do
-         capítulo ela gasta folha própria. E porque estava presa no perfil,
-         amarrada ao corpo da letra, que é outra decisão. */
-      notas: notasEfetivas(),
+      /* A PAGINAÇÃO (2026-10-07): seis decisões que estavam presas ao perfil,
+         amarradas ao corpo da letra — que é outra decisão. Vão daqui porque é
+         aqui que o objeto se projeta, e porque três delas (notas, alinhamento
+         e hifenização) mexem na conta de papel. Sempre com valor CONCRETO:
+         «como o perfil manda» é escolha de tela, e na especificação seria
+         pergunta sem resposta. */
+      notas: paginacaoEfetiva(PAGINACAO[0]),
+      alinhamento: paginacaoEfetiva(PAGINACAO[1]),
+      alinhamento_titulo: paginacaoEfetiva(PAGINACAO[2]),
+      adorno: paginacaoEfetiva(PAGINACAO[3]),
+      cabecalho: paginacaoEfetiva(PAGINACAO[4]),
+      hifenizacao: paginacaoEfetiva(PAGINACAO[5]),
       /* A TIPOGRAFIA VIAJA (2026-10-06). A medida de linha e as linhas por
          pagina acima foram calculadas COM ESTES NUMEROS. Sem eles o Gerador
          compoe pelo corpo do perfil, e os dois numeros viram mentira: o Bruno

@@ -400,6 +400,49 @@ perfis:
     papel_cor: "branco"
     pandoc_perfil: abnt.yaml
 
+
+  # -------------------------------------------------------------------------
+  # O PONTO DE PARTIDA NEUTRO (2026-10-07)
+  #
+  # Decisao do Bruno, no dia em que a Paginacao ficou completa: os perfis
+  # passam a ser ATALHOS para quem ja sabe o que quer, e este e o atalho de
+  # quem NAO quer atalho nenhum. Ele nao decide o que nao precisa decidir —
+  # sem adorno, sem cabecalho corrente —, e deixa as seis decisoes da
+  # Paginacao fazerem o livro.
+  #
+  # «Desses personalizados surgirao com o tempo novos nomes companheiros dos
+  # dislexia e astigmatismo»: quando uma combinacao provar que vale, ela vira
+  # perfil com nome, AQUI, e passa a ser atalho tambem.
+  # -------------------------------------------------------------------------
+  personalizado:
+    nome: "Personalizado"
+    nome_comercial: "Personalizado"
+    para: "ponto de partida neutro; tudo se escolhe na Paginacao"
+    fonte: cardo
+    corpo_pt: 11
+    entrelinha_pt: 14.85          # 11 x 1,35 — a constante serifada da Oficina
+    pandoc_linestretch: 1.2       # caderno.yaml
+    divergencia: >
+      A MESMA do perfil `padrao`, e pela mesma razao: o caderno.yaml compoe a
+      ~1,44 efetivo (1,2 x 1,2 do LaTeX) e aqui o numero e 1,35, que e a
+      constante com que a Oficina estima. Este perfil nasce como copia neutra
+      do padrao, entao herdar a divergencia e herdar a decisao que ja foi
+      tomada — resolve-la aqui e nao la criaria dois numeros para a mesma
+      coisa.
+    letra_em: 0
+    palavra_em: 0
+    alinhamento: justificado
+    alinhamento_titulo: esquerda
+    hifenizacao: true
+    hifenizacao_idiomas: [pt, la, el-polyton, en]
+    abertura_de_capitulo: pagina-nova
+    cabecalho: nenhum
+    adorno: nenhum
+    notas: rodape
+    notas_corpo: menor
+    papel: "off-white ou branco, 75-90 g"
+    papel_cor: "branco"
+    pandoc_perfil: caderno.yaml
 # ---------------------------------------------------------------------------
 # O que este arquivo NÃO resolve, escrito para não parecer resolvido.
 pendencias:

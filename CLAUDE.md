@@ -263,6 +263,31 @@ Não introduzir nenhum dos quatro.
   (medido: o .md sumia e a especificacao entrava). Aberta sozinha, por duplo
   clique, `window.parent === window` e nada disso roda.
 
+- **A PAGINAÇÃO É DAQUI, E O PERFIL VIROU ATALHO (2026-10-07).** Decisão do
+  Bruno: «tudo tem que ser personalizável (…) os perfis têm de ser atalhos pra
+  quem já sabe o que quer, de resto é teste na base do olhômetro».
+
+  Seis decisões saíram da gaiola do perfil e viraram catálogo no `<body>`:
+  notas, alinhamento do corpo, alinhamento do título, adorno, cabeçalho
+  corrente e hifenização. **Uma TABELA (`PAGINACAO`) e não seis blocos
+  copiados** — as seis têm o mesmo desenho, e seis cópias seriam seis lugares
+  para esquecer um detalhe na sétima. **A ordem da tabela é a ordem no hash**,
+  e por isso é eterna (LEI 6): decisão nova entra no fim, nunca no meio.
+
+  `paginacaoEfetiva()` resolve o valor CONCRETO para a especificação — «como o
+  perfil manda» é escolha de tela; na especificação seria pergunta sem
+  resposta. O perfil declara o que SUGERE em `data-*`, propagado do
+  `perfis.yaml`, e a tela mostra isso embaixo de «como o perfil manda», para a
+  escolha não depender de memória — que foi a queixa que originou tudo.
+
+- **O PERFIL «PERSONALIZADO» (2026-10-07).** Ponto de partida neutro, no fim
+  da lista. O que o distingue do Padrão: o Padrão é uma ESCOLHA EDITORIAL
+  (grega no alto, justificado, cabeçalho corrente), feita por alguém que
+  decidiu; o Personalizado não decide o que não precisa — sem adorno, sem
+  cabeçalho. «Desses personalizados surgirão com o tempo novos nomes
+  companheiros dos dislexia e astigmatismo»: combinação que provar que vale
+  vira perfil com nome, no `perfis.yaml`, e passa a ser atalho também.
+
 - **ONDE A NOTA CAI é decisão daqui (2026-10-07).** Estava presa ao perfil, e
   o perfil amarrava duas coisas sem relação: Padrão 11 pt / ao pé, Vista
   cansada 12 pt / **fim de capítulo**. Quem quisesse corpo 12 com nota ao pé

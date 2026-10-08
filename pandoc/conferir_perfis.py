@@ -400,6 +400,14 @@ def escrever_lista_na_oficina(dados):
             # valor CONCRETO na especificacao. Sem isto a escolha ficava presa
             # no perfil e nao viajava para lugar nenhum.
             "data-notas": p.get("notas", "rodape"),
+            # AS OUTRAS DECISOES DE PAGINACAO (2026-10-07): a Oficina mostra o
+            # que o perfil sugere embaixo de «como o perfil manda», e exporta
+            # um valor CONCRETO. Sem isto o perfil seria gaiola de novo.
+            "data-alinhamento": p.get("alinhamento", "justificado"),
+            "data-alinhamento-titulo": p.get("alinhamento_titulo", "esquerda"),
+            "data-adorno": p.get("adorno", "nenhum"),
+            "data-cabecalho": p.get("cabecalho", "nenhum"),
+            "data-hifenizacao": "true" if p.get("hifenizacao") else "false",
             "data-fonte": p.get("fonte", ""),
             "data-corpo": p.get("corpo_pt", ""),
             # A Oficina estima linhas por pagina, e para isso precisa da
