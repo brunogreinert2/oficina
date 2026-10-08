@@ -263,6 +263,22 @@ Não introduzir nenhum dos quatro.
   (medido: o .md sumia e a especificacao entrava). Aberta sozinha, por duplo
   clique, `window.parent === window` e nada disso roda.
 
+- **O CORPO É A ESCADA INTEIRA; OS CINCO SÃO ATALHO (2026-10-08).** Pedido do
+  Bruno: «uma caixa com os números e eu só clico», como no Writer. O catálogo
+  `dados-corpos` passou de cinco a **21 degraus**, do aparato crítico (6 pt) ao
+  cartaz (48 pt); os cinco de sempre levam `data-atalho` e **são eles que viram
+  cartão**, o resto mora na caixa ao lado (`#sel-corpo`).
+
+  **Um catálogo só, e não dois**: duas listas seriam duas verdades, e no dia em
+  que alguém acrescentasse o 13 a uma delas a outra continuaria sem. `CORPOS` é
+  a escada; `CORPOS_ATALHO` são os cinco, e é deles que o «surpreenda-me»
+  sorteia — sortear 48 pt não seria surpresa, seria defeito.
+
+  Nada mais precisou mudar: a entrelinha já escalava na razão do perfil desde
+  2026-10-06, então 13 pt compõe a 17,55 pt sozinho. MEDIDO de ponta a ponta
+  (11 · 12 · 13 · 15), e `teste_tipografia.py` cobre 13 e 15 **por não serem
+  atalho**.
+
 - **A PAGINAÇÃO É DAQUI, E O PERFIL VIROU ATALHO (2026-10-07).** Decisão do
   Bruno: «tudo tem que ser personalizável (…) os perfis têm de ser atalhos pra
   quem já sabe o que quer, de resto é teste na base do olhômetro».

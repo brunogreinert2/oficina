@@ -195,6 +195,18 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
   background:var(--ui-superficie-alta);color:var(--ui-texto)}
 .ficha[aria-pressed=true] span{color:var(--ui-acento)}
 .ficha[aria-pressed=true] b::after{content:" ✓";color:var(--ui-acento)}
+/* A CAIXA DO CORPO (2026-10-08): veste a roupa dos cartoes para ficar na
+   mesma fila, mas nao e um cartao — nao se "escolhe" a caixa, escolhe-se um
+   numero dentro dela. Dai nao ter `aria-pressed` nem a marca de visto. */
+.ficha--caixa{display:flex;flex-direction:column;gap:.25rem;justify-content:center}
+.ficha--caixa .ficha-titulo{color:var(--ui-texto);font-size:inherit}
+.ficha--caixa select{font-family:var(--ui-mono);
+  font-size:calc(.8rem*var(--ui-escala));
+  background:var(--ui-fundo);color:var(--ui-texto);
+  border:1px solid var(--ui-linha);border-radius:.3rem;
+  padding:.2rem .3rem;min-height:1.9rem;cursor:pointer}
+.ficha--caixa select:focus-visible{outline:2px solid var(--ui-acento);
+  outline-offset:2px}
 
 .fio-cor{width:.95rem;height:.95rem;border-radius:50%;display:inline-block;
   vertical-align:-.12rem;margin-right:.45rem;border:1px solid var(--ui-texto-suave)}
@@ -370,12 +382,31 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
   </ul>
 
   <h2 id="ac-corpos">Corpos</h2>
+  <p>A escada inteira, do aparato crítico ao cartaz. Os cinco com
+     <code>data-atalho</code> viram cartão na tela — são os de uso
+     corrente; o resto está na caixa ao lado, para o olhômetro.</p>
   <ul id="dados-corpos">
-    <li data-id="10.5" data-nota="compacto"><b>10,5 pt</b> <span class="mono">· compacto</span></li>
-    <li data-id="11" data-nota="leitura"><b>11 pt</b> <span class="mono">· leitura</span></li>
-    <li data-id="12" data-nota="leitura"><b>12 pt</b> <span class="mono">· leitura</span></li>
-    <li data-id="14" data-nota="acessível"><b>14 pt</b> <span class="mono">· acessível</span></li>
-    <li data-id="16" data-nota="acessível"><b>16 pt</b> <span class="mono">· acessível</span></li>
+    <li data-id="6" data-nota="miúdo · aparato crítico"><b>6 pt</b> <span class="mono">· miúdo · aparato crítico</span></li>
+    <li data-id="7" data-nota="miúdo · aparato crítico"><b>7 pt</b> <span class="mono">· miúdo · aparato crítico</span></li>
+    <li data-id="8" data-nota="miúdo · nota e legenda"><b>8 pt</b> <span class="mono">· miúdo · nota e legenda</span></li>
+    <li data-id="9" data-nota="miúdo · nota e legenda"><b>9 pt</b> <span class="mono">· miúdo · nota e legenda</span></li>
+    <li data-id="10" data-nota="compacto"><b>10 pt</b> <span class="mono">· compacto</span></li>
+    <li data-id="10.5" data-nota="compacto" data-atalho="1"><b>10,5 pt</b> <span class="mono">· compacto</span></li>
+    <li data-id="11" data-nota="leitura" data-atalho="1"><b>11 pt</b> <span class="mono">· leitura</span></li>
+    <li data-id="12" data-nota="leitura" data-atalho="1"><b>12 pt</b> <span class="mono">· leitura</span></li>
+    <li data-id="13" data-nota="leitura"><b>13 pt</b> <span class="mono">· leitura</span></li>
+    <li data-id="14" data-nota="acessível" data-atalho="1"><b>14 pt</b> <span class="mono">· acessível</span></li>
+    <li data-id="15" data-nota="acessível"><b>15 pt</b> <span class="mono">· acessível</span></li>
+    <li data-id="16" data-nota="acessível" data-atalho="1"><b>16 pt</b> <span class="mono">· acessível</span></li>
+    <li data-id="18" data-nota="visão muito reduzida"><b>18 pt</b> <span class="mono">· visão muito reduzida</span></li>
+    <li data-id="20" data-nota="visão muito reduzida"><b>20 pt</b> <span class="mono">· visão muito reduzida</span></li>
+    <li data-id="22" data-nota="visão muito reduzida"><b>22 pt</b> <span class="mono">· visão muito reduzida</span></li>
+    <li data-id="24" data-nota="visão muito reduzida"><b>24 pt</b> <span class="mono">· visão muito reduzida</span></li>
+    <li data-id="28" data-nota="cartaz, não livro"><b>28 pt</b> <span class="mono">· cartaz, não livro</span></li>
+    <li data-id="32" data-nota="cartaz, não livro"><b>32 pt</b> <span class="mono">· cartaz, não livro</span></li>
+    <li data-id="36" data-nota="cartaz, não livro"><b>36 pt</b> <span class="mono">· cartaz, não livro</span></li>
+    <li data-id="40" data-nota="cartaz, não livro"><b>40 pt</b> <span class="mono">· cartaz, não livro</span></li>
+    <li data-id="48" data-nota="cartaz, não livro"><b>48 pt</b> <span class="mono">· cartaz, não livro</span></li>
   </ul>
 
   <h2 id="ac-formatos">Formatos</h2>
@@ -669,7 +700,12 @@ const FONTES = lerLista('dados-fontes', (d,li) => ({
      ANTES de alguém projetar um volume inteiro em cima. */
   vendorizada: d.vendorizada !== '0'
 }));
+/* A ESCADA INTEIRA, e os cinco que viram cartão. Um catálogo só: duas
+   listas seriam duas verdades, e no dia em que alguém acrescentasse 13 a uma
+   delas a outra continuaria sem. */
 const CORPOS = lerLista('dados-corpos', d => +d.id);
+const CORPOS_ATALHO = [...document.querySelectorAll('#dados-corpos li[data-atalho]')]
+  .map(li => +li.dataset.id);
 const CORPO_NOTA = Object.fromEntries(lerLista('dados-corpos', d => [+d.id, d.nota]));
 const FORMATOS = lerLista('dados-formatos', (d,li) => ({
   id:d.id, nome:nomeDe(li), l:+d.l, a:+d.a, prop:d.prop, origem:d.origem, fibra:d.fibra==='1'
@@ -1783,9 +1819,32 @@ function montarSecoes(){
     return b;
   })));
 
-  alvo.appendChild(secao("s-corpo","Corpo","tamanho em pontos", CORPOS.map(c=>
-    fichaBotao({titulo:`${String(c).replace(".",",")} pt`, sub:CORPO_NOTA[c],
-      ativo:estado.corpo===c, onClick:()=>{estado.corpo=c; render();}}))));
+  /* OS CINCO CARTÕES são ATALHOS — a mesma decisão que os perfis tomaram em
+     2026-10-07. A CAIXA ao lado é a escada inteira, pedida pelo Bruno: «uma
+     caixa com os números e eu só clico». Quem já sabe o que quer clica no
+     cartão; quem está testando no olhômetro usa a caixa. */
+  const caixaCorpo = document.createElement('label');
+  caixaCorpo.className = 'ficha ficha--caixa';
+  const rotulo = document.createElement('span');
+  rotulo.className = 'ficha-titulo';
+  rotulo.textContent = 'Outro tamanho';
+  const sel = document.createElement('select');
+  sel.id = 'sel-corpo';
+  CORPOS.forEach(c => {
+    const o = document.createElement('option');
+    o.value = String(c);
+    o.textContent = String(c).replace('.', ',') + ' pt';
+    if (c === estado.corpo) o.selected = true;
+    sel.appendChild(o);
+  });
+  sel.addEventListener('change', e => { estado.corpo = +e.target.value; render(); });
+  caixaCorpo.appendChild(rotulo);
+  caixaCorpo.appendChild(sel);
+  alvo.appendChild(secao("s-corpo","Corpo","tamanho em pontos",
+    CORPOS_ATALHO.map(c=>
+      fichaBotao({titulo:`${String(c).replace(".",",")} pt`, sub:CORPO_NOTA[c],
+        ativo:estado.corpo===c, onClick:()=>{estado.corpo=c; render();}}))
+    .concat([caixaCorpo])));
 
   alvo.appendChild(secao("s-formato","Formato","proporção e refile", FORMATOS.map(f=>
     fichaBotao({titulo:`${f.nome} · ${f.l}×${f.a}`, sub:`${f.prop}${f.fibra?" · fibra ok":""}`,
@@ -2085,7 +2144,7 @@ btnPhi.addEventListener('click',()=>{
 const sorteia = arr => arr[Math.floor(Math.random()*arr.length)];
 document.getElementById("btn-sortear").addEventListener("click",()=>{
   estado = {
-    texto: sorteia(TEXTOS).id, fonte: sorteia(FONTES).id, corpo: sorteia(CORPOS),
+    texto: sorteia(TEXTOS).id, fonte: sorteia(FONTES).id, corpo: sorteia(CORPOS_ATALHO),
     formato: sorteia(FORMATOS).id, tema: sorteia(TEMAS).id, encad: sorteia(ENCADERNACOES).id,
     fio: sorteia(FIOS).id, capa: sorteia(CAPAS).id,
     acabamentos: ACABAMENTOS.filter(()=>Math.random()<0.3).map(a=>a.id),
