@@ -1005,6 +1005,22 @@ const acha = (lista,id) => lista.find(x=>x.id===id);
 let obraDoArquivo = null;
 
 function separarFrontMatter(texto){
+  /* CRLF ENTRA, LF ANDA DENTRO (2026-10-09). Todo o acervo do Pedra Angular
+     esta em CRLF — git no Windows —, e as duas bancadas liam front matter
+     CRLF como NADA: titulo nulo, autor nulo, licenca nula. O livro saia com o
+     nome do arquivo no lugar do titulo, a capa sem autor, o colofao sem
+     fonte, e o nome do arquivo exportado sem obra.
+
+     Ficou invisivel porque os arquivos de trabalho do Bruno vem do Conversor,
+     que escreve LF. Apareceu no dia em que a biblioteca entrou na porta e a
+     primeira obra do acervo chegou pelo servidor — a minha propria sonda
+     escondia o defeito, porque o Python de leitura traduz CRLF em silencio.
+
+     E nao e so o front matter: TODA regra de linha das duas bancadas corre
+     risco com o \r — contar capitulo, achar nota, achar canonica. Por isso a
+     normalizacao e na PORTA e uma so, e nao um \r? espalhado por cada regex.
+     O \r sozinho (Mac antigo) tambem entra. */
+  texto = String(texto == null ? '' : texto).replace(/\r\n?/g, '\n');
   /* Front matter só no COMEÇO do arquivo — a lição do Corretor, onde um `---`
      no meio do texto pôs metade do Fédon na zona errada.
 
@@ -1130,6 +1146,100 @@ function extensaoDaObra(capitulos, nivel){
   if (!capitulos) return 'peça única';
   const onde = nivel <= 6 ? '#'.repeat(nivel) : 'nível ' + nivel;
   return plural(capitulos, 'capítulo', 'capítulos') + ' em ' + onde;
+}
+
+/* A BIBLIOTECA DO PEDRA ANGULAR NA PORTA (2026-10-09)
+   ====================================================
+   «Meu sonho e poder abrir a biblioteca do Pedra Angular pela bancada,
+   escolher o arquivo e trabalhar nele» — Bruno. Sao 1110 obras, e ate aqui a
+   porta era «arraste um .md de algum canto do disco».
+
+   O ACERVO ENTRA PELO SERVIDOR DO ATELIE, em `/acervo/`. Por isso a lista so
+   aparece quando ha servidor: bancada aberta por duplo clique roda em
+   `file://`, onde `fetch` nao le pasta nenhuma. Fora do Atelie o arrastar e o
+   «Abrir arquivo…» continuam, que e como sempre foi — a casca SOMA um
+   caminho, nunca troca um pelo outro.
+
+   E O TEXTO ENTRA PELA MESMA PORTA do arrasto (`receberMd`). Uma segunda
+   funcao de leitura seria uma segunda verdade sobre o mesmo arquivo: o dia em
+   que uma aprendesse um campo novo, a obra teria duas contagens. */
+let biblioteca = null;          // [{id, titulo, autor, arquivo}], ou null
+let bibliotecaEstado = 'nao-tentei';   // nao-tentei · buscando · pronto · sem
+let bibliotecaFiltro = '';
+let bibliotecaAberta = false;
+
+async function buscarBiblioteca(){
+  if (bibliotecaEstado === 'buscando' || bibliotecaEstado === 'pronto') return;
+  bibliotecaEstado = 'buscando';
+  try {
+    const r = await fetch('/acervo/catalogo.json', {cache: 'no-store'});
+    if (!r.ok) throw new Error(r.status);
+    const j = await r.json();
+    biblioteca = (j.livros || []).filter(x => x && x.arquivo);
+    bibliotecaEstado = biblioteca.length ? 'pronto' : 'sem';
+  } catch (e) {
+    /* Sem servidor nao ha biblioteca, e isso NAO e erro: e a bancada aberta
+       por duplo clique. O botao simplesmente nao aparece. */
+    biblioteca = null; bibliotecaEstado = 'sem';
+  }
+  render();
+}
+
+async function abrirDoAcervo(obra){
+  const zona = document.getElementById('zona-texto');
+  if (zona) zona.classList.add('sobre');
+  try {
+    const r = await fetch('/acervo/' + obra.arquivo.split('/').map(encodeURIComponent).join('/'),
+                          {cache: 'no-store'});
+    if (!r.ok) throw new Error('o acervo respondeu ' + r.status);
+    const texto = await r.text();
+    /* O NOME DO ARQUIVO E O DO ACERVO, nao o id: e dele que sai o nome da
+       especificacao exportada, pela CONVENCOES 1.1. */
+    receberMd(obra.arquivo.split('/').pop(), texto);
+    bibliotecaAberta = false;
+  } catch (e) {
+    const d = document.getElementById('biblioteca-recado');
+    if (d) d.textContent = 'nao deu para abrir: ' + e.message;
+  } finally {
+    if (zona) zona.classList.remove('sobre');
+  }
+}
+
+/* A BUSCA E POR TITULO E POR AUTOR, sem acento e sem caixa: quem procura
+   «socrates» tem de achar «Σωκράτης»? Nao — mas tem de achar «Apologia de
+   Socrates» escrito com acento. */
+function encherBiblioteca(lista){
+  const achadas = bibliotecaFiltrada();
+  lista.textContent = '';
+  if (!achadas.length) {
+    const p = document.createElement("p");
+    p.className = "dica"; p.textContent = "nada com esse nome no acervo.";
+    return lista.appendChild(p);
+  }
+  achadas.forEach(x => lista.appendChild(fichaBotao({
+    titulo: x.titulo, sub: (x.autor && x.autor !== '\—' ? x.autor + ' \· ' : '') + x.id,
+    ativo: !!(obraDoArquivo && obraDoArquivo.arquivo === x.arquivo.split('/').pop()),
+    onClick: () => abrirDoAcervo(x)})));
+  /* O TETO DE 80 SE DECLARA. Mil e cento e dez fichas numa tela sao
+     inutilizaveis, e uma lista cortada em silencio faz a pessoa concluir que
+     a obra nao esta no acervo. */
+  if (biblioteca.length > achadas.length) {
+    const p = document.createElement("p");
+    p.className = "dica";
+    p.textContent = "mostrando " + achadas.length + " de " +
+      biblioteca.length.toLocaleString('pt-BR') + " \— use a busca para achar o resto.";
+    lista.appendChild(p);
+  }
+}
+
+function bibliotecaFiltrada(){
+  if (!biblioteca) return [];
+  const q = bibliotecaFiltro.trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  if (!q) return biblioteca.slice(0, 80);
+  const casa = x => (x.titulo + ' ' + x.autor + ' ' + x.id).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '').indexOf(q) >= 0;
+  return biblioteca.filter(casa).slice(0, 80);
 }
 
 /* O NOME DO ARQUIVO, pela CONVENCOES.md 1.1 do Segundo Cerebro, com o codigo
@@ -2064,7 +2174,53 @@ function montarSecoes(){
     zona.append(t1, t2, t3);
   }
   zona.addEventListener("click", () => document.getElementById('arquivo-md').click());
+  zona.id = "zona-texto";
   fsTexto.appendChild(zona);
+
+  /* A BIBLIOTECA, logo abaixo da porta. Ela so existe servida — fora do
+     Atelie o `fetch` falha e o bloco inteiro some. */
+  if (bibliotecaEstado === 'nao-tentei') buscarBiblioteca();
+  if (bibliotecaEstado === 'pronto') {
+    const cx = document.createElement("div");
+    cx.className = "fileira";
+    const abrir = document.createElement("button");
+    abrir.type = "button"; abrir.className = "ficha";
+    abrir.setAttribute("aria-expanded", bibliotecaAberta ? "true" : "false");
+    abrir.innerHTML = "<b>Abrir do acervo\…</b><span>" +
+      biblioteca.length.toLocaleString('pt-BR') +
+      " obras do Pedra Angular, aqui no disco</span>";
+    abrir.addEventListener("click", () => { bibliotecaAberta = !bibliotecaAberta; render(); });
+    cx.appendChild(abrir);
+    fsTexto.appendChild(cx);
+
+    if (bibliotecaAberta) {
+      const caixa = document.createElement("div");
+      caixa.className = "ficha--caixa";
+      const busca = document.createElement("input");
+      busca.type = "search"; busca.id = "biblioteca-busca";
+      busca.placeholder = "procurar por t\ítulo, autor ou id\…";
+      busca.value = bibliotecaFiltro;
+      busca.setAttribute("aria-label", "Procurar no acervo");
+      busca.addEventListener("input", e => {
+        bibliotecaFiltro = e.target.value;
+        /* Redesenha SO a lista: refazer a tela inteira a cada tecla tiraria o
+           foco da caixa de busca, e digitar viraria uma letra por clique. */
+        const lista = document.getElementById("biblioteca-lista");
+        if (lista) encherBiblioteca(lista);
+      });
+      caixa.appendChild(busca);
+      const lista = document.createElement("div");
+      lista.id = "biblioteca-lista"; lista.className = "fileira";
+      encherBiblioteca(lista);
+      caixa.appendChild(lista);
+      const recado = document.createElement("p");
+      recado.id = "biblioteca-recado"; recado.className = "dica";
+      recado.textContent = "O texto entra pela mesma porta do arrastar: a " +
+        "bancada conta as palavras e l\ê o cabe\\u00e7alho.";
+      caixa.appendChild(recado);
+      fsTexto.appendChild(caixa);
+    }
+  }
 
   const dicaEx = document.createElement("p");
   dicaEx.className = "dica";

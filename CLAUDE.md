@@ -279,6 +279,37 @@ Não introduzir nenhum dos quatro.
   (11 · 12 · 13 · 15), e `teste_tipografia.py` cobre 13 e 15 **por não serem
   atalho**.
 
+- **A BIBLIOTECA DO PEDRA ANGULAR NA PORTA (2026-10-09).** «Meu sonho é poder
+  abrir a biblioteca pela bancada, escolher o arquivo e trabalhar nele» —
+  Bruno. **1089 obras**, com busca por título, autor e id, e o texto entra pela
+  MESMA função do arrasto (`receberMd`).
+
+  **Só aparece servida:** bancada aberta por duplo clique roda em `file://`,
+  onde `fetch` não lê pasta nenhuma. Fora do Ateliê o arrastar e o «Abrir
+  arquivo…» continuam — a casca soma um caminho, nunca troca um pelo outro.
+
+  **Local, e não pela rede, mesmo com a rede autorizada:** a LEI 3 é zero rede
+  em tempo de execução, e aqui ela não custa nada — o acervo está no disco, sai
+  mais rápido e funciona sem internet.
+
+  **No código ela se chama `biblioteca`, e não `acervo`:** `acervo` já é a
+  seção legível por máquina desta bancada (LEI 1). Duas coisas com o mesmo nome
+  no mesmo arquivo é o N56 em vocabulário — custou um `const acervo`
+  sobrescrito que só estourava em `file://`.
+
+- **CRLF ENTRA, LF ANDA DENTRO (2026-10-09).** Todo o acervo do Pedra Angular
+  está em CRLF (git no Windows), e as duas bancadas liam front matter CRLF
+  como **NADA**: título nulo, autor nulo, licença nula. `separarFrontMatter` e
+  `lerMarkdown` normalizam na PORTA, uma vez — não é só o front matter, toda
+  regra de linha corria risco, e um `\r?` por expressão seria o mesmo defeito
+  em vinte lugares.
+
+  **Ficou invisível por dois motivos, e o segundo foi meu:** os arquivos de
+  trabalho vêm do Conversor, que escreve LF; e o `io.open` do Python traduz
+  CRLF em silêncio, então a sonda testava o leitor com um texto que o arquivo
+  não tem. **Medi pela porta errada e passou.** Aceite: `teste_nome.py`, nas
+  duas pontuações.
+
 - **O NOME É O PRIMEIRO YAML DE UM ARQUIVO (2026-10-09).** Decisão do Bruno:
   «os arquivos têm de ser reconhecíveis antes mesmo de abrir — em algum momento
   alguém tira da pasta e nunca mais sabe o que é aquilo sem abrir». Os dois
