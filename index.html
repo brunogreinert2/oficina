@@ -913,15 +913,23 @@ const CAPA_NORMAS = lerLista('dados-capa-normas', (x,li) => ({
   id:x.id, nome:nomeDe(li), nota:notaDe(li) }));
 
 /* OS TRÊS ATALHOS. Cada um é só um conjunto de valores — nada fica guardado
-   além das próprias decisões, e é isso que os separa de um perfil. */
+   além das próprias decisões, e é isso que os separa de um perfil.
+
+   CADA ATALHO DECLARA TODAS AS DECISÕES DA CAPA, a norma inclusive. Medido:
+   enquanto o `obra` e o `apostila` calavam sobre a norma, clicar em «Trabalho
+   em norma» e depois em «Obra» deixava a ABNT ligada, e a tela acusava «fora
+   da norma» em três decisões de uma capa de obra, que não tem norma nenhuma.
+   Atalho que escreve seis de sete decisões não é atalho: é resíduo. */
 const CAPA_ATALHOS = [
   { id:'obra', nome:'Obra', nota:'livro do acervo: coleção, autor, moldura',
     valores:{ capaTimbre:'nao', capaColecao:'sai', capaAutor:'sai',
-              capaPecas:'nao', capaAdorno:'moldura', capaPe:'sai' } },
+              capaPecas:'nao', capaAdorno:'moldura', capaPe:'sai',
+              capaNorma:'livre' } },
   { id:'apostila', nome:'Apostila',
     nota:'livro de peças: timbre e a lista do que tem dentro',
     valores:{ capaTimbre:'sai', capaColecao:'nao', capaAutor:'nao',
-              capaPecas:'sai', capaAdorno:'filete', capaPe:'sai' } },
+              capaPecas:'sai', capaAdorno:'filete', capaPe:'sai',
+              capaNorma:'livre' } },
   { id:'norma', nome:'Trabalho em norma',
     nota:'o que a NBR 14724 manda — e liga a norma, que passa a policiar',
     valores:{ capaTimbre:'sai', capaColecao:'nao', capaAutor:'sai',
@@ -2097,7 +2105,7 @@ function montarSecoes(){
   alvo.appendChild(secao("s-capa-atalhos","Capa",
     "atalhos: acendem as decisões abaixo, e você mexe dali",
     CAPA_ATALHOS.map(a => fichaBotao({titulo:a.nome, sub:a.nota,
-      ativo:false,
+      ativo:atalhoDaCapaAceso(a),
       onClick:()=>{ Object.keys(a.valores).forEach(k => { estado[k] = a.valores[k]; });
                     render(); }}))));
 
@@ -2407,6 +2415,20 @@ function aberturaEfetiva(){
    estava valendo. */
 /* AS DECISOES QUE DIVERGEM DA NORMA. Lista vazia quer dizer «em norma»; com
    a norma LIVRE devolve vazio sempre, porque nao ha norma a divergir de. */
+/* O ATALHO ACESO NÃO É ESTADO GUARDADO: é LIDO das decisões. Aceso quer
+   dizer «as decisões na tela são exatamente estas», e mexer numa delas apaga
+   o cartão sozinho — ninguém precisa lembrar o que «Apostila» continha, basta
+   olhar se ainda está aceso.
+
+   Medido, e foi o defeito que o Bruno viu: o cartão nascia com `ativo:false`
+   fixo, e as seis decisões do `obra` SÃO as de fábrica. Clicar em «Obra» numa
+   tela recém-aberta não mudava um pixel — «clica em cima e nada acontece».
+   Era verdade: nada acontecia mesmo. Bancada que não mostra nada é bancada
+   quebrada, mesmo quando o cálculo por trás está certo. */
+function atalhoDaCapaAceso(a){
+  return Object.keys(a.valores).every(k => estado[k] === a.valores[k]);
+}
+
 function capaForaDaNorma(){
   if (estado.capaNorma !== 'abnt') return [];
   return CAPA.filter(d => estado[d.chave] !== d.norma);

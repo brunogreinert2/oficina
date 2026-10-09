@@ -279,6 +279,31 @@ Não introduzir nenhum dos quatro.
   (11 · 12 · 13 · 15), e `teste_tipografia.py` cobre 13 e 15 **por não serem
   atalho**.
 
+- **O ATALHO NÃO GUARDA ESTADO, MAS TEM DE SE VER (2026-10-09).** «Clica em
+  cima e nada acontece, não fica mais escura como se estivesse marcada» —
+  Bruno, no dia seguinte à entrega, com o aceite todo verde.
+
+  Era verdade: nada acontecia mesmo. O cartão nascia com `ativo:false` fixo
+  (atalho não é estado, foi a exigência dele) **e as seis decisões do `obra`
+  SÃO as de fábrica** — numa tela recém-aberta não havia o que mudar. Eu tinha
+  confundido *não guardar estado* com *não mostrar nada*.
+
+  O aceso é **LIDO das decisões**, não guardado: `atalhoDaCapaAceso(a)` compara
+  os valores do atalho com o estado. Aceso quer dizer «as decisões na tela são
+  exatamente estas», e mexer numa delas apaga o cartão sozinho. Continua sem
+  estado, e agora se vê.
+
+  **Cada atalho declara TODAS as decisões da capa, a norma inclusive.** Medido:
+  `obra` e `apostila` calavam sobre a norma, e clicar em «Trabalho em norma» e
+  depois em «Obra» deixava a ABNT ligada — a tela acusava «fora da norma» em
+  três decisões de uma capa de obra, que não tem norma nenhuma. Atalho que
+  escreve seis decisões de sete não é atalho: é resíduo.
+
+  **E o aceite não pegava porque media o estado, não o gesto:** ele punha o
+  `estado` à mão e exportava, sem nunca passar por onde o dedo passa. A prova
+  nova CLICA no cartão e lê o `aria-pressed`, que é o que a folha de estilo lê
+  para escurecer (`.ficha[aria-pressed=true]`).
+
 - **A CAPA É DECIDIDA AQUI (2026-10-09), E NÃO TEM ESPÉCIES.** Decisão do
   Bruno: «a capa é integrante, são alguns metadados e perfis carregados» — e a
   ressalva que desenhou tudo: «não vamos deixar isso se tornar os perfis
