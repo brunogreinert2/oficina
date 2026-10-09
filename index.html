@@ -572,6 +572,82 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
       <span class="mono">· o capítulo seguinte começa logo abaixo · economiza papel · as quebras que você quiser escolher a dedo ficam nas intervenções, ao lado do .md</span></li>
   </ul>
 
+  <h2 id="ac-capa-norma">Capa · norma</h2>
+  <p>A ABNT não é um modelo de capa: é uma <b>norma</b>. Ligada, ela acende as
+     decisões que a NBR 14724 manda e <b>diz quais foram</b>. Mexer numa delas
+     depois continua valendo — a tela passa a dizer «fora da norma», porque
+     aviso aconselha e não tranca.</p>
+  <ul id="dados-capa-normas">
+    <li data-id="livre"><b>Livre</b>
+      <span class="mono">· as decisões são todas suas</span></li>
+    <li data-id="abnt"><b>ABNT NBR 14724</b>
+      <span class="mono">· timbre sim, adorno nenhum, coleção não · a norma manda e a tela diz o que ela mandou</span></li>
+  </ul>
+
+  <h2 id="ac-capa-timbre">Capa · timbre</h2>
+  <p>As linhas institucionais no alto: universidade, unidade, disciplina. Saem
+     do front matter do <code>.md</code> (<code>instituicao</code>,
+     <code>unidade</code>, <code>disciplina</code>) — como tudo o mais, a capa
+     é <b>gerada, nunca digitada</b>. Foi por ter sido digitada à mão que o
+     <code>id</code> do acervo vazou para a capa da Apologia.</p>
+  <ul id="dados-capa-timbre">
+    <li data-id="nao"><b>Sem timbre</b>
+      <span class="mono">· é o que um livro faz</span></li>
+    <li data-id="sai"><b>Com timbre</b>
+      <span class="mono">· universidade, unidade e disciplina · o placar diz se o .md não os traz</span></li>
+  </ul>
+
+  <h2 id="ac-capa-colecao">Capa · coleção</h2>
+  <ul id="dados-capa-colecao">
+    <li data-id="sai"><b>Com a linha da coleção</b>
+      <span class="mono">· «COLEÇÃO PEDRA ANGULAR» em versalete espaçado · é o que faz de um volume solto uma coleção</span></li>
+    <li data-id="nao"><b>Sem</b>
+      <span class="mono">· trabalho entregue não pertence a coleção nenhuma</span></li>
+  </ul>
+
+  <h2 id="ac-capa-autor">Capa · autor e atribuição</h2>
+  <ul id="dados-capa-autor">
+    <li data-id="sai"><b>Autor e atribuição</b>
+      <span class="mono">· o autor tradicional em versalete, e a linha de tradução, introdução e notas</span></li>
+    <li data-id="nao"><b>Só o título</b>
+      <span class="mono">· a falsa folha de rosto e a capa de apostila dispensam</span></li>
+  </ul>
+
+  <h2 id="ac-capa-pecas">Capa · lista das peças</h2>
+  <p>A capa que <b>diz o que tem dentro</b>: autor e título de cada peça da
+     apostila. Só existe quando o livro é feito de peças — e a lista sai do
+     mesmo lugar que o Gerador já usa para montá-las.</p>
+  <ul id="dados-capa-pecas">
+    <li data-id="nao"><b>Sem a lista</b>
+      <span class="mono">· o livro de uma obra só não tem o que listar</span></li>
+    <li data-id="sai"><b>Com a lista das peças</b>
+      <span class="mono">· o sumário na capa, que é o que uma apostila precisa</span></li>
+  </ul>
+
+  <h2 id="ac-capa-adorno">Capa · adorno</h2>
+  <p>O mesmo catálogo do miolo, e o mesmo desenho: a grega sai por
+     <b>fórmula</b>, em SVG, e não como imagem. Medido nas capas do Writer: a
+     moldura é um PNG de 229 dpi na A4 — num traço fino de meandro isso
+     escadeia no papel.</p>
+  <ul id="dados-capa-adornos">
+    <li data-id="moldura"><b>Grega, moldura</b>
+      <span class="mono">· a faixa em volta da capa inteira</span></li>
+    <li data-id="friso"><b>Grega, friso</b>
+      <span class="mono">· só a faixa de cima</span></li>
+    <li data-id="filete"><b>Filete com losango</b>
+      <span class="mono">· um traço fino e um losango ao centro</span></li>
+    <li data-id="nenhum"><b>Nenhum</b>
+      <span class="mono">· a norma acadêmica, e o livro muito sóbrio</span></li>
+  </ul>
+
+  <h2 id="ac-capa-pe">Capa · pé</h2>
+  <ul id="dados-capa-pe">
+    <li data-id="sai"><b>Cidade e ano</b>
+      <span class="mono">· e a assinatura Ὁ Διαφορεύς παρῆν quando não é trabalho em norma</span></li>
+    <li data-id="nao"><b>Sem pé</b>
+      <span class="mono">· capa muda</span></li>
+  </ul>
+
   <h2 id="ac-notas">Notas</h2>
   <p>Onde a nota de rodapé cai. <b>Decisão independente do perfil</b> desde
      2026-10-07: até aqui ela vinha amarrada nele, e quem quisesse corpo 12 com
@@ -790,6 +866,68 @@ const PAGINACAO = [
 ];
 PAGINACAO.forEach(d => { d.opcoes = lerLista(d.lista, (x,li) => ({
   id:x.id, nome:nomeDe(li), nota:notaDe(li) })); });
+
+/* =========================================================
+   A CAPA (2026-10-09)
+
+   «A capa é integrante, são alguns metadados e perfis carregados» — Bruno.
+   E a ressalva que desenhou tudo: «não vamos deixar isso se tornar os perfis
+   astigmatismo, vista cansada, que obrigavam a lembrar o que cada uma fazia.
+   Mas temos de ter opções, marcar e desmarcar, decidir separado».
+
+   Então a capa não tem ESPÉCIES: tem DECISÕES, irmãs das da Paginação e pelo
+   mesmo desenho. As três espécies que saíram da conversa viram ATALHOS —
+   botões que acendem as decisões — e atalho não é estado: depois de clicar,
+   o que se vê na tela é o que ele acendeu, e dali se mexe. Não há o que
+   lembrar.
+
+   As seis decisões são DERIVADAS dos quatro modelos que o Bruno desenhou no
+   Writer em setembro, não inventadas: timbre, coleção, autor+atribuição,
+   lista das peças, adorno e pé. O título não é decisão — capa sem título não
+   é capa.
+
+   A ORDEM DESTA TABELA É A ORDEM NO HASH, logo depois da Paginação. */
+const CAPA = [
+  { chave:'capaTimbre',  lista:'dados-capa-timbre',   padrao:'nao',
+    campo:'timbre',  titulo:'Capa · timbre',
+    sub:'universidade, unidade e disciplina, do front matter', norma:'sai' },
+  { chave:'capaColecao', lista:'dados-capa-colecao',  padrao:'sai',
+    campo:'colecao', titulo:'Capa · coleção',
+    sub:'o que faz de um volume solto uma coleção', norma:'nao' },
+  { chave:'capaAutor',   lista:'dados-capa-autor',    padrao:'sai',
+    campo:'autor',   titulo:'Capa · autor e atribuição',
+    sub:'o autor tradicional, e quem traduziu', norma:'sai' },
+  { chave:'capaPecas',   lista:'dados-capa-pecas',    padrao:'nao',
+    campo:'pecas',   titulo:'Capa · lista das peças',
+    sub:'o sumário na capa, que é o que uma apostila precisa', norma:'nao' },
+  { chave:'capaAdorno',  lista:'dados-capa-adornos',  padrao:'moldura',
+    campo:'adorno',  titulo:'Capa · adorno',
+    sub:'a grega por fórmula, em SVG — nunca imagem', norma:'nenhum' },
+  { chave:'capaPe',      lista:'dados-capa-pe',       padrao:'sai',
+    campo:'pe',      titulo:'Capa · pé',
+    sub:'cidade, ano e a assinatura', norma:'sai' },
+];
+CAPA.forEach(d => { d.opcoes = lerLista(d.lista, (x,li) => ({
+  id:x.id, nome:nomeDe(li), nota:notaDe(li) })); });
+const CAPA_NORMAS = lerLista('dados-capa-normas', (x,li) => ({
+  id:x.id, nome:nomeDe(li), nota:notaDe(li) }));
+
+/* OS TRÊS ATALHOS. Cada um é só um conjunto de valores — nada fica guardado
+   além das próprias decisões, e é isso que os separa de um perfil. */
+const CAPA_ATALHOS = [
+  { id:'obra', nome:'Obra', nota:'livro do acervo: coleção, autor, moldura',
+    valores:{ capaTimbre:'nao', capaColecao:'sai', capaAutor:'sai',
+              capaPecas:'nao', capaAdorno:'moldura', capaPe:'sai' } },
+  { id:'apostila', nome:'Apostila',
+    nota:'livro de peças: timbre e a lista do que tem dentro',
+    valores:{ capaTimbre:'sai', capaColecao:'nao', capaAutor:'nao',
+              capaPecas:'sai', capaAdorno:'filete', capaPe:'sai' } },
+  { id:'norma', nome:'Trabalho em norma',
+    nota:'o que a NBR 14724 manda — e liga a norma, que passa a policiar',
+    valores:{ capaTimbre:'sai', capaColecao:'nao', capaAutor:'sai',
+              capaPecas:'nao', capaAdorno:'nenhum', capaPe:'sai',
+              capaNorma:'abnt' } },
+];
 /* O nome antigo continua valendo onde já estava escrito. */
 const NOTAS = PAGINACAO[0].opcoes;
 const IMPRESSOES = lerLista('dados-impressao', (d,li) => ({
@@ -1075,7 +1213,11 @@ const PADRAO = {
   /* As outras cinco decisoes de paginacao, todas em "perfil" por padrao: a
      tela abre mostrando o que o perfil escolhido faz, e dali a pessoa mexe. */
   alinhamento:"perfil", alinhamentoTitulo:"perfil", adorno:"perfil",
-  cabecalho:"perfil", hifenizacao:"perfil"
+  cabecalho:"perfil", hifenizacao:"perfil",
+  /* 2026-10-09, no fim do hash como todo campo novo. A capa e integrante do
+     documento, e as decisoes dela sao independentes entre si. */
+  capaNorma:"livre", capaTimbre:"nao", capaColecao:"sai", capaAutor:"sai",
+  capaPecas:"nao", capaAdorno:"moldura", capaPe:"sai"
 };
 let estado = {...PADRAO, acabamentos:[...PADRAO.acabamentos],
               margens:{...PADRAO.margens}};
@@ -1089,7 +1231,9 @@ function paraHash(){
                 e.canone,e.impressao,e.perfil,
                 [e.margens.int,e.margens.ext,e.margens.sup,e.margens.inf].join('.'),
                 e.colunas, e.abertura, e.edicao
-               ].concat(PAGINACAO.map(d => e[d.chave])).join('/');
+               ].concat(PAGINACAO.map(d => e[d.chave]))
+                .concat([e.capaNorma])
+                .concat(CAPA.map(d => e[d.chave])).join('/');
 }
 function doHash(){
   const p = decodeURIComponent(location.hash.slice(1)).split('/');
@@ -1126,6 +1270,14 @@ function doHash(){
   PAGINACAO.forEach((d, i) => {
     const v = p[16 + i];
     estado[d.chave] = (v === 'perfil' || acha(d.opcoes, v)) ? v : PADRAO[d.chave];
+  });
+  /* A CAPA, logo depois da paginacao: a norma primeiro, as seis decisoes
+     depois, na ordem da tabela. */
+  const base = 16 + PAGINACAO.length;
+  estado.capaNorma = acha(CAPA_NORMAS, p[base]) ? p[base] : PADRAO.capaNorma;
+  CAPA.forEach((d, i) => {
+    const v = p[base + 1 + i];
+    estado[d.chave] = acha(d.opcoes, v) ? v : PADRAO[d.chave];
   });
 }
 
@@ -1936,6 +2088,40 @@ function montarSecoes(){
           onClick:()=>{estado[d.chave]=a.id; render();}})))));
   });
 
+  /* A CAPA: os três ATALHOS primeiro, as decisões depois. O atalho escreve e
+     some — não fica estado nenhum dizendo «este é o modelo apostila». É essa
+     a diferença para um perfil, e foi o que o Bruno pediu: «não vamos deixar
+     isso se tornar os perfis astigmatismo, vista cansada, que obrigavam a
+     lembrar o que cada uma fazia». Depois de clicar, o que se vê na tela é o
+     que o atalho acendeu. */
+  alvo.appendChild(secao("s-capa-atalhos","Capa",
+    "atalhos: acendem as decisões abaixo, e você mexe dali",
+    CAPA_ATALHOS.map(a => fichaBotao({titulo:a.nome, sub:a.nota,
+      ativo:false,
+      onClick:()=>{ Object.keys(a.valores).forEach(k => { estado[k] = a.valores[k]; });
+                    render(); }}))));
+
+  alvo.appendChild(secao("s-capa-norma","Capa · norma",
+    "a ABNT manda, e a tela diz o que ela mandou",
+    CAPA_NORMAS.map(n => fichaBotao({titulo:n.nome, sub:n.nota,
+      ativo:estado.capaNorma===n.id,
+      onClick:()=>{estado.capaNorma=n.id; render();}}))));
+
+  /* A NORMA POLICIA, e não tranca. Cada decisão que diverge do que a NBR
+     manda ganha a palavra «fora da norma» ao lado — a regra da casa desde a
+     primeira bancada: aviso aconselha, nunca impede. */
+  const foraDaNorma = capaForaDaNorma().map(d => d.chave);
+  CAPA.forEach(d => {
+    const fora = foraDaNorma.indexOf(d.chave) >= 0;
+    alvo.appendChild(secao("s-" + d.chave.toLowerCase(), d.titulo,
+      fora ? d.sub + " · FORA DA NORMA: a NBR pede «" +
+             (acha(d.opcoes, d.norma)||{}).nome + "»"
+           : d.sub,
+      d.opcoes.map(o => fichaBotao({titulo:o.nome, sub:o.nota,
+        ativo:estado[d.chave]===o.id,
+        onClick:()=>{estado[d.chave]=o.id; render();}}))));
+  });
+
   if (PERFIS.length) alvo.appendChild(secao("s-perfil","Perfil tipográfico",
     "quem compõe a página é o Gerador; o perfil é dele", PERFIS.map(pf=>
     fichaBotao({titulo:pf.nome, sub:pf.para, ativo:estado.perfil===pf.id,
@@ -2219,6 +2405,13 @@ function aberturaEfetiva(){
    «como o perfil manda» é escolha legítima; na especificação seria pergunta
    sem resposta, porque quem lê do outro lado teria de adivinhar qual perfil
    estava valendo. */
+/* AS DECISOES QUE DIVERGEM DA NORMA. Lista vazia quer dizer «em norma»; com
+   a norma LIVRE devolve vazio sempre, porque nao ha norma a divergir de. */
+function capaForaDaNorma(){
+  if (estado.capaNorma !== 'abnt') return [];
+  return CAPA.filter(d => estado[d.chave] !== d.norma);
+}
+
 function paginacaoEfetiva(d){
   if (estado[d.chave] !== "perfil" && acha(d.opcoes, estado[d.chave]))
     return estado[d.chave];
@@ -2305,6 +2498,25 @@ function especificacaoParaGerador(c){
       },
       medianiz_mm: r(c.medianiz),
       largura_coluna_mm: r(c.larguraColuna)
+    },
+    /* A CAPA (2026-10-09): integrante do documento, decidida aqui e composta
+       pelo Gerador — o mesmo caminho do miolo. Seis decisões INDEPENDENTES,
+       com valor concreto; não há espécie nenhuma aqui dentro, porque espécie
+       seria pacote a decorar, que foi exatamente o que o Bruno não quis.
+
+       `norma` não é decisão de desenho: é um fato sobre o objeto. E
+       `fora_da_norma` lista o que diverge do que a NBR manda — a Oficina não
+       tranca, mas o Gerador precisa poder dizer no placar, e a ficha lateral
+       precisa registrar por que aquela capa saiu assim. */
+    capa: {
+      norma: estado.capaNorma,
+      fora_da_norma: capaForaDaNorma().map(d => d.campo),
+      timbre: estado.capaTimbre,
+      colecao: estado.capaColecao,
+      autor: estado.capaAutor,
+      pecas: estado.capaPecas,
+      adorno: estado.capaAdorno,
+      pe: estado.capaPe
     },
     encadernacao: {
       id: c.en.id, nome: c.en.nome, familia: c.en.fam,

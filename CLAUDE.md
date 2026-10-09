@@ -279,6 +279,33 @@ Não introduzir nenhum dos quatro.
   (11 · 12 · 13 · 15), e `teste_tipografia.py` cobre 13 e 15 **por não serem
   atalho**.
 
+- **A CAPA É DECIDIDA AQUI (2026-10-09), E NÃO TEM ESPÉCIES.** Decisão do
+  Bruno: «a capa é integrante, são alguns metadados e perfis carregados» — e a
+  ressalva que desenhou tudo: «não vamos deixar isso se tornar os perfis
+  astigmatismo, vista cansada, que obrigavam a lembrar o que cada uma fazia».
+
+  **Seis decisões independentes**, derivadas dos quatro modelos que ele
+  desenhou no Writer em setembro: timbre · coleção · autor e atribuição ·
+  lista das peças · adorno · pé. O título não é decisão — capa sem título não
+  é capa. Tabela `CAPA`, irmã da `PAGINACAO`, e a ordem dela é a ordem no
+  hash.
+
+  **Os três atalhos (obra · apostila · trabalho em norma) NÃO SÃO ESTADO:**
+  clicar escreve as seis e some. Depois de clicar, o que se vê são as
+  decisões. É isso que os separa de um perfil — lá o pacote ficava, e era
+  preciso saber de cor o que ele continha.
+
+  **A ABNT não é espécie: é NORMA.** Distinção do Bruno. Norma é um fato sobre
+  o objeto, não um preset: `capaNorma` é decisão de verdade, ela acende o que
+  a NBR manda e `capaForaDaNorma()` lista o que diverge. A tela diz «FORA DA
+  NORMA: a NBR pede X» e **não tranca** — e a especificação leva
+  `fora_da_norma` para o Gerador e a ficha poderem repetir.
+
+  **O timbre sai do front matter** (`instituicao`, `unidade`, `disciplina`),
+  como tudo o mais: a capa é gerada, nunca digitada. Pedido e ausente, o
+  Gerador conta quantas linhas faltam e a prensa avisa — calar seria o defeito
+  da página de dados.
+
 - **A PAGINAÇÃO É DAQUI, E O PERFIL VIROU ATALHO (2026-10-07).** Decisão do
   Bruno: «tudo tem que ser personalizável (…) os perfis têm de ser atalhos pra
   quem já sabe o que quer, de resto é teste na base do olhômetro».
