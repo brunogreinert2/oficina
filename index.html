@@ -440,15 +440,32 @@ legend{display:flex;align-items:baseline;gap:.6rem;padding:0;width:100%;margin-b
     <li data-id="copta" data-fam="cad" data-dif="3" data-estacoes="4"><b>Copta</b> <span class="mono">· abre 360° · lombada exposta</span></li>
     <li data-id="long" data-fam="cad" data-dif="3" data-estacoes="3"><b>Long stitch</b> <span class="mono">· costura através da capa</span></li>
     <li data-id="dura" data-fam="dura" data-dif="5"><b>Case binding</b> <span class="mono">· capa dura tradicional</span></li>
+    <!-- NÃO SE ENCADERNA UM ARQUIVO. Pedido do Bruno em 2026-10-09, e ele
+         tinha achado o defeito ao vivo: a especificação do Fédon saiu com
+         `edicao: digital` E `encadernacao: yotsume`, com a folga da costura
+         japonesa zerada — uma costura que não existe comendo uma folga que
+         não existe. A edição digital É esta escolha, vista do outro lado. -->
+    <li data-id="nenhuma" data-fam="digital" data-dif="0"><b>Não se encaderna</b> <span class="mono">· documento digital · sem folhas, sem furos, sem lombada</span></li>
   </ul>
 
   <h2 id="ac-fios">Fios</h2>
   <ul id="dados-fios">
     <li data-id="branco" data-cor="#F2EDE2"><b>Branco</b> <span class="mono">· #F2EDE2</span></li>
     <li data-id="ouro" data-cor="#C9A227"><b>Ouro</b> <span class="mono">· #C9A227</span></li>
-    <li data-id="azul" data-cor="#2C4A72"><b>Azul-noite</b> <span class="mono">· #2C4A72</span></li>
-    <li data-id="cinabrio" data-cor="#B9432F"><b>Vermelho cinábrio</b> <span class="mono">· #B9432F</span></li>
+    <li data-id="azul" data-cor="#2C4A72"><b>Azul-noite</b> <span class="mono">· #2C4A72 · Círculo Linho, Anil Profundo · na gaveta</span></li>
+    <li data-id="golden" data-cor="#C9A227"><b>Golden</b> <span class="mono">· #C9A227 · Círculo Linho, mesma do Anil · dourado puxando para o linho · a comprar</span></li>
     <li data-id="natural" data-cor="#C4B79A"><b>Linho natural</b> <span class="mono">· #C4B79A</span></li>
+  </ul>
+
+  <!-- A CAPA VAI NO MESMO ARQUIVO DO MIOLO? Pergunta do Bruno em
+       2026-10-09: «eu pretendo fazer duas versoes, a digital para enviar, e
+       depois para imprimir e encadernar». Sao as duas versoes do mesmo
+       objeto, e a diferenca e material: no arquivo digital a capa e a
+       primeira folha; no impresso ela sai sozinha, porque imprime noutro
+       papel e nao pode entrar na imposicao do caderno. -->
+  <ul id="dados-capa-junto">
+    <li data-id="nao"><b>Arquivo separado</b> <span class="mono">· a capa imprime noutro papel · para encadernar</span></li>
+    <li data-id="sim"><b>No mesmo arquivo</b> <span class="mono">· a capa e a primeira folha · para enviar</span></li>
   </ul>
 
   <h2 id="ac-capas">Capas</h2>
@@ -906,6 +923,11 @@ const CAPA = [
   { chave:'capaPe',      lista:'dados-capa-pe',       padrao:'sai',
     campo:'pe',      titulo:'Capa · pé',
     sub:'cidade, ano e a assinatura', norma:'sai' },
+  /* DECISÃO NOVA ENTRA NO FIM (LEI 6): a ordem desta tabela é a ordem no
+     hash, e um link que o Bruno salvou continua abrindo no mesmo volume. */
+  { chave:'capaJunto',   lista:'dados-capa-junto',    padrao:'nao',
+    campo:'junto',   titulo:'Capa · onde ela sai',
+    sub:'no mesmo arquivo do miolo, ou num arquivo só dela', norma:null },
 ];
 CAPA.forEach(d => { d.opcoes = lerLista(d.lista, (x,li) => ({
   id:x.id, nome:nomeDe(li), nota:notaDe(li) })); });
@@ -1321,8 +1343,16 @@ function calcular(){
   const en = acha(ENCADERNACOES, estado.encad);
   const tx = obraAtual();
   const cp = acha(CAPAS,    estado.capa);
-  /* DOCUMENTO DIGITAL: nao ha costura, entao nao ha lado de dentro. */
-  const digital = estado.edicao === 'digital';
+  /* DOCUMENTO DIGITAL: não há costura, então não há lado de dentro.
+
+     UMA DECISÃO, DOIS LUGARES DE DIZER. «Não se encaderna» e «edição digital»
+     são a mesma coisa vista de dois lados, e podiam discordar — a
+     especificação que o Bruno exportou do Fédon em 2026-10-09 saiu com
+     `edicao: digital` E `encadernacao: yotsume`, com a folga da costura
+     japonesa zerada: uma costura que não existe comendo uma folga que não
+     existe. Qualquer um dos dois lados basta para a edição ser digital, e os
+     dois cartões se acendem juntos (`sincronizarDigital()`). */
+  const digital = estado.edicao === 'digital' || en.fam === 'digital';
   const costuraJaponesa = en.fam === "jap" && !digital;
 
   /* A REGRA DAS MARGENS é escolha, não constante. O cânone dos nonos continua
@@ -1396,7 +1426,11 @@ function calcular(){
     ? Math.max(4, Math.ceil(retornoDoGerador.paginas / 2) * 2)
     : estimadas;
   const regraMiolo = regraDoMiolo(f, en, imp);
-  const folhas = Math.ceil(paginas / regraMiolo.paginasPorFolha);
+  /* ARQUIVO NÃO TEM FOLHA. A espessura do miolo já ia a zero na edição
+     digital desde 2026-10-07; as folhas não iam, e o colofão publicaria
+     «6 folhas» de uma coisa que não é papel. Zero aqui faz a lista de corte e
+     o peso calarem sozinhos, como a espessura já fazia. */
+  const folhas = digital ? 0 : Math.ceil(paginas / regraMiolo.paginasPorFolha);
 
   let dif = en.dif + cp.dif;
   estado.acabamentos.forEach(a => dif += (acha(ACABAMENTOS,a)?.dif || 0));
@@ -2057,11 +2091,11 @@ function montarSecoes(){
     [fichaBotao({titulo:"Livro físico",
       sub:"margem interna maior, para a costura comer",
       ativo:estado.edicao!=="digital",
-      onClick:()=>{estado.edicao="fisica"; render();}}),
+      onClick:()=>{sincronizarDigital(false); render();}}),
      fichaBotao({titulo:"Documento digital",
       sub:"margens iguais dos dois lados; sem folhas, costura nem papel",
       ativo:estado.edicao==="digital",
-      onClick:()=>{estado.edicao="digital"; render();}})]));
+      onClick:()=>{sincronizarDigital(true); render();}})]));
 
   alvo.appendChild(secao("s-impressao","Impressão do miolo",
     "espelha as margens ou não", IMPRESSOES.map(i=>
@@ -2151,7 +2185,8 @@ function montarSecoes(){
 
   alvo.appendChild(secao("s-encad","Encadernação","como as folhas se prendem", ENCADERNACOES.map(e=>
     fichaBotao({titulo:e.nome, sub:e.nota, ativo:estado.encad===e.id,
-      onClick:()=>{estado.encad=e.id; render();}}))));
+      onClick:()=>{estado.encad=e.id;
+                   sincronizarDigital(e.fam === 'digital'); render();}}))));
 
   alvo.appendChild(secao("s-fio","Fio","a costura como ornamento", FIOS.map(f=>{
     const sw = `<span class="fio-cor" style="background:${f.cor}"></span>`;
@@ -2339,7 +2374,11 @@ const sorteia = arr => arr[Math.floor(Math.random()*arr.length)];
 document.getElementById("btn-sortear").addEventListener("click",()=>{
   estado = {
     texto: sorteia(TEXTOS).id, fonte: sorteia(FONTES).id, corpo: sorteia(CORPOS_ATALHO),
-    formato: sorteia(FORMATOS).id, tema: sorteia(TEMAS).id, encad: sorteia(ENCADERNACOES).id,
+    formato: sorteia(FORMATOS).id, tema: sorteia(TEMAS).id,
+    /* O SORTEIO NAO TIRA «nao se encaderna»: o botao e «surpreenda-me» com um
+       VOLUME, e sortear «isto e um arquivo» nao e surpresa, e a ausencia do
+       objeto. Mesma razao pela qual CORPOS_ATALHO nao sorteia 48 pt. */
+    encad: sorteia(ENCADERNACOES.filter(e => e.fam !== 'digital')).id,
     fio: sorteia(FIOS).id, capa: sorteia(CAPAS).id,
     acabamentos: ACABAMENTOS.filter(()=>Math.random()<0.3).map(a=>a.id),
   };
@@ -2429,9 +2468,25 @@ function atalhoDaCapaAceso(a){
   return Object.keys(a.valores).every(k => estado[k] === a.valores[k]);
 }
 
+/* OS DOIS LADOS DA MESMA DECISÃO. Ligar o digital por um lado liga o outro;
+   desligar por um lado devolve a encadernação ao padrão, porque um objeto
+   físico precisa de uma, e deixar «não se encaderna» num livro que se costura
+   faria a lista de corte sair vazia sem ninguém pedir. */
+function sincronizarDigital(ligado){
+  estado.edicao = ligado ? 'digital' : 'fisica';
+  const fam = (acha(ENCADERNACOES, estado.encad) || {}).fam;
+  if (ligado && fam !== 'digital') estado.encad = 'nenhuma';
+  if (!ligado && fam === 'digital') estado.encad = PADRAO.encad;
+}
+
 function capaForaDaNorma(){
   if (estado.capaNorma !== 'abnt') return [];
-  return CAPA.filter(d => estado[d.chave] !== d.norma);
+  /* DECISAO SEM NORMA NAO E DESOBEDIENCIA. A NBR 14724 fala do DOCUMENTO, nao
+     de em que arquivo ele chega: se a capa sai junto com o miolo ou num PDF
+     proprio e questao de papel e de entrega, e a norma nao diz nada sobre
+     isso. `norma: null` significa «a NBR cala aqui» — e uma norma que acusa o
+     que nao legisla ensina a ignorar os avisos dela. */
+  return CAPA.filter(d => d.norma && estado[d.chave] !== d.norma);
 }
 
 function paginacaoEfetiva(d){
@@ -2530,16 +2585,14 @@ function especificacaoParaGerador(c){
        `fora_da_norma` lista o que diverge do que a NBR manda — a Oficina não
        tranca, mas o Gerador precisa poder dizer no placar, e a ficha lateral
        precisa registrar por que aquela capa saiu assim. */
-    capa: {
+    /* AS DECISOES SAEM DA TABELA, e nao de uma lista copiada aqui. Elas
+       estavam escritas a mao, e a setima (`junto`) nao chegou ao Gerador:
+       decisao exportada e nao lida nao da erro — a capa sai sem aquilo e
+       ninguem desconfia. A tabela e a verdade; esta linha so a percorre. */
+    capa: Object.assign({
       norma: estado.capaNorma,
-      fora_da_norma: capaForaDaNorma().map(d => d.campo),
-      timbre: estado.capaTimbre,
-      colecao: estado.capaColecao,
-      autor: estado.capaAutor,
-      pecas: estado.capaPecas,
-      adorno: estado.capaAdorno,
-      pe: estado.capaPe
-    },
+      fora_da_norma: capaForaDaNorma().map(d => d.campo)
+    }, CAPA.reduce((o, d) => (o[d.campo] = estado[d.chave], o), {})),
     encadernacao: {
       id: c.en.id, nome: c.en.nome, familia: c.en.fam,
       folhas: c.folhas, espessura_miolo_mm: r(c.espessura)

@@ -279,6 +279,41 @@ Não introduzir nenhum dos quatro.
   (11 · 12 · 13 · 15), e `teste_tipografia.py` cobre 13 e 15 **por não serem
   atalho**.
 
+- **NAO SE ENCADERNA UM ARQUIVO (2026-10-09).** Pedido do Bruno, e ele tinha
+  achado o defeito ao vivo: a especificação do Fédon saiu com `edicao: digital`
+  **e** `encadernacao: yotsume`, com a folga da costura japonesa zerada — uma
+  costura que não existe comendo uma folga que não existe.
+
+  A edição digital e a encadernação «nenhuma» são **a mesma decisão vista de
+  dois lados**: qualquer um basta, e `sincronizarDigital()` acende o outro.
+  Desligar devolve a encadernação ao padrão, porque um objeto físico precisa de
+  uma. **E arquivo não tem folha** — as folhas vão a zero como a espessura já
+  ia, senão o colofão publicaria «6 folhas» de uma coisa que não é papel. O
+  sorteio do «surpreenda-me» não a tira: o botão promete um volume.
+
+- **O FIO GOLDEN ENTROU, O VERMELHO SAIU (2026-10-09).** O Golden é a mesma
+  Círculo Linho do Anil Profundo (tex 369, 75 % algodão e 25 % linho), noutra
+  cor; o vermelho cinábrio não tem nada a ver com a identidade visual da casa.
+
+  **O Golden fica em `dados-fios` e NÃO em `dados-estoque`:** aquela é a lista
+  do que SERVE, esta é a gaveta — um item por uso, e o Bruno ainda não o tem. O
+  `conferir.py` reprovou a tentativa em dez segundos, corretamente.
+
+- **A SÉTIMA DECISÃO DA CAPA: ONDE ELA SAI (2026-10-09).** «O pdf da capa tem
+  como ficar junto no arquivo completo? Eu pretendo fazer duas versões, a
+  digital para enviar, e depois para imprimir e encadernar.» `capaJunto`, no
+  FIM da tabela como toda decisão nova (LEI 6).
+
+  **A exportação repetia a tabela à mão, e a decisão nova não chegou ao
+  Gerador** — decisão exportada e não lida não dá erro: a capa sai sem aquilo e
+  ninguém desconfia. Agora o bloco `capa` da especificação **percorre a
+  tabela**.
+
+  **E a NBR não legisla sobre em que arquivo a capa vive:** ela fala do
+  documento, não da entrega. `norma: null` significa «a norma cala aqui», e
+  `capaForaDaNorma()` pula quem não tem norma — **uma norma que acusa o que não
+  legisla ensina a ignorar os avisos dela.**
+
 - **O ATALHO NÃO GUARDA ESTADO, MAS TEM DE SE VER (2026-10-09).** «Clica em
   cima e nada acontece, não fica mais escura como se estivesse marcada» —
   Bruno, no dia seguinte à entrega, com o aceite todo verde.
