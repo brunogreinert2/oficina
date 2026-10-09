@@ -289,6 +289,47 @@ for morto, porque in (
     if morto in t:
         falhas.append("a pagina ainda diz '%s' — %s." % (morto, porque))
 
+# --- 8z. o NOME DO ARQUIVO se monta igual nas duas bancadas -----------------
+# As duas exportam, e as duas tem de batizar pela mesma regra: a Oficina
+# escreve `especificacao.<nome>.<config>.json` e o Gerador `retorno.<nome>.json`.
+# A funcao e a MESMA, copiada — nao ha modulo partilhado numa bancada de um
+# arquivo so (LEI 3), e e a mesma solucao do `extensaoDaObra()`.
+#
+# Entao o que se confere aqui e que as copias sao IDENTICAS, caractere a
+# caractere. Duas copias que divergem sao duas regras, e o dia em que uma
+# aprender um campo novo os dois arquivos da mesma obra passam a ter nomes
+# diferentes — que e exatamente o defeito que a convencao existe para evitar.
+def trecho_do_nome(caminho):
+    t = io.open(caminho, encoding="utf-8").read()
+    i = t.find("/* O NOME DO ARQUIVO, pela CONVENCOES.md 1.1")
+    if i < 0:
+        return None
+    j = t.find("\nfunction ", t.find("function nomeDoAcervo", i))
+    if j < 0:
+        return None
+    # indentacao fora: o que importa e a regra, nao a coluna em que ela mora
+    return "\n".join(l.strip() for l in t[i:j].split("\n") if l.strip())
+
+
+_aqui = trecho_do_nome(os.path.join(AQUI, "index.html"))
+_la = trecho_do_nome(os.path.normpath(
+    os.path.join(AQUI, "..", "gerador", "index.html")))
+if _aqui is None or _la is None:
+    falhas.append(
+        "nao achei o `nomeDoAcervo()` em %s. Ele batiza os arquivos que as duas "
+        "bancadas exportam, e sem ele a especificacao volta a se chamar pelo "
+        "formato — o mesmo nome para toda obra."
+        % ("na Oficina" if _aqui is None else "no Gerador"))
+elif _aqui != _la:
+    falhas.append(
+        "o `nomeDoAcervo()` da Oficina e o do Gerador DIVERGIRAM. Eles tem de "
+        "ser identicos: um batiza a especificacao e o outro o retorno, e dois "
+        "nomes diferentes para a mesma obra e o defeito que a convencao existe "
+        "para evitar. Copiar a versao boa por cima da outra.")
+else:
+    notas.append("nome do arquivo: `nomeDoAcervo()` identico nas duas bancadas "
+                 "(%d linhas)." % _aqui.count("\n"))
+
 # --- 9. capitulo se conta igual nas duas bancadas ---------------------------
 # O conferidor mora na RAIZ, ao lado do `conferir_paleta.py`, porque a regra
 # nao e de nenhuma das duas: ela e a mesma nas duas, e um conferidor por

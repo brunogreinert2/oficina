@@ -279,6 +279,26 @@ Não introduzir nenhum dos quatro.
   (11 · 12 · 13 · 15), e `teste_tipografia.py` cobre 13 e 15 **por não serem
   atalho**.
 
+- **O NOME É O PRIMEIRO YAML DE UM ARQUIVO (2026-10-09).** Decisão do Bruno:
+  «os arquivos têm de ser reconhecíveis antes mesmo de abrir — em algum momento
+  alguém tira da pasta e nunca mais sabe o que é aquilo sem abrir». Os dois
+  exportadores batizam pela CONVENÇÕES 1.1, com a OBRA primeiro:
+  `especificacao.<obra>.<formato-perfil-canone>.json` e `retorno.<obra>.json`.
+
+  **`nomeDoAcervo()` é COPIADO nas duas bancadas** — não há módulo partilhado
+  num arquivo só (LEI 3), é a solução do `extensaoDaObra()` — e o
+  `oficina/conferir.py` compara os dois trechos **caractere a caractere**.
+  Testado quebrando.
+
+  **Elas já divergiam:** com `author: null` nos Salmos a Oficina devolvia vazio
+  e o Gerador devolvia «null_Salmos_…», porque um leitor de YAML descarta o
+  nulo e o outro o entrega como a palavra. Campo vazio e campo nulo são a mesma
+  coisa, e isso se decide num lugar só (`campoDe`).
+
+  **Sem autor não há nome de acervo:** devolver só o título seria um nome que
+  não cumpre a regra e parece cumprir. Devolve vazio, e o exportador fica com o
+  nome de sempre. Aceite: `gerador/teste_nome.py`.
+
 - **NAO SE ENCADERNA UM ARQUIVO (2026-10-09).** Pedido do Bruno, e ele tinha
   achado o defeito ao vivo: a especificação do Fédon saiu com `edicao: digital`
   **e** `encadernacao: yotsume`, com a folga da costura japonesa zerada — uma

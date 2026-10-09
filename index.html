@@ -1132,6 +1132,77 @@ function extensaoDaObra(capitulos, nivel){
   return plural(capitulos, 'capítulo', 'capítulos') + ' em ' + onde;
 }
 
+/* O NOME DO ARQUIVO, pela CONVENCOES.md 1.1 do Segundo Cerebro, com o codigo
+   ISO 639-3 que o Bruno fixou como oficial em 2026-10-09:
+
+       Autor_Titulo_idioma_Tradutor_Ano
+
+   Ele sai do FRONT MATTER, como a capa e o colofao. «Os arquivos tem de ser
+   reconheciveis antes mesmo de abrir, nao importa tanto a ordem das pastas,
+   porque em algum momento alguem tira da pasta e nunca mais sabe o que e
+   aquilo sem abrir» — o nome e o primeiro YAML de um arquivo.
+
+   ESTA FUNCAO E COPIADA, e as duas copias tem de ser IDENTICAS: a Oficina
+   batiza a especificacao e o Gerador batiza o retorno, e dois nomes
+   diferentes para a mesma obra sao o defeito que a convencao existe para
+   evitar. Nao ha modulo partilhado numa bancada de um arquivo so (LEI 3), e e
+   a mesma solucao do `extensaoDaObra()`. O `oficina/conferir.py` compara as
+   duas, caractere a caractere, e REPROVA se divergirem. */
+const ISO3 = { pt:'por', 'pt-br':'por', por:'por', en:'eng', eng:'eng',
+  grc:'grc', el:'ell', ell:'ell', la:'lat', lat:'lat', he:'heb', heb:'heb',
+  fr:'fra', fra:'fra', de:'deu', deu:'deu', es:'spa', spa:'spa',
+  it:'ita', ita:'ita' };
+
+/* `author: null` NO YAML CHEGA AQUI COMO A PALAVRA «null» em um dos leitores e
+   como nada no outro — medido nos Salmos, que trazem o autor nulo: a Oficina
+   devolvia nome vazio e o Gerador devolvia «null_Salmos_...». Campo vazio e
+   campo nulo sao a mesma coisa, e esta funcao decide isso num lugar so. */
+function campoDe(v){
+  const t = String(v == null ? '' : v).trim();
+  return (t === 'null' || t === '~' || t === 'None') ? '' : t;
+}
+
+function semAcento(t){
+  return campoDe(t).normalize('NFKD').replace(/[̀-ͯ]/g, '')
+    .replace(/Ø/g, 'O').replace(/ø/g, 'o')
+    .replace(/[^A-Za-z0-9 ]+/g, ' ').trim();
+}
+
+/* O SOBRENOME E TUDO MENOS O PRIMEIRO PRENOME. «Joao Cruz Costa» da
+   «Cruz_Costa», e nao «Costa»: o nome composto e o nome dele, e foi assim que
+   o Bruno nomeou o Fedon a mao. */
+function sobrenomeDe(nome){
+  const ps = semAcento(nome).split(/\s+/).filter(Boolean);
+  return ps.length > 1 ? ps.slice(1).join('_') : ps.join('_');
+}
+
+function nomeDoAcervo(fr){
+  if (!fr) return '';
+  const autor = sobrenomeDe(fr.author_traditional || fr.author || '');
+  const titulo = semAcento(campoDe(fr.short_title) || campoDe(fr.title))
+                 .split(/\s+/).filter(Boolean).slice(0, 6).join('_');
+  /* SEM AUTOR NAO HA NOME DE ACERVO: a convencao pede «Autor primeiro, o
+     arquivo tem que ser identificavel fora da pasta». Devolver so o titulo
+     seria um nome que nao cumpre a regra e parece cumprir — melhor devolver
+     nada, e quem chama fica com o nome de sempre. */
+  if (!autor || !titulo) return '';
+  const lang = ISO3[campoDe(fr.language).toLowerCase()] || '';
+  /* OS TRADUTORES, na ordem em que o .md os da, no maximo dois: tres ja fazem
+     um nome que ninguem le, e a convencao existe para o arquivo ser
+     reconhecivel de relance. */
+  const trad = String(campoDe(fr.translator) || campoDe(fr.editor) || '')
+    .split(/\s+e\s+|;|,/).map(x => sobrenomeDe(x)).filter(Boolean)
+    .slice(0, 2).join('_');
+  /* O ANO E O DA EDICAO usada como fonte, nao o da obra: o Fedon e do seculo
+     IV a.C. e o arquivo e de 1983. Sem campo, procura-se na citacao. */
+  let ano = campoDe(fr.publication_year);
+  if (!/^\d{4}$/.test(ano)){
+    const ach = campoDe(fr.source).match(/\b(1[5-9]\d\d|20\d\d)\b/g);
+    ano = ach ? ach[ach.length - 1] : 'sd';
+  }
+  return [autor, titulo, lang, trad, ano].filter(Boolean).join('_');
+}
+
 function receberMd(nomeArquivo, texto){
   const fm = separarFrontMatter(texto).frente;
   const palavras = texto.split(/\s+/).filter(Boolean).length;
@@ -1139,6 +1210,10 @@ function receberMd(nomeArquivo, texto){
   const capitulos = contarCapitulos(texto);
   const titulo = fm.title || nomeArquivo.replace(/\.md$/i, '').replace(/[-_]+/g, ' ');
   obraDoArquivo = {
+    /* O FRONT MATTER INTEIRO fica guardado: e dele que sai o nome do arquivo
+       exportado, pela CONVENCOES 1.1. Ate aqui a Oficina lia campo a campo e
+       esquecia o resto. */
+    frente: fm,
     id: fm.id || ('arquivo-' + nomeArquivo.replace(/\.md$/i, '').slice(0, 40)),
     nome: titulo,
     autor: fm.author || fm.translator || '—',
@@ -2605,8 +2680,23 @@ function especificacaoParaGerador(c){
 
 document.getElementById("btn-gerador").addEventListener("click", e=>{
   const c = calcular();
-  const nome = "especificacao." + c.f.id + "-" + estado.perfil + "-" +
-               (acha(CANONES, estado.canone) || {}).id + ".json";
+  /* O NOME E O PRIMEIRO YAML DE UM ARQUIVO (2026-10-09). Decisao do Bruno:
+     «os arquivos tem de ser reconheciveis antes mesmo de abrir, nao importa
+     tanto a ordem das pastas, porque em algum momento alguem tira da pasta e
+     nunca mais sabe o que e aquilo sem abrir».
+
+     Ate aqui saia `especificacao.folio-a4-padrao-abnt.json`, que diz o
+     FORMATO e cala a OBRA — e o navegador ainda punha «(22)» atras, porque
+     toda obra gerava o mesmo nome. Agora a obra vem primeiro, pela CONVENCOES
+     1.1, e a configuracao fica depois: `especificacao.Platao_Fedon_por_
+     Paleikat_Cruz_Costa_1983.folio-a4-padrao-abnt.json`.
+
+     Sem `.md` no acervo arrastado o nome cai no de sempre: a vitrine nao tem
+     front matter de onde tira-lo. */
+  const daObra = obraDoArquivo ? nomeDoAcervo(obraDoArquivo.frente) : '';
+  const config = c.f.id + "-" + estado.perfil + "-" +
+                 (acha(CANONES, estado.canone) || {}).id;
+  const nome = "especificacao." + (daObra ? daObra + "." : "") + config + ".json";
   const texto = JSON.stringify(especificacaoParaGerador(c), null, 2) + "\n";
   /* Dentro do Ateliê a especificação já chega ao Gerador por aqui — e o
      arquivo continua baixando, porque o livro_fisico.bat come arquivo. */
