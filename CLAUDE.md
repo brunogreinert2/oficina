@@ -279,6 +279,21 @@ Não introduzir nenhum dos quatro.
   (11 · 12 · 13 · 15), e `teste_tipografia.py` cobre 13 e 15 **por não serem
   atalho**.
 
+- **A BIBLIOTECA ESTÁ NAS TRÊS BANCADAS (2026-10-09).** Corretor, Oficina e
+  Gerador abrem as 1089 obras do acervo. **O bloco de dados é idêntico nas
+  três** e o `oficina/conferir.py` compara caractere a caractere — só a
+  `bibliotecaEntrega` muda, porque cada bancada tem a sua porta de leitura
+  (`receberMd`, um `File` no `receber()`, `abrirMd`). O texto nunca entra por
+  uma porta nova.
+
+  A FORMA é de cada casa: lista de fichas onde há zona de arrastar, caixa com
+  `datalist` onde há cabeçalho de botões — 1089 fichas no alto da página não
+  se usam.
+
+  **O texto corrigido NÃO volta ao acervo:** o servidor o serve em leitura e
+  só. Escrever no corpus a partir de uma página do navegador é poder de
+  verdade, e a trava do Ateliê existe para isso.
+
 - **A BIBLIOTECA DO PEDRA ANGULAR NA PORTA (2026-10-09).** «Meu sonho é poder
   abrir a biblioteca pela bancada, escolher o arquivo e trabalhar nele» —
   Bruno. **1089 obras**, com busca por título, autor e id, e o texto entra pela

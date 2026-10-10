@@ -330,6 +330,46 @@ else:
     notas.append("nome do arquivo: `nomeDoAcervo()` identico nas duas bancadas "
                  "(%d linhas)." % _aqui.count("\n"))
 
+# --- 8y. a BIBLIOTECA e o mesmo bloco nas TRES bancadas ---------------------
+# A Oficina, o Gerador e o Corretor abrem o acervo do Pedra Angular, e o bloco
+# que busca o catalogo, filtra e abre a obra e o MESMO — so a entrega muda (a
+# `bibliotecaEntrega`, uma linha por bancada), porque cada uma tem a sua porta
+# de leitura. Mesma razao do `nomeDoAcervo()`: sem modulo partilhado (LEI 3),
+# copia que diverge e tres bibliotecas diferentes.
+def trecho_da_biblioteca(caminho):
+    t = io.open(caminho, encoding="utf-8").read()
+    i = t.find("/* A BIBLIOTECA DO PEDRA ANGULAR NA PORTA")
+    if i < 0:
+        return None
+    j = t.find("const bibliotecaEntrega", i)
+    if j < 0:
+        return None
+    return "\n".join(l.strip() for l in t[i:j].split("\n") if l.strip())
+
+
+_bib = {
+    "Oficina": trecho_da_biblioteca(os.path.join(AQUI, "index.html")),
+    "Gerador": trecho_da_biblioteca(os.path.normpath(
+        os.path.join(AQUI, "..", "gerador", "index.html"))),
+    "Corretor": trecho_da_biblioteca(os.path.normpath(
+        os.path.join(AQUI, "..", "corretor", "Corretor.html"))),
+}
+_faltam = [k for k, v in _bib.items() if v is None]
+_valores = {k: v for k, v in _bib.items() if v is not None}
+if _faltam:
+    falhas.append(
+        "nao achei o bloco da biblioteca em: %s. Sem ele a bancada volta a "
+        "abrir so por arrastar, e as 1110 obras do acervo ficam de fora."
+        % ", ".join(_faltam))
+elif len(set(_valores.values())) > 1:
+    falhas.append(
+        "o bloco da BIBLIOTECA divergiu entre as bancadas. Ele tem de ser "
+        "identico nas tres (so a `bibliotecaEntrega` muda): copia que diverge "
+        "e tres bibliotecas diferentes para o mesmo acervo.")
+else:
+    notas.append("biblioteca: o mesmo bloco nas tres bancadas (%d linhas)."
+                 % list(_valores.values())[0].count("\n"))
+
 # --- 9. capitulo se conta igual nas duas bancadas ---------------------------
 # O conferidor mora na RAIZ, ao lado do `conferir_paleta.py`, porque a regra
 # nao e de nenhuma das duas: ela e a mesma nas duas, e um conferidor por

@@ -1151,24 +1151,31 @@ function extensaoDaObra(capitulos, nivel){
 /* A BIBLIOTECA DO PEDRA ANGULAR NA PORTA (2026-10-09)
    ====================================================
    «Meu sonho e poder abrir a biblioteca do Pedra Angular pela bancada,
-   escolher o arquivo e trabalhar nele» — Bruno. Sao 1110 obras, e ate aqui a
-   porta era «arraste um .md de algum canto do disco».
+   escolher o arquivo e trabalhar nele» — Bruno. Sao 1110 obras.
 
-   O ACERVO ENTRA PELO SERVIDOR DO ATELIE, em `/acervo/`. Por isso a lista so
-   aparece quando ha servidor: bancada aberta por duplo clique roda em
-   `file://`, onde `fetch` nao le pasta nenhuma. Fora do Atelie o arrastar e o
-   «Abrir arquivo…» continuam, que e como sempre foi — a casca SOMA um
-   caminho, nunca troca um pelo outro.
+   SO APARECE SERVIDA. Bancada aberta por duplo clique roda em `file://`, onde
+   `fetch` nao le pasta nenhuma — e por isso o acervo entra pelo servidor do
+   Atelie, em `/acervo/`. Fora dele o arrastar e o «Abrir .md» continuam: a
+   casca SOMA um caminho, nunca troca um pelo outro.
 
-   E O TEXTO ENTRA PELA MESMA PORTA do arrasto (`receberMd`). Uma segunda
-   funcao de leitura seria uma segunda verdade sobre o mesmo arquivo: o dia em
-   que uma aprendesse um campo novo, a obra teria duas contagens. */
-let biblioteca = null;          // [{id, titulo, autor, arquivo}], ou null
+   E O TEXTO ENTRA PELA MESMA PORTA DO ARRASTO, qualquer que seja a bancada —
+   `bibliotecaEntrega` e a unica linha que muda de uma para outra. Uma segunda
+   funcao de leitura seria uma segunda verdade sobre o mesmo arquivo.
+
+   ESTE BLOCO E COPIADO nas tres bancadas e as copias tem de ser IDENTICAS,
+   como o `nomeDoAcervo()`: nao ha modulo partilhado numa bancada de um
+   arquivo so (LEI 3). O `oficina/conferir.py` compara, caractere a caractere.
+
+   E chama-se `biblioteca`, e nao `acervo`: `acervo` ja e a secao legivel por
+   maquina das bancadas (LEI 1), e duas coisas com o mesmo nome no mesmo
+   arquivo e o N56 em vocabulario. */
+let biblioteca = null;             // [{id, titulo, autor, arquivo}], ou null
 let bibliotecaEstado = 'nao-tentei';   // nao-tentei · buscando · pronto · sem
 let bibliotecaFiltro = '';
 let bibliotecaAberta = false;
+const BIBLIOTECA_TETO = 80;
 
-async function buscarBiblioteca(){
+async function buscarBiblioteca(aoPronto){
   if (bibliotecaEstado === 'buscando' || bibliotecaEstado === 'pronto') return;
   bibliotecaEstado = 'buscando';
   try {
@@ -1182,32 +1189,45 @@ async function buscarBiblioteca(){
        por duplo clique. O botao simplesmente nao aparece. */
     biblioteca = null; bibliotecaEstado = 'sem';
   }
-  render();
+  if (aoPronto) aoPronto();
 }
 
-async function abrirDoAcervo(obra){
-  const zona = document.getElementById('zona-texto');
-  if (zona) zona.classList.add('sobre');
+async function abrirDaBiblioteca(obra, aoFim){
   try {
-    const r = await fetch('/acervo/' + obra.arquivo.split('/').map(encodeURIComponent).join('/'),
-                          {cache: 'no-store'});
+    const url = '/acervo/' +
+      obra.arquivo.split('/').map(encodeURIComponent).join('/');
+    const r = await fetch(url, {cache: 'no-store'});
     if (!r.ok) throw new Error('o acervo respondeu ' + r.status);
     const texto = await r.text();
-    /* O NOME DO ARQUIVO E O DO ACERVO, nao o id: e dele que sai o nome da
+    /* O NOME E O DO ARQUIVO NO ACERVO, nao o id: e dele que sai o nome da
        especificacao exportada, pela CONVENCOES 1.1. */
-    receberMd(obra.arquivo.split('/').pop(), texto);
+    bibliotecaEntrega(obra.arquivo.split('/').pop(), texto);
     bibliotecaAberta = false;
+    if (aoFim) aoFim(null);
   } catch (e) {
-    const d = document.getElementById('biblioteca-recado');
-    if (d) d.textContent = 'nao deu para abrir: ' + e.message;
-  } finally {
-    if (zona) zona.classList.remove('sobre');
+    if (aoFim) aoFim(e.message);
   }
 }
 
-/* A BUSCA E POR TITULO E POR AUTOR, sem acento e sem caixa: quem procura
-   «socrates» tem de achar «Σωκράτης»? Nao — mas tem de achar «Apologia de
-   Socrates» escrito com acento. */
+/* A BUSCA E SEM ACENTO E SEM CAIXA, por titulo, autor e id: quem digita
+   «socrates» tem de achar «Apologia de Sócrates». */
+function bibliotecaFiltrada(){
+  if (!biblioteca) return [];
+  const nu = t => (t || '').toLowerCase().normalize('NFD')
+    .replace(/[̀-ͯ]/g, '');
+  const q = nu(bibliotecaFiltro).trim();
+  if (!q) return biblioteca.slice(0, BIBLIOTECA_TETO);
+  return biblioteca
+    .filter(x => nu(x.titulo + ' ' + x.autor + ' ' + x.id).indexOf(q) >= 0)
+    .slice(0, BIBLIOTECA_TETO);
+}
+
+const bibliotecaEntrega = (nome, texto) => receberMd(nome, texto);
+
+/* A LISTA DE FICHAS E SO DAQUI. A Oficina ja tem a zona de arrastar e as
+   fileiras de ficha, entao a biblioteca cabe nela; o Gerador e o Corretor
+   recebem uma caixa no cabecalho, que e a forma deles. O que as tres
+   partilham, e o conferidor compara, e o BLOCO DE DADOS acima. */
 function encherBiblioteca(lista){
   const achadas = bibliotecaFiltrada();
   lista.textContent = '';
@@ -1217,29 +1237,24 @@ function encherBiblioteca(lista){
     return lista.appendChild(p);
   }
   achadas.forEach(x => lista.appendChild(fichaBotao({
-    titulo: x.titulo, sub: (x.autor && x.autor !== '\—' ? x.autor + ' \· ' : '') + x.id,
+    titulo: x.titulo,
+    sub: (x.autor && x.autor !== '—' ? x.autor + ' · ' : '') + x.id,
     ativo: !!(obraDoArquivo && obraDoArquivo.arquivo === x.arquivo.split('/').pop()),
-    onClick: () => abrirDoAcervo(x)})));
-  /* O TETO DE 80 SE DECLARA. Mil e cento e dez fichas numa tela sao
-     inutilizaveis, e uma lista cortada em silencio faz a pessoa concluir que
-     a obra nao esta no acervo. */
+    onClick: () => abrirDaBiblioteca(x, erro => {
+      const d = document.getElementById("biblioteca-recado");
+      if (erro && d) d.textContent = "nao deu para abrir: " + erro;
+      render();
+    })})));
+  /* O TETO SE DECLARA: lista cortada em silencio faz a pessoa concluir que a
+     obra nao esta no acervo. */
   if (biblioteca.length > achadas.length) {
     const p = document.createElement("p");
     p.className = "dica";
     p.textContent = "mostrando " + achadas.length + " de " +
-      biblioteca.length.toLocaleString('pt-BR') + " \— use a busca para achar o resto.";
+      biblioteca.length.toLocaleString('pt-BR') +
+      " — use a busca para achar o resto.";
     lista.appendChild(p);
   }
-}
-
-function bibliotecaFiltrada(){
-  if (!biblioteca) return [];
-  const q = bibliotecaFiltro.trim().toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  if (!q) return biblioteca.slice(0, 80);
-  const casa = x => (x.titulo + ' ' + x.autor + ' ' + x.id).toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '').indexOf(q) >= 0;
-  return biblioteca.filter(casa).slice(0, 80);
 }
 
 /* O NOME DO ARQUIVO, pela CONVENCOES.md 1.1 do Segundo Cerebro, com o codigo
@@ -2179,7 +2194,7 @@ function montarSecoes(){
 
   /* A BIBLIOTECA, logo abaixo da porta. Ela so existe servida — fora do
      Atelie o `fetch` falha e o bloco inteiro some. */
-  if (bibliotecaEstado === 'nao-tentei') buscarBiblioteca();
+  if (bibliotecaEstado === 'nao-tentei') buscarBiblioteca(render);
   if (bibliotecaEstado === 'pronto') {
     const cx = document.createElement("div");
     cx.className = "fileira";
